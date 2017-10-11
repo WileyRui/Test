@@ -7,6 +7,7 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.*;
+import java.nio.charset.Charset;
 
 /**
  * @author 宣炳刚
@@ -34,7 +35,7 @@ public class BodyReaderRequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public BufferedReader getReader() throws IOException {
-        InputStreamReader streamReader = new InputStreamReader(getInputStream(), "UTF-8");
+        InputStreamReader streamReader = new InputStreamReader(getInputStream(), Charset.defaultCharset());
         return new BufferedReader(streamReader);
     }
 
