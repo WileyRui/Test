@@ -1,6 +1,7 @@
 package com.apin.airline.common.mapper;
 
 import com.apin.airline.common.entity.Airline;
+import com.apin.airline.common.entity.AirlineDetail;
 import com.apin.airline.common.entity.FlightInfo;
 import com.apin.airline.common.entity.Voyage;
 import org.apache.ibatis.annotations.Delete;
@@ -50,7 +51,7 @@ public interface AirlineMapper extends Mapper {
      * @return 航班信息集合
      */
     @Select("SELECT * FROM msd_airline_info WHERE flight_no=#{flightNo};")
-    List<FlightInfo> getFlightInfo(String flightNo);
+    List<FlightInfo> getFlightInfos(String flightNo);
 
     /**
      * 新增航线基础数据
@@ -82,6 +83,30 @@ public interface AirlineMapper extends Mapper {
      * @param id 航线基础数据ID
      * @return 受影响行数
      */
-    @Delete("DELETE a,v FROM msd_airline a left join msd_airline_voyage v on v.airline_id=a.id WHERE a.id=#{id};")
+    @Delete("DELETE a,v FROM msd_airline a LEFT JOIN msd_airline_voyage v ON v.airline_id=a.id WHERE a.id=#{id};")
     Integer deleteAirline(String id);
+
+    /**
+     * 查询符合条件的航线基础数据
+     *
+     * @param voyage   航程拼接字符串
+     * @param flightNo 航班号拼接字符串
+     * @return 航线基础数据集合
+     */
+    @Select("SELECT id FROM msd_airline WHERE voyage=#{voyage} AND flight_number=#{flightNo};")
+    List<String> getExistedAirline(String voyage, String flightNo);
+
+    /**
+     * 查询指定ID的航线基础数据
+     *
+     * @param id 航线基础数据ID
+     * @return 航线基础数据对象实体
+     */
+    @Select("SELECT * FROM msd_airline WHERE id=#{id}")
+    Airline getAirlineById(String id);
+
+    @Select("SELECT v.id,v.airline_id,v.trip_index,i.flight_company,i.flight_no,i.flight_dep_airport," +
+            "i.flight_arr_airport,i.flight_deptime_plan_date,i.flight_arrtime_plan_date,i.stop_flag,i.flights " +
+            "FROM msd_airline_voyage v JOIN msd_airline_info i ON i.id=v.airline_id WHERE v.airline_id=#{id}")
+    List<AirlineDetail> getVoyages(String id);
 }
