@@ -1,10 +1,15 @@
 package com.apin.airline.line;
 
+import com.apin.airline.common.entity.FlightInfo;
+import com.apin.airline.line.dto.LineBo;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author 宣炳刚
@@ -15,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/lineapi")
 public class LineController {
     @Autowired
-    private LineService service;
+    LineService service;
 
     /**
      * 增加航线
@@ -24,7 +29,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/create")
-    public Reply addLine(LineBo lineBo) {
+    public Reply addLine(@RequestBody LineBo lineBo) {
         return service.addLine(lineBo);
     }
 
@@ -35,7 +40,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/edit")
-    public Reply editLine(LineBo lineBo) {
+    public Reply editLine(@RequestBody LineBo lineBo) {
         return service.editLine(lineBo);
     }
 
@@ -46,7 +51,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/delete")
-    public Reply delLine(LineBo lineBo) {
+    public Reply delLine(@RequestBody LineBo lineBo) {
         return service.delLine(lineBo);
     }
 
@@ -57,7 +62,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/list")
-    public Reply lineList(LineBo lineBo) {
+    public Reply lineList(@RequestBody LineBo lineBo) {
         return service.lineList(lineBo);
     }
 
@@ -68,7 +73,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/detail/query")
-    public Reply lineInfo(LineBo lineBo) {
+    public Reply lineInfo(@RequestBody LineBo lineBo) {
         return service.lineInfo(lineBo);
     }
 
@@ -79,7 +84,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/status/update")
-    public Reply upOrDown(LineBo lineBo) {
+    public Reply upOrDown(@RequestBody LineBo lineBo) {
         return service.upOrDown(lineBo);
     }
 
@@ -90,19 +95,19 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/flightInfo/query")
-    public Reply queryFlightInfo(LineBo lineBo) {
+    public Reply queryFlightInfo(@RequestBody LineBo lineBo) throws InvocationTargetException, IllegalAccessException {
         return service.queryFlightInfo(lineBo);
     }
 
     /**
      * 航班信息维护
      *
-     * @param lineBo
+     * @param flightInfo
      * @return
      */
     @PostMapping("/v1.0/flightInfo/create")
-    public Reply addFlightInfo(LineBo lineBo) {
-        return service.addFlightInfo(lineBo);
+    public Reply addFlightInfo(@RequestBody FlightInfo flightInfo) {
+        return service.addFlightInfo(flightInfo);
     }
 
     /**
@@ -112,7 +117,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/flightInfo/update")
-    public Reply updateFlightInfo(LineBo lineBo) {
+    public Reply updateFlightInfo(@RequestBody LineBo lineBo) throws InvocationTargetException, IllegalAccessException {
         return service.updateFlightInfo(lineBo);
     }
 }

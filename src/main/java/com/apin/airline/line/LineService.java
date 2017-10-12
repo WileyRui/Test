@@ -1,14 +1,16 @@
 package com.apin.airline.line;
 
+import com.apin.airline.common.entity.FlightInfo;
+import com.apin.airline.line.dto.LineBo;
 import com.apin.util.pojo.Reply;
-import org.springframework.stereotype.Service;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author 宣炳刚
  * @date 2017/10/10
  * @remark 航线管理服务接口
  */
-@Service
 public interface LineService {
 
     /**
@@ -64,20 +66,20 @@ public interface LineService {
      * @param lineBo
      * @return
      */
-    Reply queryFlightInfo(LineBo lineBo);
+    Reply queryFlightInfo(LineBo lineBo) throws InvocationTargetException, IllegalAccessException;
 
 
     /**
      * 维护航班
-     * @param lineBo
+     * @param flightInfo
      * @return
      */
-    Reply addFlightInfo(LineBo lineBo);
+    Reply addFlightInfo(FlightInfo flightInfo);
 
     /**
      * 更新航班
      * @param lineBo
      * @return
      */
-    Reply updateFlightInfo(LineBo lineBo);
+    Reply updateFlightInfo(LineBo lineBo) throws InvocationTargetException, IllegalAccessException;
 }
