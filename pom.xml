@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.apin</groupId>
-    <artifactId>airline</artifactId>
+    <artifactId>com.apin.airline</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
@@ -148,6 +148,9 @@
             <properties>
                 <profiles.active>local</profiles.active>
             </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
         <profile>
             <!-- 开发环境 -->
@@ -155,9 +158,6 @@
             <properties>
                 <profiles.active>dev</profiles.active>
             </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
         </profile>
         <profile>
             <!-- 测试环境 -->
