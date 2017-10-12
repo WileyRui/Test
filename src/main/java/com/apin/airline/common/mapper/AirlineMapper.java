@@ -89,12 +89,11 @@ public interface AirlineMapper extends Mapper {
     /**
      * 查询符合条件的航线基础数据
      *
-     * @param voyage   航程拼接字符串
-     * @param flightNo 航班号拼接字符串
-     * @return 航线基础数据集合
+     * @param hashKey 航程摘要字符串
+     * @return 航线基础数据ID
      */
-    @Select("SELECT id FROM msd_airline WHERE voyage=#{voyage} AND flight_number=#{flightNo};")
-    List<String> getExistedAirline(String voyage, String flightNo);
+    @Select("SELECT id FROM msd_airline WHERE hash_key=#{hashKey} ORDER BY created_time LIMIT 1;")
+    String getExistedAirline(String hashKey);
 
     /**
      * 查询指定ID的航线基础数据
