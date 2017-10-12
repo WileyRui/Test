@@ -30,11 +30,10 @@ public interface LineService {
     /**
      * 删除航线
      *
-     * @param lineId    航线id
-     * @param accountId
+     * @param lineBo
      * @return
      */
-    Reply delLine(String lineId, String accountId);
+    Reply delLine(LineBo lineBo);
 
     /**
      * 航线列表/查询
@@ -47,19 +46,38 @@ public interface LineService {
     /**
      * 航线详情
      *
-     * @param lineId
-     * @param accountId
+     * @param lineBo
      * @return
      */
-    Reply lineInfo(String lineId, String accountId);
+    Reply lineInfo(LineBo lineBo);
 
     /**
      * 航线上下架
      *
-     * @param lineId
-     * @param accountId
+     * @param lineBo
      * @return
      */
-    Reply upOrDown(String lineId, String accountId);
+    Reply upOrDown(LineBo lineBo);
 
+    /**
+     * 航班查询
+     * @param lineBo
+     * @return
+     */
+    Reply queryFlightInfo(LineBo lineBo);
+
+
+    /**
+     * 维护航班
+     * @param lineBo
+     * @return
+     */
+    Reply addFlightInfo(LineBo lineBo);
+
+    /**
+     * 更新航班
+     * @param lineBo
+     * @return
+     */
+    Reply updateFlightInfo(LineBo lineBo);
 }

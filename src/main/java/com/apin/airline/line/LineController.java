@@ -1,10 +1,7 @@
 package com.apin.airline.line;
 
-import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @remark 航线管理服务控制器
  */
 @RestController
-@RequestMapping("/lineapi/")
+@RequestMapping("/lineapi")
 public class LineController {
     @Autowired
     private LineService service;
@@ -26,7 +23,7 @@ public class LineController {
      * @param lineBo
      * @return
      */
-    @PostMapping("addLine")
+    @PostMapping("/v1.0/lines/create")
     public Reply addLine(LineBo lineBo) {
         return service.addLine(lineBo);
     }
@@ -37,7 +34,7 @@ public class LineController {
      * @param lineBo
      * @return
      */
-    @PostMapping("editLine")
+    @PostMapping("/v1.0/lines/edit")
     public Reply editLine(LineBo lineBo) {
         return service.editLine(lineBo);
     }
@@ -45,16 +42,12 @@ public class LineController {
     /**
      * 删除航线
      *
-     * @param lineId
-     * @param accountId
+     * @param lineBo
      * @return
      */
-    @GetMapping("delLine")
-    public Reply delLine(String lineId, String accountId) {
-        if (StringUtils.isBlank(lineId) || StringUtils.isBlank(accountId)) {
-            return ReplyHelper.fail("参数为空");
-        }
-        return service.delLine(lineId, accountId);
+    @PostMapping("/v1.0/lines/delete")
+    public Reply delLine(LineBo lineBo) {
+        return service.delLine(lineBo);
     }
 
     /**
@@ -63,7 +56,7 @@ public class LineController {
      * @param lineBo
      * @return
      */
-    @PostMapping("lineList")
+    @PostMapping("/v1.0/lines/list")
     public Reply lineList(LineBo lineBo) {
         return service.lineList(lineBo);
     }
@@ -71,30 +64,55 @@ public class LineController {
     /**
      * 航线详情
      *
-     * @param lineId
-     * @param accountId
+     * @param lineBo
      * @return
      */
-    @GetMapping("lineInfo")
-    public Reply lineInfo(String lineId, String accountId) {
-        if (StringUtils.isBlank(lineId) || StringUtils.isBlank(accountId)) {
-            return ReplyHelper.fail("参数为空");
-        }
-        return service.lineInfo(lineId, accountId);
+    @PostMapping("/v1.0/lines/detail/query")
+    public Reply lineInfo(LineBo lineBo) {
+        return service.lineInfo(lineBo);
     }
 
     /**
      * 航线上下架
      *
-     * @param lineId
-     * @param accountId
+     * @param lineBo
      * @return
      */
-    @GetMapping("upOrDown")
-    public Reply upOrDown(String lineId, String accountId) {
-        if (StringUtils.isBlank(lineId) || StringUtils.isBlank(accountId)) {
-            return ReplyHelper.fail("参数为空");
-        }
-        return service.upOrDown(lineId, accountId);
+    @PostMapping("/v1.0/lines/status/update")
+    public Reply upOrDown(LineBo lineBo) {
+        return service.upOrDown(lineBo);
+    }
+
+    /**
+     * 航班信息查询
+     *
+     * @param lineBo
+     * @return
+     */
+    @PostMapping("/v1.0/flightInfo/query")
+    public Reply queryFlightInfo(LineBo lineBo) {
+        return service.queryFlightInfo(lineBo);
+    }
+
+    /**
+     * 航班信息维护
+     *
+     * @param lineBo
+     * @return
+     */
+    @PostMapping("/v1.0/flightInfo/create")
+    public Reply addFlightInfo(LineBo lineBo) {
+        return service.addFlightInfo(lineBo);
+    }
+
+    /**
+     * 航班信息更新
+     *
+     * @param lineBo
+     * @return
+     */
+    @PostMapping("/v1.0/flightInfo/update")
+    public Reply updateFlightInfo(LineBo lineBo) {
+        return service.updateFlightInfo(lineBo);
     }
 }
