@@ -3,6 +3,7 @@ package com.apin.airline.common.entity;
 import java.io.Serializable;
 import java.sql.Time;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 宣炳刚
@@ -71,6 +72,11 @@ public class Airline implements Serializable{
      * 创建时间
      */
     private Date createdTime;
+
+    /**
+     * 航程明细
+     */
+    private List<AirlineDetail> details;
 
     public String getId() {
         return id;
@@ -166,5 +172,13 @@ public class Airline implements Serializable{
 
     public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public List<AirlineDetail> getDetails() {
+        return details;
+    }
+
+    public void setDetails(List<AirlineDetail> details) {
+        this.details = details;
     }
 }
