@@ -24,8 +24,8 @@ public interface AirlineMapper extends Mapper {
             "flight_arrtime_plan_date,stop_flag,flights,update_time,created_time) VALUES " +
             "<foreach collection = \"list\" item = \"item\" index = \"index\" separator = \",\"> " +
             "(#{item.id},#{item.flightNo},#{item.flightCompany},#{item.fcategory},#{item.flightDep},#{item.flightArr}," +
-            "#{item.flightDepAirport},#{item.flightArrAirport},#{item.flightDepcode},#{item.flightArrcode},#{item.flightDeptime}," +
-            "#{item.flightArrtime},#{item.stopFlag},#{item.flights},#{item.updateTime},#{item.createdTime}) " +
+            "#{item.flightDepAirport},#{item.flightArrAirport},#{item.flightDepcode},#{item.flightArrcode},#{item.flightDeptimePlanDate}," +
+            "#{item.flightArrtimePlanDate},#{item.stopFlag},#{item.flights},#{item.updateTime},#{item.createdTime}) " +
             "</foreach></script>")
     Integer addFlightInfo(List<FlightInfo> flightInfos);
 

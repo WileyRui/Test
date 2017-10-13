@@ -65,12 +65,12 @@ public class FlightInfo  implements Serializable {
     /**
      * 计划起飞时间
      */
-    private Time flightDeptime;
+    private Time flightDeptimePlanDate;
 
     /**
      * 计划到达时间
      */
-    private Time flightArrtime;
+    private Time flightArrtimePlanDate;
 
     /**
      * 是否经停 false:不经停;true:经停
@@ -172,20 +172,20 @@ public class FlightInfo  implements Serializable {
         this.flightArrcode = flightArrcode;
     }
 
-    public Time getFlightDeptime() {
-        return flightDeptime;
+    public Time getFlightDeptimePlanDate() {
+        return flightDeptimePlanDate;
     }
 
-    public void setFlightDeptime(Time flightDeptime) {
-        this.flightDeptime = flightDeptime;
+    public void setFlightDeptimePlanDate(Time flightDeptimePlanDate) {
+        this.flightDeptimePlanDate = flightDeptimePlanDate;
     }
 
-    public Time getFlightArrtime() {
-        return flightArrtime;
+    public Time getFlightArrtimePlanDate() {
+        return flightArrtimePlanDate;
     }
 
-    public void setFlightArrtime(Time flightArrtime) {
-        this.flightArrtime = flightArrtime;
+    public void setFlightArrtimePlanDate(Time flightArrtimePlanDate) {
+        this.flightArrtimePlanDate = flightArrtimePlanDate;
     }
 
     public Boolean getStopFlag() {
