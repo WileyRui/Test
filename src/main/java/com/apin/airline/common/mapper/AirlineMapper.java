@@ -41,7 +41,7 @@ public interface AirlineMapper extends Mapper {
      * @param flightNo 航班号
      * @return 受影响行数
      */
-    @Delete("DELETE msd_airline_info WHERE flight_no=#{flightNo};")
+    @Delete("DELETE from msd_airline_info WHERE flight_no=#{flightNo};")
     Integer deleteFlightInfo(String flightNo);
 
     /**
