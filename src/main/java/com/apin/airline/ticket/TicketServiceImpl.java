@@ -25,6 +25,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Reply saleStock(Stock stock) {
+
         return null;
     }
 

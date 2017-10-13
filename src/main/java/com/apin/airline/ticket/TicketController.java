@@ -1,6 +1,6 @@
 package com.apin.airline.ticket;
 
-import com.apin.airline.ticket.dto.CalendarInfo;
+import com.apin.airline.base.Airline;
 import com.apin.airline.ticket.dto.Deal;
 import com.apin.airline.ticket.dto.Stock;
 import com.apin.util.pojo.Reply;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.UnsupportedEncodingException;
 
 /**
  * @author 宣炳刚
@@ -32,8 +31,9 @@ public class TicketController {
      * 异常：剩余座位不足
      */
     @PostMapping(value = "/saleStock")
-    public Reply saleStock(@RequestBody Stock stock) throws UnsupportedEncodingException {
-        return ticketService.saleStock(stock);
+    public Reply saleStock(@RequestBody Stock stock) throws Exception {
+        Reply reply = Airline.stockCheck(stock);
+        return reply.getSuccess()?ticketService.saleStock(stock):reply;
     }
 
     /**
@@ -44,7 +44,7 @@ public class TicketController {
      * 异常：可分配库存不足
      */
     @PostMapping(value = "/dealStock")
-    public Reply dealStock(@RequestBody Deal deal) throws UnsupportedEncodingException {
+    public Reply dealStock(@RequestBody Deal deal) throws Exception {
         return ticketService.dealStock(deal);
     }
     /**
@@ -55,7 +55,7 @@ public class TicketController {
      * 异常：可分配库存不足
      */
     @PostMapping(value = "/handRecover")
-    public Reply handRecover(@RequestBody Deal deal) throws UnsupportedEncodingException {
+    public Reply handRecover(@RequestBody Deal deal) throws Exception {
         return ticketService.dealStock(deal);
     }
 
