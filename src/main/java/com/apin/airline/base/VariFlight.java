@@ -6,7 +6,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.net.URLDecoder;
 import java.util.*;
@@ -16,9 +16,9 @@ import java.util.*;
  * @date 2017/10/12
  * @remark 飞常准查询接口
  */
-@Service
-public class VariFlightService {
-    private Logger logger = LoggerFactory.getLogger(VariFlightService.class);
+@Component
+public class VariFlight {
+    private Logger logger = LoggerFactory.getLogger(VariFlight.class);
 
     @Value("${variflight.appid}")
     private String appId;

@@ -1,10 +1,10 @@
 package com.apin.airline.line;
 
-import com.apin.airline.base.VariFlightService;
+import com.apin.airline.base.VariFlight;
 import com.apin.airline.common.entity.FlightInfo;
+import com.apin.airline.common.entity.Line;
 import com.apin.airline.common.mapper.AirlineMapper;
 import com.apin.airline.line.dto.LineBo;
-import com.apin.airline.line.utils.DateUtil;
 import com.apin.util.DateHelper;
 import com.apin.util.Generator;
 import com.apin.util.ReplyHelper;
@@ -26,12 +26,21 @@ import java.util.*;
 @Service
 public class LineServiceImpl implements LineService {
     @Autowired
-    VariFlightService variFlightService;
+    VariFlight variFlight;
     @Autowired
     AirlineMapper airlineMapper;
 
     @Override
     public Reply addLine(LineBo lineBo) {
+        StringBuilder appendFlight = new StringBuilder();
+        Line line = new Line();
+/*        String newAirlineNo = airlineMapper.findNew();
+        line.setId(Generator.uuid());
+            if (StringUtils.isBlank(newAirlineNo)) {
+                line.setAirlineNo("1");
+            } else {
+                line.setAirlineNo(String.valueOf(Integer.parseInt(newAirlineNo) + 1));
+            }*/
         return null;
     }
 
@@ -76,9 +85,8 @@ public class LineServiceImpl implements LineService {
         List<Map<String, String>> flightList;
         int[] days = new int[7];
         for (int i = 0; i < 7; i++) {
-            flightList = variFlightService.getFlightInfo(lineBo.getFlightNo(), lineBo.getBeginDate());
-            // 当前日期的星期
-            Date dateS = DateUtil.String2Date(lineBo.getBeginDate(), "yyyy-MM-dd");
+            flightList = variFlight.getFlightInfo(lineBo.getFlightNo(), lineBo.getBeginDate());
+            Date dateS = DateHelper.parseDate(lineBo.getBeginDate());
             int week = DateHelper.getWeek(lineBo.getBeginDate());
             if (flightList != null && flightList.size() > 0) {
                 resultMap.put("flightList1", flightList);
@@ -88,7 +96,7 @@ public class LineServiceImpl implements LineService {
                     days[week] = 1;
                 }
             }
-            Date dateAdd = DateUtil.dateAddSub(dateS, 1);
+            Date dateAdd = new Date(dateS.getTime() + 1 * 24 * 60 * 60 * 1000);
             lineBo.setBeginDate(new SimpleDateFormat("yyyy-MM-dd").format(dateAdd));
         }
         String flights = Arrays.toString(days).replace("[", "").replace("]", "").replace(" ", "");
@@ -135,7 +143,6 @@ public class LineServiceImpl implements LineService {
     @Transactional
     @Override
     public Reply addFlightInfo(FlightInfo info) {   //需求待确认
-        // 根据航班号，出发和到达机场三字码获取唯一航班数据
         info.setId(Generator.uuid());
         info.setCreatedTime(new Date());
         info.setUpdateTime(new Date());
