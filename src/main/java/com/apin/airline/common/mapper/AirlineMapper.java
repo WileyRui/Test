@@ -1,13 +1,7 @@
 package com.apin.airline.common.mapper;
 
-import com.apin.airline.common.entity.Airline;
-import com.apin.airline.common.entity.AirlineDetail;
-import com.apin.airline.common.entity.FlightInfo;
-import com.apin.airline.common.entity.Voyage;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import com.apin.airline.common.entity.*;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -41,7 +35,7 @@ public interface AirlineMapper extends Mapper {
      * @param flightNo 航班号
      * @return 受影响行数
      */
-    @Delete("DELETE msd_airline_info WHERE flight_no=#{flightNo};")
+    @Delete("DELETE FROM msd_airline_info WHERE flight_no=#{flightNo};")
     Integer deleteFlightInfo(String flightNo);
 
     /**
@@ -104,8 +98,64 @@ public interface AirlineMapper extends Mapper {
     @Select("SELECT * FROM msd_airline WHERE id=#{id}")
     Airline getAirlineById(String id);
 
+    /**
+     * 查询指定航线基础数据ID的航程明细数据
+     *
+     * @param id 航线基础数据ID
+     * @return 航程明细数据集合
+     */
     @Select("SELECT v.id,v.airline_id,v.trip_index,i.flight_company,i.flight_no,i.flight_dep_airport," +
             "i.flight_arr_airport,i.flight_deptime_plan_date,i.flight_arrtime_plan_date,i.stop_flag,i.flights " +
             "FROM msd_airline_voyage v JOIN msd_airline_info i ON i.id=v.airline_id WHERE v.airline_id=#{id}")
     List<AirlineDetail> getVoyages(String id);
+
+    /**
+     * 分配舱位
+     *
+     * @param seat      舱位数据
+     * @param flightId  航班资源ID
+     * @param count     分配数量
+     * @return 受影响行数
+     */
+    @Update("UPDATE mbs_airline_flight_seat " +
+            "SET `owner`=#{owner},owner_id=#{ownerId},divider=#{divider},divider_id=#{dividerId},assigned_time=now() " +
+            "WHERE flight_id=#{flightId} AND owner_id=account_id AND seat_status=0 LIMIT #{count};")
+    Integer assignSeat(Seat seat, String flightId, Integer count);
+
+    /**
+     * 回收舱位
+     *
+     * @param flightId 航班资源ID
+     * @param ownerId  资源原拥有者ID
+     * @param count    回收数量
+     * @return 受影响行数
+     */
+    @Update("UPDATE mbs_airline_flight_seat s JOIN mbs_airline a ON a.account_id=s.account_id " +
+            "SET s.`owner`=a.supplier_name,s.owner_id=s.account_id,s.seat_status=0 " +
+            "WHERE s.flight_id=#{flightId} AND s.owner_id=#{ownerId} AND s.seat_status=0 LIMIT #{count};")
+    Integer recoverSeat(String flightId, String ownerId, Integer count);
+
+    /**
+     * 强制回收舱位
+     *
+     * @return 受影响行数
+     */
+    @Update("UPDATE mbs_airline a JOIN mbs_airline_flight f ON f.airline_id=a.id AND f.recovery_date<now() " +
+            "JOIN mbs_airline_flight_seat s ON s.flight_id=f.id AND s.seat_status<2" +
+            "SET s.`owner`=a.supplier_name,s.owner_id=s.account_id,s.seat_status=0")
+    Integer recoverSeatForced();
+
+    /**
+     * 售出舱位
+     *
+     * @param flightId 航班资源ID
+     * @param ownerId  资源原拥有者ID
+     * @param count    销售数量
+     * @return 受影响行数
+     */
+    @Update("UPDATE mbs_airline_flight_seat SET seat_status=0 " +
+            "WHERE flight_id=#{flightId} AND owner_id=#{ownerId} AND seat_status=1;" +
+            "UPDATE mbs_airline_flight_seat SET seat_status=1 " +
+            "WHERE flight_id=#{flightId} AND owner_id=#{ownerId} AND seat_status=0 LIMIT #{count};")
+    Integer sellSeat(String flightId, String ownerId, Integer count);
 }

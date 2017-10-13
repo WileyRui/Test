@@ -12,6 +12,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/flightapi")
 public class FlightController {
-    @Autowired
-    private FlightService service;
 }
