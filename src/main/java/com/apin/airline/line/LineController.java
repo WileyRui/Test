@@ -4,10 +4,7 @@ import com.apin.airline.common.entity.FlightInfo;
 import com.apin.airline.line.dto.LineBo;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -29,8 +26,8 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/create")
-    public Reply addLine(@RequestBody LineBo lineBo) {
-        return service.addLine(lineBo);
+    public Reply addLine(@RequestHeader("Authorization") String token,@RequestBody LineBo lineBo) {
+        return service.addLine(token,lineBo);
     }
 
     /**

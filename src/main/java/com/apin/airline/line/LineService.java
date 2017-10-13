@@ -19,7 +19,7 @@ public interface LineService {
      * @param lineBo
      * @return
      */
-    Reply addLine(LineBo lineBo);
+    Reply addLine(String token, LineBo lineBo);
 
     /**
      * 编辑航线

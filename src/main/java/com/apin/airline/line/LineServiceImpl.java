@@ -2,8 +2,9 @@ package com.apin.airline.line;
 
 import com.apin.airline.base.VariFlight;
 import com.apin.airline.common.entity.FlightInfo;
-import com.apin.airline.common.entity.Line;
 import com.apin.airline.common.mapper.AirlineMapper;
+import com.apin.airline.line.dto.AirlineVO;
+import com.apin.airline.line.dto.FlightDetail;
 import com.apin.airline.line.dto.LineBo;
 import com.apin.util.Generator;
 import com.apin.util.ReplyHelper;
@@ -29,16 +30,16 @@ public class LineServiceImpl implements LineService {
     AirlineMapper airlineMapper;
 
     @Override
-    public Reply addLine(LineBo lineBo) {
+    public Reply addLine(String token, LineBo lineBo) {
         StringBuilder appendFlight = new StringBuilder();
-        Line line = new Line();
-/*        String newAirlineNo = airlineMapper.findNew();
-        line.setId(Generator.uuid());
-            if (StringUtils.isBlank(newAirlineNo)) {
-                line.setAirlineNo("1");
-            } else {
-                line.setAirlineNo(String.valueOf(Integer.parseInt(newAirlineNo) + 1));
-            }*/
+        AirlineVO airlineVO = new AirlineVO();
+        airlineVO.checkData(lineBo);
+        List<FlightDetail> msdAirlineList = lineBo.getMsdAirlineInfoList();
+        airlineVO.setAirline(token, lineBo, msdAirlineList);
+        airlineVO.setMsdAirline(lineBo, msdAirlineList);
+        for (int i = 0; i < msdAirlineList.size(); i++){
+
+        }
         return null;
     }
 

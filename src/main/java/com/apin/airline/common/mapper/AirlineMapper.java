@@ -158,4 +158,28 @@ public interface AirlineMapper extends Mapper {
             "UPDATE mbs_airline_flight_seat SET seat_status=1 " +
             "WHERE flight_id=#{flightId} AND owner_id=#{ownerId} AND seat_status=0 LIMIT #{count};")
     Integer sellSeat(String flightId, String ownerId, Integer count);
+
+    /**
+     * 新增航线数据
+     *
+     * @param line 航线数据
+     * @return 受影响行数
+     */
+    @Insert("INSERT mbs_airline(id, account_id, airline_no, airline_id, airway_id, seat_type," +
+            " departure_start, departure_end, seat_count, adult_price, child_price, ticket_advance, " +
+            " recovery_advance, free_bag, weight_limit, alert_advance, alert_rate, can_return, can_change," +
+            " can_sign, airline_status, is_invalid, manager, manager_id, creator_user, creator_user_id, created_time)"+
+            " VALUES(#{id}, #{accountId}, #{airlineNo}, #{airlineId}, #{airwayId}, #{seatType}, #{departureStart}," +
+            " #{departureEnd}, #{seatCount}, #{adultPrice}, #{childPrice}, #{ticketAdvance}, #{recoveryAdvance}, #{freeBag}," +
+            " #{weightLimit}, #{alertAdvance}, #{alertRate}, #{canReturn}, #{canChange}, #{canSign}, #{airlineStatus}," +
+            " #{isInvalid}, #{manager}, #{managerId}, #{creatorUser}, #{creatorUser_id}, #{createdTime})")
+    Integer addline(Line line);
+
+    /**
+     * 查询最新的一条数据
+     *
+     * @return
+     */
+    @Select("select airline_no from mbs_airline ORDER BY created_time DESC limit 0,1")
+    String findNew();
 }
