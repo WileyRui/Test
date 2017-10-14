@@ -56,9 +56,5 @@ public class TicketController {
     public Reply handRecover(@RequestBody Deal deal) throws Exception {
         return service.dealStock(deal);
     }
-<<<<<<< HEAD
-=======
 
-
->>>>>>> feature/ticket
 }
