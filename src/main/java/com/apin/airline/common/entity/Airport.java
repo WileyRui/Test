@@ -1,117 +1,154 @@
-package com.sample;
+package com.apin.airline.common.entity;
 
+import java.util.Date;
 
+/**
+ * @author 宣炳刚
+ * @date 2017/10/14
+ * @remark 机场基础数据实体类
+ */
 public class Airport {
 
-  private String id;
-  private String cityCode;
-  private String iataCode;
-  private String icaoCode;
-  private String airportName;
-  private double longitude;
-  private double latitude;
-  private String timeZone;
-  private String isInvalid;
-  private java.sql.Timestamp updateTime;
-  private java.sql.Timestamp createdTime;
+    /**
+     * 主键
+     */
+    private String id;
 
+    /**
+     * 城市三字码
+     */
+    private String cityCode;
 
-  public String getId() {
-    return id;
-  }
+    /**
+     * 机场iata代码(三字码)
+     */
+    private String iataCode;
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    /**
+     * 机场icao代码
+     */
+    private String icaoCode;
 
+    /**
+     * 机场名称
+     */
+    private String airportName;
 
-  public String getCityCode() {
-    return cityCode;
-  }
+    /**
+     * 经度
+     */
+    private double longitude;
 
-  public void setCityCode(String cityCode) {
-    this.cityCode = cityCode;
-  }
+    /**
+     * 纬度
+     */
+    private double latitude;
 
+    /**
+     * 时区
+     */
+    private String timeZone;
 
-  public String getIataCode() {
-    return iataCode;
-  }
+    /**
+     * 是否失效 false:正常;true:失效
+     */
+    private Boolean isInvalid;
 
-  public void setIataCode(String iataCode) {
-    this.iataCode = iataCode;
-  }
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
 
+    /**
+     * 创建时间
+     */
+    private Date createdTime;
 
-  public String getIcaoCode() {
-    return icaoCode;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public void setIcaoCode(String icaoCode) {
-    this.icaoCode = icaoCode;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
+    public String getCityCode() {
+        return cityCode;
+    }
 
-  public String getAirportName() {
-    return airportName;
-  }
+    public void setCityCode(String cityCode) {
+        this.cityCode = cityCode;
+    }
 
-  public void setAirportName(String airportName) {
-    this.airportName = airportName;
-  }
+    public String getIataCode() {
+        return iataCode;
+    }
 
+    public void setIataCode(String iataCode) {
+        this.iataCode = iataCode;
+    }
 
-  public double getLongitude() {
-    return longitude;
-  }
+    public String getIcaoCode() {
+        return icaoCode;
+    }
 
-  public void setLongitude(double longitude) {
-    this.longitude = longitude;
-  }
+    public void setIcaoCode(String icaoCode) {
+        this.icaoCode = icaoCode;
+    }
 
+    public String getAirportName() {
+        return airportName;
+    }
 
-  public double getLatitude() {
-    return latitude;
-  }
+    public void setAirportName(String airportName) {
+        this.airportName = airportName;
+    }
 
-  public void setLatitude(double latitude) {
-    this.latitude = latitude;
-  }
+    public double getLongitude() {
+        return longitude;
+    }
 
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
 
-  public String getTimeZone() {
-    return timeZone;
-  }
+    public double getLatitude() {
+        return latitude;
+    }
 
-  public void setTimeZone(String timeZone) {
-    this.timeZone = timeZone;
-  }
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
 
+    public String getTimeZone() {
+        return timeZone;
+    }
 
-  public String getIsInvalid() {
-    return isInvalid;
-  }
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
 
-  public void setIsInvalid(String isInvalid) {
-    this.isInvalid = isInvalid;
-  }
+    public Boolean getIsInvalid() {
+        return isInvalid;
+    }
 
+    public void setIsInvalid(Boolean isInvalid) {
+        this.isInvalid = isInvalid;
+    }
 
-  public java.sql.Timestamp getUpdateTime() {
-    return updateTime;
-  }
+    public Date getUpdateTime() {
+        return updateTime;
+    }
 
-  public void setUpdateTime(java.sql.Timestamp updateTime) {
-    this.updateTime = updateTime;
-  }
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
 
+    public Date getCreatedTime() {
+        return createdTime;
+    }
 
-  public java.sql.Timestamp getCreatedTime() {
-    return createdTime;
-  }
-
-  public void setCreatedTime(java.sql.Timestamp createdTime) {
-    this.createdTime = createdTime;
-  }
-
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
+    }
 }
