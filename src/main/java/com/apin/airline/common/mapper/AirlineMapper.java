@@ -3,6 +3,7 @@ package com.apin.airline.common.mapper;
 import com.apin.airline.common.entity.*;
 import org.apache.ibatis.annotations.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -14,6 +15,83 @@ import java.util.List;
 public interface AirlineMapper extends Mapper {
 
     /**
+     * 查询国家基础数据(分页)
+     *
+     * @param offset 偏移量
+     * @param count  记录数量
+     * @return 国家基础数据集合
+     */
+    @Select("SELECT * FROM msd_country WHERE is_invalid=0 ORDER BY country_code LIMIT #{offset},#{count};")
+    List<Country> getCountries(Integer offset, Integer count);
+
+    /**
+     * 新增国家基础数据
+     *
+     * @param country 国家基础数据
+     * @return 受影响行数
+     */
+    @Insert("INSERT msd_country(id,zone_code,country_code,country_name) " +
+            "VALUES (#{id},#{zoneCode},#{countryCode},#{countryName});")
+    Integer addCountry(Country country);
+
+    /**
+     * 删除国家基础数据(逻辑删除)
+     *
+     * @param id 国家基础数据ID
+     * @return 受影响行数
+     */
+    @Update("UPDATE msd_country SET is_invalid=1 WHERE id=#{id};")
+    Integer deleteCountry(String id);
+
+    /**
+     * 编辑国家基础数据
+     *
+     * @param country 国家基础数据
+     * @return 受影响行数
+     */
+    @Update("UPDATE msd_country SET zone_code=#{zoneCode},country_code=#{countryCode},country_name=#{countryName} WHERE id=#{id};")
+    Integer updateCountry(Country country);
+
+    /**
+     * 查询城市基础数据(分页)
+     *
+     * @param offset 偏移量
+     * @param count  记录数量
+     * @return 城市基础数据集合
+     */
+    @Select("SELECT * FROM msd_city WHERE is_invalid=0 ORDER BY en_name LIMIT #{offset},#{count};")
+    List<City> getCities(Integer offset, Integer count);
+
+    /**
+     * 新增城市基础数据
+     *
+     * @param city 城市基础数据
+     * @return 受影响行数
+     */
+    @Insert("INSERT msd_city(id,country_id,city_code,city_name,en_name,pinyin_first,img_url,description,longitude,latitude) " +
+            "VALUES (#{id},#{countryId},#{cityCode},#{cityName},#{enName},#{pinyinFirst},#{imgUrl},#{description},#{longitude},#{latitude});")
+    Integer addCity(City city);
+
+    /**
+     * 删除城市基础数据(逻辑删除)
+     *
+     * @param id 城市基础数据ID
+     * @return 受影响行数
+     */
+    @Update("UPDATE msd_city SET is_invalid=1 WHERE id=#{id};")
+    Integer deleteCity(String id);
+
+    /**
+     * 编辑城市基础数据
+     *
+     * @param city 城市基础数据
+     * @return 受影响行数
+     */
+    @Update("UPDATE msd_city SET country_id=#{countryId},city_code=#{cityCode},city_name=#{cityName},en_name=#{enName},pinyin_first=#{pinyinFirst}," +
+            "img_url=#{imgUrl},description=#{description},longitude=#{longitude},latitude=#{latitude} WHERE id=#{id};")
+    Integer updateCity(City city);
+
+    /**
      * 新增航班信息数据
      *
      * @param flightInfos 航班信息数据集合
@@ -21,11 +99,11 @@ public interface AirlineMapper extends Mapper {
      */
     @Insert("<script>INSERT msd_airline_info(id,flight_no,flight_company,fcategory,flight_dep,flight_arr," +
             "flight_dep_airport,flight_arr_airport,flight_depcode,flight_arrcode,flight_deptime_plan_date," +
-            "flight_arrtime_plan_date,stop_flag,flights,update_time,created_time) VALUES " +
+            "flight_arrtime_plan_date,stop_flag,flights) VALUES " +
             "<foreach collection = \"list\" item = \"item\" index = \"index\" separator = \",\"> " +
             "(#{item.id},#{item.flightNo},#{item.flightCompany},#{item.fcategory},#{item.flightDep},#{item.flightArr}," +
-            "#{item.flightDepAirport},#{item.flightArrAirport},#{item.flightDepcode},#{item.flightArrcode},#{item.flightDeptimePlanDate}," +
-            "#{item.flightArrtimePlanDate},#{item.stopFlag},#{item.flights},#{item.updateTime},#{item.createdTime}) " +
+            "#{item.flightDepAirport},#{item.flightArrAirport},#{item.flightDepcode},#{item.flightArrcode}," +
+            "#{item.flightDeptimePlanDate},#{item.flightArrtimePlanDate},#{item.stopFlag},#{item.flights}) " +
             "</foreach></script>")
     Integer addFlightInfo(List<FlightInfo> flightInfos);
 
@@ -53,10 +131,8 @@ public interface AirlineMapper extends Mapper {
      * @param airline 航线基础数据
      * @return 受影响行数
      */
-    @Insert("INSERT msd_airline(id,hash_key,flight_type,voyage,flight_number,flight_time,week_flights,is_invalid," +
-            "creator_user,creator_user_id,update_time,created_time) " +
-            "VALUES (#{id},#{hashKey},#{flightype},#{voyage},#{flightNumber},#{flightTime},#{weekFlights},#{invalid}," +
-            "#{creatorUser},#{creatorUserId},#{updateTime},#{createdTime});")
+    @Insert("INSERT msd_airline(id,hash_key,flight_type,voyage,flight_number,flight_time,week_flights,creator_user,creator_user_id) " +
+            "VALUES (#{id},#{hashKey},#{flightype},#{voyage},#{flightNumber},#{flightTime},#{weekFlights},#{creatorUser},#{creatorUserId});")
     Integer addAirline(Airline airline);
 
     /**
@@ -69,7 +145,7 @@ public interface AirlineMapper extends Mapper {
             "<foreach collection = \"list\" item = \"item\" index = \"index\" separator = \",\"> " +
             "(#{item.id},#{item.airlineId},#{item.flightInfoId},#{item.tripIndex},#{item.days}) " +
             "</foreach></script>")
-    Integer addVoyage(List<Voyage> voyages);
+    Integer addVoyages(List<Voyage> voyages);
 
     /**
      * 删除指定ID的航线基础数据
@@ -110,15 +186,104 @@ public interface AirlineMapper extends Mapper {
     List<AirlineDetail> getVoyages(String id);
 
     /**
+     * 新增航线资源
+     *
+     * @param line 航线资源数据
+     * @return 受影响行数
+     */
+    @Insert("INSERT mbs_airline(id,account_id,airline_no,supplier_name,airway_id,airline_id,res_type,seat_type," +
+            "departure_start,departure_end,seat_count,deposit_amount,adult_price,child_price,pay_advance,ticket_advance," +
+            "recovery_advance,free_bag,weight_limit,alert_advance,alert_rate,can_return,can_change,can_sign,airline_status," +
+            "manager,manager_id,creator_user,creator_user_id) " +
+            "SELECT #{id},#{accountId},(select airline_no from mbs_airline ORDER BY created_time DESC limit 1)," +
+            "#{supplierName},#{airwayId},#{airlineId},#{resType},#{seatType},#{departureStart},#{departureEnd}," +
+            "#{seatCount},#{depositAmount},#{adultPrice},#{childPrice},#{payAdvance},#{ticketAdvance},#{recoveryAdvance}," +
+            "#{freeBag},#{weightLimit},#{alertAdvance},#{alertRate},#{canReturn},#{canChange},#{canSign},#{airlineStatus}," +
+            "#{manager},#{managerId},#{creatorUser},#{creatorUser_id})")
+    Integer addLine(Line line);
+
+    /**
+     * 新增航班资源
+     *
+     * @param flights 航班资源数据集合
+     * @return 受影响行数
+     */
+    @Insert("<script>INSERT mbs_airline_flight(id,airline_id,sell_type,flight_date,seat_count,adult_price," +
+            "child_price,alert_threshold,alert_date,recovery_date,ticket_date) VALUES " +
+            "<foreach collection = \"list\" item = \"item\" index = \"index\" separator = \",\"> " +
+            "(#{item.id},#{item.airlineId},#{item.sellType},#{item.flightDate},#{item.seatCount},#{item.adultPrice}," +
+            "#{item.childPrice},#{item.alertThreshold},#{item.alertDate},#{item.recoveryDate},#{item.ticketDate}) " +
+            "</foreach></script>")
+    Insert addLineFlights(List<Flight> flights);
+
+    /**
+     * 新增舱位资源
+     *
+     * @param accountId 账户ID
+     * @param flightId  航班资源ID
+     * @param owner     拥有者名称
+     * @param count     舱位数量
+     * @return 受影响行数
+     */
+    @Insert("INSERT mbs_airline_flight_seat(id,account_id,flight_id,owner,owner_id) " +
+            "SELECT (REPLACE(UUID(),'-',''),#{accountId},#{flightId},#{owner},#{accountId} " +
+            "FROM msd_airline_info LIMIT #{count};")
+    Integer addSeats(String accountId, String flightId, String owner, Integer count);
+
+    /**
+     * 更新航线资源
+     *
+     * @param line 航线资源数据
+     * @return 受影响行数
+     */
+    @Update("UPDATE mbs_airline SET " +
+            "res_type=#{resType},seat_type=#{seatType},seat_count=#{seatCount},deposit_amount=#{depositAmount}," +
+            "adult_price=#{adultPrice},child_price=#{childPrice},free_bag=#{freeBag},weight_limit=#{weightLimit}," +
+            "alert_advance=#{alertAdvance},alert_rate=#{alertRate},can_return=#{canReturn},can_change=#{canChange}," +
+            "can_sign=#{canSign},manager=#{manager},manager_id=#{managerId} WHEREid=#{id};")
+    Integer updateAirLine(Line line);
+
+    /**
+     * 更新航线资源状态
+     *
+     * @param id     航线资源ID
+     * @param status 航线资源状态
+     * @return 受影响行数
+     */
+    @Update("UPDATE mbs_airline SET airlineStatus=#{status} WHERE id=#{id}")
+    Integer updateAirLineStatus(String id, Byte status);
+
+    /**
+     * 修改库存
+     *
+     * @param flightId 航班资源ID
+     * @param count    库存数量
+     * @return 受影响行数
+     */
+    @Update("UPDATE mbs_airline_flight SET seat_count=#{count} WHERE id=#{flightId};")
+    Integer updateSeatCount(String flightId, Integer count);
+
+    /**
+     * 修改价格
+     *
+     * @param flightId   航班资源ID
+     * @param adultPrice 成人票价
+     * @param childPrice 儿童票价
+     * @return 受影响行数
+     */
+    @Update("UPDATE mbs_airline_flight SET adult_price=#{adultPrice},child_price=#{childPrice} WHERE id=#{flightId};")
+    Integer updatePrice(String flightId, BigDecimal adultPrice, BigDecimal childPrice);
+
+    /**
      * 分配舱位
      *
-     * @param seat      舱位数据
-     * @param flightId  航班资源ID
-     * @param count     分配数量
+     * @param seat     舱位数据
+     * @param flightId 航班资源ID
+     * @param count    分配数量
      * @return 受影响行数
      */
     @Update("UPDATE mbs_airline_flight_seat " +
-            "SET `owner`=#{owner},owner_id=#{ownerId},divider=#{divider},divider_id=#{dividerId},assigned_time=now() " +
+            "SETowner`=#{owner},owner_id=#{ownerId},divider=#{divider},divider_id=#{dividerId},assigned_time=now() " +
             "WHERE flight_id=#{flightId} AND owner_id=account_id AND seat_status=0 LIMIT #{count};")
     Integer assignSeat(Seat seat, String flightId, Integer count);
 
@@ -158,4 +323,37 @@ public interface AirlineMapper extends Mapper {
             "UPDATE mbs_airline_flight_seat SET seat_status=1 " +
             "WHERE flight_id=#{flightId} AND owner_id=#{ownerId} AND seat_status=0 LIMIT #{count};")
     Integer sellSeat(String flightId, String ownerId, Integer count);
+
+    /**
+     * 获取要更新乘客信息的舱位数据
+     *
+     * @param flightId 航班资源ID
+     * @param ownerId  资源原拥有者ID
+     * @param count    销售数量
+     * @return 舱位数据集合
+     */
+    @Select("SELECT * FROM mbs_airline_flight_seat " +
+            "WHERE flight_id=#{flightId} AND owner_id=#{ownerId} AND seat_status<2 " +
+            "ORDER BY seat_status DESC LIMIT #{count};")
+    List<Seat> getSelledSeats(String flightId, String ownerId, Integer count);
+
+    /**
+     * 更新乘客信息
+     *
+     * @param seats 舱位数据实体集合
+     * @return 受影响行数
+     */
+    @Update("UPDATE mbs_airline_flight_seat " +
+            "SET parent_id=#{parentId},passenger_type=#{passengerType},passenger_name=#{passengerName},cred_type=#{credType},cred_number=#{credNumber}," +
+            "gender=#{gender},birthday=#{birthday},nation=#{nation},expire_time=#{expireTime},issue_place=#{issuePlace} WHERE id=#{id};")
+    Integer updatePassenger(List<Seat> seats);
+
+    /**
+     * 更新票号信息
+     *
+     * @param seats 舱位数据实体集合
+     * @return 受影响行数
+     */
+    @Update("UPDATE mbs_airline_flight_seat SET grade=#{grade},ticket=#{ticket} WHERE id=#{id};")
+    Integer updateTicket(List<Seat> seats);
 }
