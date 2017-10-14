@@ -3,7 +3,7 @@ package com.apin.airline.base;
 import com.apin.airline.common.entity.FlightInfo;
 import com.apin.airline.common.mapper.AirlineMapper;
 import com.apin.airline.line.utils.FastJsonUtils;
-import com.apin.airline.line.utils.HttpFlightUtils;
+import com.apin.airline.common.HttpFlightUtils;
 import com.apin.util.DateHelper;
 import com.apin.util.Generator;
 import org.apache.commons.beanutils.BeanUtils;
