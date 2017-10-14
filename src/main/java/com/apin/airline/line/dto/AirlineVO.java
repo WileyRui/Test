@@ -1,16 +1,20 @@
 package com.apin.airline.line.dto;
 
-import com.apin.airline.common.entity.Airline;
-import com.apin.airline.common.entity.Line;
+import com.apin.airline.common.entity.*;
 import com.apin.airline.common.mapper.AirlineMapper;
 import com.apin.airline.common.mapper.AirportMapper;
 import com.apin.airline.common.mapper.CityMapper;
-import com.apin.util.*;
+import com.apin.util.DateHelper;
+import com.apin.util.Generator;
+import com.apin.util.JsonUtils;
+import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.AccessToken;
 import com.apin.util.pojo.Reply;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +24,7 @@ import java.util.List;
  * @author wiley
  * @date 2017年7月19日 下午2:24:39
  */
+@Component
 public class AirlineVO {
     @Autowired
     AirlineMapper airlineMapper;
@@ -27,8 +32,6 @@ public class AirlineVO {
     AirportMapper airportMapper;
     @Autowired
     CityMapper cityMapper;
-
-    private static AccessToken accessToken;
 
     /**
      * 初始化航线数据
@@ -39,18 +42,18 @@ public class AirlineVO {
      * @return 航线实体类
      */
     public Line setLine(String token, LineBo lineBo, List<FlightDetail> flightDetails) {
-        accessToken = JsonUtils.toAccessToken(token);
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
         String accountId = accessToken.getAccountId();
         String userId = accessToken.getUserId();
         String userName = accessToken.getUserName();
         Line line = new Line();
         line.setId(Generator.uuid());
-        String newAirlineNo = airlineMapper.findNew();
-        if (StringUtils.isBlank(newAirlineNo)) {
-            line.setAirlineNo("1");
-        } else {
-            line.setAirlineNo(String.valueOf(Integer.parseInt(newAirlineNo) + 1));
-        }
+//        String newAirlineNo = airlineMapper.findNew();
+//        if (StringUtils.isBlank(newAirlineNo)) {
+//            line.setAirlineNo("1");
+//        } else {
+//            line.setAirlineNo(String.valueOf(Integer.parseInt(newAirlineNo) + 1));
+//        }
         line.setAccountId(accountId);
         line.setSupplierName(lineBo.getSupplireName());
         line.setCreatorUserId(userId);
@@ -147,6 +150,84 @@ public class AirlineVO {
             }
         }
         return msdAirline;
+    }
+
+    /**
+     * 初始化航程数据
+     *
+     * @param flightDetails
+     * @param airline
+     * @return
+     */
+    public List<Voyage> setVoyage(List<FlightDetail> flightDetails, Airline airline) {
+        List<Voyage> voyages = new ArrayList<>();
+        for (int i = 0; i < flightDetails.size(); i++) {
+            Voyage voyage = new Voyage();
+            voyage.setId(Generator.uuid());
+            voyage.setTripIndex((byte) i);
+            voyage.setDays(Integer.parseInt(flightDetails.get(i).getDays()));
+            voyage.setFlightInfoId(airline.getId());
+            voyages.add(voyage);
+        }
+        return voyages;
+    }
+
+    /**
+     * 初始化航线班次数据
+     *
+     * @param line
+     * @param lineBo
+     * @param flightDetails
+     * @return
+     */
+    public List<Flight> setFlight(Line line, LineBo lineBo, List<FlightDetail> flightDetails) {
+        List<Flight> flights = new ArrayList<>();
+        String[] datesByWeek = flightDetails.get(0).getDatesByWeek().split(",");
+        for (String flightDate : datesByWeek) {
+            Flight airlineFlight = new Flight();
+            if (lineBo.getAlertRate() != null) {
+                airlineFlight.setAlertThreshold((int) (line.getSeatCount() * lineBo.getAlertRate() * 0.01));
+            }
+            airlineFlight.setAirlineId(line.getId());
+            airlineFlight.setSeatCount(line.getSeatCount());
+            Date date = DateHelper.parseDate(flightDate);
+            airlineFlight.setId(Generator.uuid());
+            airlineFlight.setFlightDate(date);
+            airlineFlight.setAdultPrice(lineBo.getAdultPrice());
+            airlineFlight.setChildPrice(lineBo.getChildPrice());
+            if (lineBo.getAlertAdvance() != null) {
+                airlineFlight.setAlertDate(new Date(date.getTime() - lineBo.getAlertAdvance() * 24 * 60 * 60 * 1000));
+            }
+            airlineFlight.setTicketDate(new Date(date.getTime() - lineBo.getTicketAdvance() * 24 * 60 * 60 * 1000));
+            airlineFlight.setRecoveryDate(new Date(date.getTime() - lineBo.getRecoveryAdvance() * 24 * 60 * 60 * 1000));
+            flights.add(airlineFlight);
+        }
+        return flights;
+    }
+
+    /**
+     * 增加日志
+     *
+     * @param lineBo
+     * @param id
+     * @param flag
+     * @return
+     */
+    public Log setAirlineLog(LineBo lineBo, String id, boolean flag) {
+        Log log = new Log();
+        log.setId(Generator.uuid());
+        log.setEventSource("CRM");
+        log.setAirlineId(id);
+        if (flag) {
+            log.setEventName("新增航线");
+            log.setMessage("新增航线成功");
+        } else {
+            log.setEventName("编辑航线");
+            log.setMessage("编辑航线成功");
+        }
+        log.setOperatorId(lineBo.getCreatorUserId());
+        log.setOperatorUser(lineBo.getCreatorUser());
+        return log;
     }
 
     /**
@@ -248,12 +329,13 @@ public class AirlineVO {
 
     /**
      * 判断航线是否重复
+     *
      * @param hashKey
      * @return
      */
-    public boolean LineRepeat(String hashKey){
+    public boolean LineRepeat(String hashKey) {
         String airlineId = airlineMapper.getExistedAirline(hashKey);
-        if (StringUtils.isNotBlank(airlineId)){
+        if (StringUtils.isNotBlank(airlineId)) {
             return true;
         }
         return false;

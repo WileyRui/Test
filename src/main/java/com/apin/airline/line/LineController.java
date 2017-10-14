@@ -26,7 +26,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/create")
-    public Reply addLine(@RequestHeader("Authorization") String token,@RequestBody LineBo lineBo) {
+    public Reply addLine(@RequestHeader("accessToken") String token,@RequestBody LineBo lineBo) {
         return service.addLine(token,lineBo);
     }
 

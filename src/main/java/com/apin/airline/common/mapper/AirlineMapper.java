@@ -199,7 +199,7 @@ public interface AirlineMapper extends Mapper {
             "#{supplierName},#{airwayId},#{airlineId},#{resType},#{seatType},#{departureStart},#{departureEnd}," +
             "#{seatCount},#{depositAmount},#{adultPrice},#{childPrice},#{payAdvance},#{ticketAdvance},#{recoveryAdvance}," +
             "#{freeBag},#{weightLimit},#{alertAdvance},#{alertRate},#{canReturn},#{canChange},#{canSign},#{airlineStatus}," +
-            "#{manager},#{managerId},#{creatorUser},#{creatorUser_id})")
+            "#{manager},#{managerId},#{creatorUser},#{creatorUserId})")
     Integer addLine(Line line);
 
     /**

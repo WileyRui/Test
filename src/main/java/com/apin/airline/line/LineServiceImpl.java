@@ -1,10 +1,7 @@
 package com.apin.airline.line;
 
 import com.apin.airline.base.VariFlight;
-import com.apin.airline.common.entity.Airline;
-import com.apin.airline.common.entity.FlightInfo;
-import com.apin.airline.common.entity.Line;
-import com.apin.airline.common.entity.Voyage;
+import com.apin.airline.common.entity.*;
 import com.apin.airline.common.mapper.AirWayMapper;
 import com.apin.airline.common.mapper.AirlineMapper;
 import com.apin.airline.line.dto.AirlineVO;
@@ -34,11 +31,12 @@ public class LineServiceImpl implements LineService {
     AirlineMapper airlineMapper;
     @Autowired
     AirWayMapper airWayMapper;
+    @Autowired
+    AirlineVO airlineVO;
 
     @Override
     public Reply addLine(String token, LineBo lineBo) {
         StringBuilder appendFlight = new StringBuilder();
-        AirlineVO airlineVO = new AirlineVO();
         airlineVO.checkData(lineBo);
         List<FlightDetail> msdAirlineList = lineBo.getMsdAirlineInfoList();
         Line line = airlineVO.setLine(token, lineBo, msdAirlineList);
@@ -48,26 +46,27 @@ public class LineServiceImpl implements LineService {
         airlineVoyage.setAirlineId(airline.getId());
         for (int i = 0; i < msdAirlineList.size(); i++){
             FlightDetail flightDetail = msdAirlineList.get(i);
-            FlightInfo flightInfo = airlineMapper.findByflightNoAndIatacode(
+/*            FlightInfo flightInfo = airlineMapper.findByflightNoAndIatacode(
                     msdAirlineList.get(i).getFlightNo(), msdAirlineList.get(i).getDepAirportCode(),
-                    msdAirlineList.get(i).getArrAirportCode());
+                    msdAirlineList.get(i).getArrAirportCode());*/
             if (i == 0) {
-                airline.setFlightTime(flightInfo.getFlightDeptimePlanDate());
-                line.setAirwayId(airWayMapper.findByIataCode(flightInfo.getFlightNo().substring(0, 2)));
+//                airline.setFlightTime(flightInfo.getFlightDeptimePlanDate());
+//                line.setAirwayId(airWayMapper.findByIataCode(flightInfo.getFlightNo().substring(0, 2)));
             }
             airline = airlineVO.setMsdAirline(airline, msdAirlineList, i, lineBo.getFlightType(), appendFlight);
-            airlineVoyage.setId(Generator.uuid());
-            airlineVoyage.setTripIndex(i);
-            airlineVoyage.setDays(Integer.parseInt(flightDetail.getDays()));
-            airlineVoyage.setFlightInfoId(airline.getId());
-            // insert into msd_airline_voyage
-            voyageMapper.insert(airlineVoyage);
         }
-
         if (airlineVO.LineRepeat(airline.getHashKey())){
             return ReplyHelper.fail("航线已存在");
         }
-        return null;
+        airlineMapper.addLine(line);
+        airlineMapper.addAirline(airline);
+        List<Flight> flights = airlineVO.setFlight(line,lineBo,msdAirlineList);
+        airlineMapper.addLineFlights(flights);
+        List<Voyage> voyages = airlineVO.setVoyage(msdAirlineList,airline);
+        airlineMapper.addVoyages(voyages);
+        Log log = airlineVO.setAirlineLog(lineBo,line.getId(),true);
+//        airlineMapper.addLog(log);
+        return ReplyHelper.success();
     }
 
     @Override
