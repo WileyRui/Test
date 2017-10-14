@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/ticketapi")
 public class TicketController {
     @Autowired
-    private TicketService ticketService;
+    private TicketService service;
 
 
     /**
@@ -28,14 +28,12 @@ public class TicketController {
      * @param stock
      * @return Reply
      * 正常：返回接口调用成功,座位状态修改
-     * 异常：剩余座位不足
+     * 异常：剩余座位不足s
      */
-    @PostMapping(value = "/saleStock")
+    @PostMapping(value = "/v1.0/seats/status/update")
     public Reply saleStock(@RequestBody Stock stock) throws Exception {
-        Reply reply = Airline.stockCheck(stock);
-        return reply.getSuccess()?ticketService.saleStock(stock):reply;
+        return service.saleStock(stock);
     }
-
     /**
      * 分配库存
      * @param deal
@@ -43,9 +41,9 @@ public class TicketController {
      * 正常：返回接口调用成功,座位状态修改
      * 异常：可分配库存不足
      */
-    @PostMapping(value = "/dealStock")
+    @PostMapping(value = "/v1.0/seats/owner/update")
     public Reply dealStock(@RequestBody Deal deal) throws Exception {
-        return ticketService.dealStock(deal);
+        return service.dealStock(deal);
     }
     /**
      * 手动收位
@@ -54,8 +52,13 @@ public class TicketController {
      * 正常：返回接口调用成功,座位状态修改
      * 异常：可分配库存不足
      */
-    @PostMapping(value = "/handRecover")
+    @PostMapping(value = "/v1.0/seats/recover/update")
     public Reply handRecover(@RequestBody Deal deal) throws Exception {
-        return ticketService.dealStock(deal);
+        return service.dealStock(deal);
     }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> feature/ticket
 }
