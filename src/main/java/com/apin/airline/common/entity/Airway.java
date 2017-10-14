@@ -1,4 +1,4 @@
-package com.sample;
+package com.apin.airline.common.entity;
 
 
 public class Airway {
