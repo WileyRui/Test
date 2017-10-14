@@ -1,7 +1,17 @@
 package com.apin.airline.flight;
 
+import com.apin.airline.flight.dto.PriceTemplateBean;
+import com.apin.airline.flight.dto.SearchDto;
+import com.apin.airline.ticket.dto.CalendarInfo;
+import com.apin.airline.ticket.dto.Stock;
+import com.apin.util.pojo.Reply;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author 宣炳刚
@@ -11,6 +21,95 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/flightapi")
 public class FlightController {
-//    @Autowired
-//    private FlightService service;
+    @Autowired
+    private FlightService flightService;
+
+    /**
+     * arm日历查看
+     * @param calendarInfo
+     * @return Reply
+     * 正常：返回接口调用成功,通过data返回日历相关信息
+     */
+    @PostMapping(value = "/airlineInfo")
+    public Reply airlineInfo(@RequestBody CalendarInfo calendarInfo) throws Exception {
+        return flightService.airlineInfo(calendarInfo);
+    }
+    /**
+     * arm库存日历内修改库存
+     * @param stock
+     * @return Reply
+     * 正常：返回接口调用成功,库存数量修改，座位数修改
+     * 异常：已分配库存，无法修改
+     */
+    @PostMapping(value = "/modifyStock")
+    public Reply modifyStock(@RequestBody Stock stock) throws Exception {
+        return flightService.modifyStock(stock);
+    }
+    /**
+     * arm价格日历修改价格
+     * @param stock
+     * @return Reply
+     * 正常：返回接口调用成功,价格修改成功
+     */
+    @PostMapping(value = "/modifyPrice")
+    public Reply modifyPrice(@RequestBody Stock stock) throws Exception {
+        return flightService.modifyPrice(stock);
+    }
+    /**
+     * 价格批量导入更新
+     * @param priceTemplateBeanList
+     * @return
+     */
+    @PostMapping(value = "/v1/priceimport")
+    public Reply importPassenger(@RequestBody List<PriceTemplateBean> priceTemplateBeanList){
+        return flightService.priceImport(priceTemplateBeanList);
+    }
+    /**
+     * 根据城市对查询信息
+     * @param searchDto
+     * @return Reply
+     * 正常：返回接口调用成功,返回数据
+     */
+    @PostMapping(value = "/searchFlights")
+    public Reply searchFlight(@RequestBody SearchDto searchDto) throws Exception {
+        return flightService.searchFlight(searchDto);
+    }
+    /**
+     * 根据城市对与出发日期查询航班
+     * @param searchDto
+     * @return Reply
+     * 正常：返回接口调用成功,返回数据
+     */
+    @PostMapping(value = "/flightDetail")
+    public Reply searchFlights(@RequestBody SearchDto searchDto) throws Exception {
+        return flightService.searchFlights(searchDto);
+    }
+    /**
+     * 根据城市对与出发日期结束日期查询航班详情
+     * @param searchDto
+     * @return Reply
+     * 正常：返回接口调用成功,返回数据
+     */
+    @PostMapping(value = "/flightDetail")
+    public Reply searchFlightDetail(@RequestBody SearchDto searchDto) throws Exception {
+        return flightService.searchFlightDetail(searchDto);
+    }
+    /**
+     * 根据条件查询
+     * @param searchDto
+     * @return Reply
+     * 正常：返回接口调用成功,返回数据
+     */
+    @PostMapping(value = "/flightList")
+    public Reply searchFlightList(@RequestBody SearchDto searchDto) throws Exception {
+        return flightService.searchFlightDetail(searchDto);
+    }
+
+
+
+
+
+
+
+
 }

@@ -15,7 +15,7 @@ import java.util.List;
 public interface AirlineMapper extends Mapper {
 
     /**
-     * 查询国家基础数据(分页)
+     * 查询国家基础数据(分页,按国家代码排序)
      *
      * @param offset 偏移量
      * @param count  记录数量
@@ -53,7 +53,7 @@ public interface AirlineMapper extends Mapper {
     Integer updateCountry(Country country);
 
     /**
-     * 查询城市基础数据(分页)
+     * 查询城市基础数据(分页,按拼音排序)
      *
      * @param offset 偏移量
      * @param count  记录数量
@@ -90,6 +90,55 @@ public interface AirlineMapper extends Mapper {
     @Update("UPDATE msd_city SET country_id=#{countryId},city_code=#{cityCode},city_name=#{cityName},en_name=#{enName},pinyin_first=#{pinyinFirst}," +
             "img_url=#{imgUrl},description=#{description},longitude=#{longitude},latitude=#{latitude} WHERE id=#{id};")
     Integer updateCity(City city);
+
+    /**
+     * 查询机场基础数据(分页,按三字码排序)
+     *
+     * @param offset 偏移量
+     * @param count  记录数量
+     * @return 机场基础数据集合
+     */
+    @Select("SELECT * FROM msd_airport WHERE is_invalid=0 ORDER BY iata_code LIMIT #{offset},#{count};")
+    List<Airport> getAirports(Integer offset, Integer count);
+
+    /**
+     * 新增机场基础数据
+     *
+     * @param airport 机场基础数据
+     * @return 受影响行数
+     */
+    @Insert("INSERT msd_airport(id,city_code,iata_code,icao_code,airport_name,longitude,latitude,time_zone) " +
+            "VALUES (#{id},#{cityCode},#{iataCode},#{icaoCode},#{airportName},#{longitude},#{latitude},#{timeZone});")
+    Integer addAirport(Airport airport);
+
+    /**
+     * 删除机场基础数据(逻辑删除)
+     *
+     * @param id 机场基础数据ID
+     * @return 受影响行数
+     */
+    @Update("UPDATE msd_airport SET is_invalid=1 WHERE id=#{id};")
+    Integer deleteAirport(String id);
+
+    /**
+     * 编辑机场基础数据
+     *
+     * @param airport 机场基础数据
+     * @return 受影响行数
+     */
+    @Update("UPDATE msd_airport SET city_code=#{cityCode},iata_code=#{iataCode},icao_code=#{icaoCode},airport_name=#{airportName}," +
+            "longitude=#{longitude},latitude=#{latitude},time_zone=#{timeZone} WHEREid=#{id};")
+    Integer updateAirport(Airport airport);
+
+    /**
+     * 查询航司基础数据(分页,按航司代码排序)
+     *
+     * @param offset 偏移量
+     * @param count  记录数量
+     * @return 航司基础数据集合
+     */
+    @Select("SELECT * FROM msd_airway WHERE is_invalid=0 ORDER BY iata_code LIMIT #{offset},#{count};")
+    List<Airway> getAirwaies(Integer offset, Integer count);
 
     /**
      * 新增航班信息数据
@@ -195,11 +244,11 @@ public interface AirlineMapper extends Mapper {
             "departure_start,departure_end,seat_count,deposit_amount,adult_price,child_price,pay_advance,ticket_advance," +
             "recovery_advance,free_bag,weight_limit,alert_advance,alert_rate,can_return,can_change,can_sign,airline_status," +
             "manager,manager_id,creator_user,creator_user_id) " +
-            "SELECT #{id},#{accountId},(select airline_no from mbs_airline ORDER BY created_time DESC limit 1)," +
+            "SELECT #{id},#{accountId},(select airline_no + 1 from mbs_airline ORDER BY created_time DESC limit 1)," +
             "#{supplierName},#{airwayId},#{airlineId},#{resType},#{seatType},#{departureStart},#{departureEnd}," +
             "#{seatCount},#{depositAmount},#{adultPrice},#{childPrice},#{payAdvance},#{ticketAdvance},#{recoveryAdvance}," +
             "#{freeBag},#{weightLimit},#{alertAdvance},#{alertRate},#{canReturn},#{canChange},#{canSign},#{airlineStatus}," +
-            "#{manager},#{managerId},#{creatorUser},#{creatorUserId})")
+            "#{manager},#{managerId},#{creatorUser},#{creatorUserId}")
     Integer addLine(Line line);
 
     /**
