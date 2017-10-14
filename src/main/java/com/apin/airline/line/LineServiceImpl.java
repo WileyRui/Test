@@ -1,22 +1,25 @@
 package com.apin.airline.line;
 
 import com.apin.airline.base.VariFlight;
+import com.apin.airline.common.entity.Airline;
 import com.apin.airline.common.entity.FlightInfo;
 import com.apin.airline.common.entity.Line;
+import com.apin.airline.common.entity.Voyage;
+import com.apin.airline.common.mapper.AirWayMapper;
 import com.apin.airline.common.mapper.AirlineMapper;
+import com.apin.airline.line.dto.AirlineVO;
+import com.apin.airline.line.dto.FlightDetail;
 import com.apin.airline.line.dto.LineBo;
-import com.apin.util.DateHelper;
 import com.apin.util.Generator;
 import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
-import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author wiley
@@ -29,18 +32,41 @@ public class LineServiceImpl implements LineService {
     VariFlight variFlight;
     @Autowired
     AirlineMapper airlineMapper;
+    @Autowired
+    AirWayMapper airWayMapper;
 
     @Override
-    public Reply addLine(LineBo lineBo) {
+    public Reply addLine(String token, LineBo lineBo) {
         StringBuilder appendFlight = new StringBuilder();
-        Line line = new Line();
-/*        String newAirlineNo = airlineMapper.findNew();
-        line.setId(Generator.uuid());
-            if (StringUtils.isBlank(newAirlineNo)) {
-                line.setAirlineNo("1");
-            } else {
-                line.setAirlineNo(String.valueOf(Integer.parseInt(newAirlineNo) + 1));
-            }*/
+        AirlineVO airlineVO = new AirlineVO();
+        airlineVO.checkData(lineBo);
+        List<FlightDetail> msdAirlineList = lineBo.getMsdAirlineInfoList();
+        Line line = airlineVO.setLine(token, lineBo, msdAirlineList);
+        Airline airline = airlineVO.setAirline(lineBo, msdAirlineList);
+        line.setAirlineId(airline.getId());
+        Voyage airlineVoyage = new Voyage();
+        airlineVoyage.setAirlineId(airline.getId());
+        for (int i = 0; i < msdAirlineList.size(); i++){
+            FlightDetail flightDetail = msdAirlineList.get(i);
+            FlightInfo flightInfo = airlineMapper.findByflightNoAndIatacode(
+                    msdAirlineList.get(i).getFlightNo(), msdAirlineList.get(i).getDepAirportCode(),
+                    msdAirlineList.get(i).getArrAirportCode());
+            if (i == 0) {
+                airline.setFlightTime(flightInfo.getFlightDeptimePlanDate());
+                line.setAirwayId(airWayMapper.findByIataCode(flightInfo.getFlightNo().substring(0, 2)));
+            }
+            airline = airlineVO.setMsdAirline(airline, msdAirlineList, i, lineBo.getFlightType(), appendFlight);
+            airlineVoyage.setId(Generator.uuid());
+            airlineVoyage.setTripIndex(i);
+            airlineVoyage.setDays(Integer.parseInt(flightDetail.getDays()));
+            airlineVoyage.setFlightInfoId(airline.getId());
+            // insert into msd_airline_voyage
+            voyageMapper.insert(airlineVoyage);
+        }
+
+        if (airlineVO.LineRepeat(airline.getHashKey())){
+            return ReplyHelper.fail("航线已存在");
+        }
         return null;
     }
 
@@ -69,83 +95,23 @@ public class LineServiceImpl implements LineService {
         return null;
     }
 
-    @Transactional
     @Override
     public Reply queryFlightInfo(LineBo lineBo) throws InvocationTargetException, IllegalAccessException {
-        Map<String, Object> resultMap = new HashMap<>();
-        // 本地库查询
         List<FlightInfo> airlineList = airlineMapper.getFlightInfos(lineBo.getFlightNo());
         if (airlineList.size() > 0) {
-            resultMap.put("flightList", airlineList);
-            resultMap.put("week", airlineList.get(0).getFlights());
-            return ReplyHelper.success(resultMap);
+            return ReplyHelper.success(airlineList);
         }
-        // 若本地库没有，则调飞常准接口
-        // 查询7天的航线
-        List<Map<String, String>> flightList;
-        int[] days = new int[7];
-        for (int i = 0; i < 7; i++) {
-            flightList = variFlight.getFlightInfo(lineBo.getFlightNo(), lineBo.getBeginDate());
-            Date dateS = DateHelper.parseDate(lineBo.getBeginDate());
-            int week = DateHelper.getWeek(lineBo.getBeginDate());
-            if (flightList != null && flightList.size() > 0) {
-                resultMap.put("flightList1", flightList);
-                if (week == 7) {
-                    days[0] = 1;
-                } else {
-                    days[week] = 1;
-                }
-            }
-            Date dateAdd = new Date(dateS.getTime() + 1 * 24 * 60 * 60 * 1000);
-            lineBo.setBeginDate(new SimpleDateFormat("yyyy-MM-dd").format(dateAdd));
+        List<FlightInfo> flightInfoList = variFlight.initVariFlightData(lineBo.getFlightNo(), lineBo.getBeginDate());
+        if (flightInfoList.size() == 0) {
+            return ReplyHelper.fail("航班信息不存在，手工录入");
         }
-        String flights = Arrays.toString(days).replace("[", "").replace("]", "").replace(" ", "");
-        List<Map<String, String>> list = (List<Map<String, String>>) resultMap.get("flightList1");
-        if (list == null) {
-            return ReplyHelper.fail("航班信息不存在，如需要，请手动录入！");
-        }
-        List<FlightInfo> flightInfoList = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            Map<String, String> map = new HashMap<>();
-            for (String key : list.get(i).keySet()) {
-                char[] chars = new char[1];
-                chars[0] = key.charAt(0);
-                String temp = new String(chars);
-                switch (key) {
-                    case "FlightDeptimePlanDate":
-                        String deptimePlanDate = list.get(i).get(key).substring(11);
-                        map.put(key.replaceFirst(temp, temp.toLowerCase()), deptimePlanDate);
-                        break;
-                    case "FlightArrtimePlanDate":
-                        String arrtimePlanDate = list.get(i).get(key).substring(11);
-                        map.put(key.replaceFirst(temp, temp.toLowerCase()), arrtimePlanDate);
-                        break;
-                    default:
-                        map.put(key.replaceFirst(temp, temp.toLowerCase()), list.get(i).get(key));
-                        break;
-                }
-                map.put("flights", flights);
-            }
-            Object flightInfo = new FlightInfo();
-            BeanUtils.populate(flightInfo, map);
-            FlightInfo info = (FlightInfo) flightInfo;
-            info.setId(Generator.uuid());
-            flightInfoList.add(info);
-        }
-        // save to database
-        airlineMapper.addFlightInfo(flightInfoList);
-        resultMap.put("flightList", flightInfoList);
-        resultMap.remove("flightList1");
-        resultMap.put("week", flights);
-        return ReplyHelper.success(resultMap);
+        return ReplyHelper.success(flightInfoList);
     }
 
     @Transactional
     @Override
     public Reply addFlightInfo(FlightInfo info) {   //需求待确认
         info.setId(Generator.uuid());
-        info.setCreatedTime(new Date());
-        info.setUpdateTime(new Date());
         List<FlightInfo> flightInfoList = new ArrayList<>();
         flightInfoList.add(info);
         airlineMapper.addFlightInfo(flightInfoList);
@@ -155,8 +121,11 @@ public class LineServiceImpl implements LineService {
     @Transactional
     @Override
     public Reply updateFlightInfo(LineBo lineBo) throws InvocationTargetException, IllegalAccessException { //需求待确认
-        airlineMapper.deleteFlightInfo(lineBo.getFlightNo());
-        Reply reply = queryFlightInfo(lineBo);
-        return ReplyHelper.success(reply.getData(), "航班信息更新成功");
+        Integer row = airlineMapper.deleteFlightInfo(lineBo.getFlightNo());
+        if (row <= 0) {
+            return ReplyHelper.error();
+        }
+        List<FlightInfo> flightInfoList = variFlight.initVariFlightData(lineBo.getFlightNo(), lineBo.getBeginDate());
+        return ReplyHelper.success(flightInfoList, "航班信息更新成功");
     }
 }
