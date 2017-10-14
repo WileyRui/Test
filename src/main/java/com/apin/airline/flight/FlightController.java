@@ -30,7 +30,7 @@ public class FlightController {
      * @return Reply
      * 正常：返回接口调用成功,通过data返回日历相关信息
      */
-    @PostMapping(value = "/airlineInfo")
+    @PostMapping(value = "/v1.0/flights/list")
     public Reply airlineInfo(@RequestBody CalendarInfo calendarInfo) throws Exception {
         return flightService.airlineInfo(calendarInfo);
     }
@@ -41,7 +41,7 @@ public class FlightController {
      * 正常：返回接口调用成功,库存数量修改，座位数修改
      * 异常：已分配库存，无法修改
      */
-    @PostMapping(value = "/modifyStock")
+    @PostMapping(value = "/v1.0/flights/seat/update")
     public Reply modifyStock(@RequestBody Stock stock) throws Exception {
         return flightService.modifyStock(stock);
     }
@@ -51,7 +51,7 @@ public class FlightController {
      * @return Reply
      * 正常：返回接口调用成功,价格修改成功
      */
-    @PostMapping(value = "/modifyPrice")
+    @PostMapping(value = "/v1.0/flights/price/update")
     public Reply modifyPrice(@RequestBody Stock stock) throws Exception {
         return flightService.modifyPrice(stock);
     }
@@ -60,7 +60,7 @@ public class FlightController {
      * @param priceTemplateBeanList
      * @return
      */
-    @PostMapping(value = "/v1/priceimport")
+    @PostMapping(value = "/v1.0/flights/batchPrice/update")
     public Reply importPassenger(@RequestBody List<PriceTemplateBean> priceTemplateBeanList){
         return flightService.priceImport(priceTemplateBeanList);
     }
@@ -70,7 +70,7 @@ public class FlightController {
      * @return Reply
      * 正常：返回接口调用成功,返回数据
      */
-    @PostMapping(value = "/searchFlights")
+    @PostMapping(value = "/v1.0/flight/query")
     public Reply searchFlight(@RequestBody SearchDto searchDto) throws Exception {
         return flightService.searchFlight(searchDto);
     }
@@ -80,7 +80,7 @@ public class FlightController {
      * @return Reply
      * 正常：返回接口调用成功,返回数据
      */
-    @PostMapping(value = "/flightDetail")
+    @PostMapping(value = "/v1.0/flights/query")
     public Reply searchFlights(@RequestBody SearchDto searchDto) throws Exception {
         return flightService.searchFlights(searchDto);
     }
@@ -90,7 +90,7 @@ public class FlightController {
      * @return Reply
      * 正常：返回接口调用成功,返回数据
      */
-    @PostMapping(value = "/flightDetail")
+    @PostMapping(value = "/v1.0/flightDetail/query")
     public Reply searchFlightDetail(@RequestBody SearchDto searchDto) throws Exception {
         return flightService.searchFlightDetail(searchDto);
     }
@@ -100,7 +100,7 @@ public class FlightController {
      * @return Reply
      * 正常：返回接口调用成功,返回数据
      */
-    @PostMapping(value = "/flightList")
+    @PostMapping(value = "/v1.0/flightDetail/list")
     public Reply searchFlightList(@RequestBody SearchDto searchDto) throws Exception {
         return flightService.searchFlightDetail(searchDto);
     }
