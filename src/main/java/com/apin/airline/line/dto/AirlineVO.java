@@ -4,6 +4,7 @@ import com.apin.airline.common.entity.Airline;
 import com.apin.airline.common.entity.Line;
 import com.apin.airline.common.mapper.AirlineMapper;
 import com.apin.airline.common.mapper.AirportMapper;
+import com.apin.airline.common.mapper.CityMapper;
 import com.apin.util.*;
 import com.apin.util.pojo.AccessToken;
 import com.apin.util.pojo.Reply;
@@ -24,6 +25,8 @@ public class AirlineVO {
     AirlineMapper airlineMapper;
     @Autowired
     AirportMapper airportMapper;
+    @Autowired
+    CityMapper cityMapper;
 
     private static AccessToken accessToken;
 
@@ -35,7 +38,7 @@ public class AirlineVO {
      * @param flightDetails
      * @return 航线实体类
      */
-    public Line setAirline(String token, LineBo lineBo, List<FlightDetail> flightDetails) {
+    public Line setLine(String token, LineBo lineBo, List<FlightDetail> flightDetails) {
         accessToken = JsonUtils.toAccessToken(token);
         String accountId = accessToken.getAccountId();
         String userId = accessToken.getUserId();
@@ -104,7 +107,7 @@ public class AirlineVO {
      * @param flightDetails
      * @return 航线基础数据实体类
      */
-    public Airline setMsdAirline(LineBo lineBo, List<FlightDetail> flightDetails) {
+    public Airline setAirline(LineBo lineBo, List<FlightDetail> flightDetails) {
         Airline airline = new Airline();
         airline.setId(Generator.uuid());
         airline.setWeekFlights(flightDetails.get(0).getWeekFlights());
@@ -117,29 +120,71 @@ public class AirlineVO {
         return airline;
     }
 
+    public Airline setMsdAirline(Airline msdAirline, List<FlightDetail> flightDetails, int i, int flightType, StringBuilder appendFlight) {
+        FlightDetail flightDetail = flightDetails.get(i);
+        if (flightType == 1) { // 单程
+            msdAirline.setFlightNumber(flightDetail.getFlightNo());
+            msdAirline.setVoyage(this.appendVoyage(flightType, flightDetails));
+            msdAirline.setHashKey(this.hashValue(flightDetails));
+        }
+        if (flightType == 2) { // 往返
+            String flightNo = flightDetail.getFlightNo();
+            msdAirline.setHashKey(this.hashValue(flightDetails));
+            if (i == flightDetails.size() - 1) {
+                msdAirline.setFlightNumber(msdAirline.getFlightNumber() + "<->" + flightNo);
+                msdAirline.setVoyage(this.appendVoyage(flightType, flightDetails));
+            } else {
+                msdAirline.setFlightNumber(flightNo);
+            }
+        }
+        if (flightType == 3) { // 多程
+            msdAirline.setHashKey(this.hashValue(flightDetails));
+            if (i == flightDetails.size() - 1) {
+                msdAirline.setFlightNumber(appendFlight.append(flightDetail.getFlightNo()).toString());
+                msdAirline.setVoyage(this.appendVoyage(flightType, flightDetails));
+            } else {
+                appendFlight.append(flightDetail.getFlightNo() + ",");
+            }
+        }
+        return msdAirline;
+    }
+
     /**
-     * 验证参数
+     * 拼接航程
      *
-     * @param lineBo
-     * @return Reply
+     * @param flightType    航线类型
+     * @param flightDetails 航班詳情
+     * @return string
      */
-    public Reply checkData(LineBo lineBo) {
-        if (StringUtils.isBlank(lineBo.getFlightType().toString())
-                || StringUtils.isBlank(lineBo.getSeatType().toString())
-                || StringUtils.isBlank(lineBo.getAdultPrice().toString())
-                || StringUtils.isBlank(lineBo.getChildPrice().toString())
-                || StringUtils.isBlank(lineBo.getSeatCount().toString())
-                || StringUtils.isBlank(lineBo.getTicketAdvance().toString())) {
-            return ReplyHelper.fail("参数为空或不符合格式");
+    public String appendVoyage(int flightType, List<FlightDetail> flightDetails) {
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < flightDetails.size(); i++) {
+            FlightDetail flightDetail = flightDetails.get(i);
+            String depAirportCode = flightDetail.getDepAirportCode();
+            String depCity = cityMapper.findCityNameByIataCode(depAirportCode);
+            String arrAirportCode = flightDetail.getArrAirportCode();
+            String arrCity = cityMapper.findCityNameByIataCode(arrAirportCode);
+            switch (flightType) {
+                case 1:
+                    buffer.append(depCity + "-").append(arrCity);
+                    break;
+                case 2:
+                    if (i == 0) {
+                        buffer.append(depCity + "<->").append(arrCity);
+                    }
+                    break;
+                case 3:
+                    if (i == flightDetails.size() - 1) {
+                        buffer.append(depCity + "-").append(arrCity);
+                    } else {
+                        buffer.append(depCity + "-").append(arrCity + ",");
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
-        if (lineBo.getTicketAdvance() >= lineBo.getRecoveryAdvance()) {
-            return ReplyHelper.fail("余票回收天数必须大于开票提前天数");
-        }
-        List<FlightDetail> msdAirlineList = lineBo.getMsdAirlineInfoList();
-        if (msdAirlineList == null) {
-            return ReplyHelper.fail("缺少航班信息");
-        }
-        return null;
+        return buffer.toString();
     }
 
     /**
@@ -173,6 +218,45 @@ public class AirlineVO {
         hashValue.append(Generator.md5(city2City.toString()) + "," + Generator.md5(city2airport.toString()) + ","
                 + Generator.md5(airport2City.toString()) + "," + Generator.md5(airport2airport.toString()));
         return hashValue.toString();
+    }
+
+
+    /**
+     * 验证参数
+     *
+     * @param lineBo
+     * @return Reply
+     */
+    public Reply checkData(LineBo lineBo) {
+        if (StringUtils.isBlank(lineBo.getFlightType().toString())
+                || StringUtils.isBlank(lineBo.getSeatType().toString())
+                || StringUtils.isBlank(lineBo.getAdultPrice().toString())
+                || StringUtils.isBlank(lineBo.getChildPrice().toString())
+                || StringUtils.isBlank(lineBo.getSeatCount().toString())
+                || StringUtils.isBlank(lineBo.getTicketAdvance().toString())) {
+            return ReplyHelper.fail("参数为空或不符合格式");
+        }
+        if (lineBo.getTicketAdvance() >= lineBo.getRecoveryAdvance()) {
+            return ReplyHelper.fail("余票回收天数必须大于开票提前天数");
+        }
+        List<FlightDetail> msdAirlineList = lineBo.getMsdAirlineInfoList();
+        if (msdAirlineList == null) {
+            return ReplyHelper.fail("缺少航班信息");
+        }
+        return null;
+    }
+
+    /**
+     * 判断航线是否重复
+     * @param hashKey
+     * @return
+     */
+    public boolean LineRepeat(String hashKey){
+        String airlineId = airlineMapper.getExistedAirline(hashKey);
+        if (StringUtils.isNotBlank(airlineId)){
+            return true;
+        }
+        return false;
     }
 
 

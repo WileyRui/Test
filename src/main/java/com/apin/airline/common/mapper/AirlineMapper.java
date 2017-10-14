@@ -182,4 +182,17 @@ public interface AirlineMapper extends Mapper {
      */
     @Select("select airline_no from mbs_airline ORDER BY created_time DESC limit 0,1")
     String findNew();
+
+    /**
+     * 根据航班号，出发、到达机场三字码获取航班信息
+     *
+     * @param flightNo
+     * @param depCode
+     * @param arrCode
+     * @return
+     */
+    @Select("SELECT * FROM msd_airline_info ma WHERE ma.flight_no = #{flightNo} AND ma.flight_depcode = #{depCode} AND " +
+            "ma.flight_arrcode = #{arrCode} group by flight_no")
+    FlightInfo findByflightNoAndIatacode(@Param("flightNo") String flightNo, @Param("depCode") String depCode,
+                                                    @Param("arrCode") String arrCode);
 }
