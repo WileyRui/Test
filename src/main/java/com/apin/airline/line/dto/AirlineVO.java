@@ -48,16 +48,11 @@ public class AirlineVO {
         String userName = accessToken.getUserName();
         Line line = new Line();
         line.setId(Generator.uuid());
-//        String newAirlineNo = airlineMapper.findNew();
-//        if (StringUtils.isBlank(newAirlineNo)) {
-//            line.setAirlineNo("1");
-//        } else {
-//            line.setAirlineNo(String.valueOf(Integer.parseInt(newAirlineNo) + 1));
-//        }
         line.setAccountId(accountId);
         line.setSupplierName(lineBo.getSupplireName());
         line.setCreatorUserId(userId);
         line.setCreatorUser(userName);
+        line.setAirwayId("123321");
         String[] dateArray = flightDetails.get(0).getDatePeriod().split("/");
         line.setDepartureStart(DateHelper.parseDate(dateArray[0]));
         line.setDepartureEnd(DateHelper.parseDate(dateArray[1]));

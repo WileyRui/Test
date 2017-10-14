@@ -1,6 +1,5 @@
 package com.apin.airline.ticket;
 
-<<<<<<< HEAD
 import com.apin.airline.base.Airline;
 import com.apin.airline.ticket.dto.Deal;
 import com.apin.airline.ticket.dto.Stock;
@@ -8,8 +7,6 @@ import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-=======
->>>>>>> feature/line
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/ticketapi")
 public class TicketController {
-<<<<<<< HEAD
     @Autowired
     private TicketService ticketService;
 
@@ -62,9 +58,4 @@ public class TicketController {
     public Reply handRecover(@RequestBody Deal deal) throws Exception {
         return ticketService.dealStock(deal);
     }
-
-=======
-/*    @Autowired
-    private TicketService service;*/
->>>>>>> feature/line
 }
