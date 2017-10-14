@@ -272,7 +272,7 @@ public interface AirlineMapper extends Mapper {
             "(#{item.id},#{item.airlineId},#{item.sellType},#{item.flightDate},#{item.seatCount},#{item.adultPrice}," +
             "#{item.childPrice},#{item.alertThreshold},#{item.alertDate},#{item.recoveryDate},#{item.ticketDate}) " +
             "</foreach></script>")
-    Insert addLineFlights(List<Flight> flights);
+    Integer addLineFlights(List<Flight> flights);
 
     /**
      * 新增舱位资源

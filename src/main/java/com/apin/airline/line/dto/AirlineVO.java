@@ -33,26 +33,33 @@ public class AirlineVO {
     @Autowired
     CityMapper cityMapper;
 
-    /**
-     * 初始化航线数据
-     *
-     * @param token
-     * @param lineBo
-     * @param flightDetails
-     * @return 航线实体类
-     */
-    public Line setLine(String token, LineBo lineBo, List<FlightDetail> flightDetails) {
+    public LineBo setLineBo(LineBo lineBo,String token){
         AccessToken accessToken = JsonUtils.toAccessToken(token);
         String accountId = accessToken.getAccountId();
         String userId = accessToken.getUserId();
         String userName = accessToken.getUserName();
+        lineBo.setAccountId(accountId);
+        lineBo.setCreatorUser(userName);
+        lineBo.setCreatorUserId(userId);
+        return lineBo;
+    }
+
+    /**
+     * 初始化航线数据
+     *
+     * @param lineBo
+     * @param flightDetails
+     * @return 航线实体类
+     */
+    public Line setLine(LineBo lineBo, List<FlightDetail> flightDetails) {
         Line line = new Line();
         line.setId(Generator.uuid());
-        line.setAccountId(accountId);
+        line.setAccountId(lineBo.getAccountId());
         line.setSupplierName(lineBo.getSupplireName());
-        line.setCreatorUserId(userId);
-        line.setCreatorUser(userName);
+        line.setCreatorUserId(lineBo.getCreatorUserId());
+        line.setCreatorUser(lineBo.getCreatorUser());
         line.setAirwayId("123321");
+        line.setResType(lineBo.getResType().byteValue());
         String[] dateArray = flightDetails.get(0).getDatePeriod().split("/");
         line.setDepartureStart(DateHelper.parseDate(dateArray[0]));
         line.setDepartureEnd(DateHelper.parseDate(dateArray[1]));
@@ -160,6 +167,7 @@ public class AirlineVO {
             Voyage voyage = new Voyage();
             voyage.setId(Generator.uuid());
             voyage.setTripIndex((byte) i);
+            voyage.setAirlineId(airline.getId());
             voyage.setDays(Integer.parseInt(flightDetails.get(i).getDays()));
             voyage.setFlightInfoId(airline.getId());
             voyages.add(voyage);
@@ -183,6 +191,7 @@ public class AirlineVO {
             if (lineBo.getAlertRate() != null) {
                 airlineFlight.setAlertThreshold((int) (line.getSeatCount() * lineBo.getAlertRate() * 0.01));
             }
+            airlineFlight.setSellType(lineBo.getSellType());
             airlineFlight.setAirlineId(line.getId());
             airlineFlight.setSeatCount(line.getSeatCount());
             Date date = DateHelper.parseDate(flightDate);

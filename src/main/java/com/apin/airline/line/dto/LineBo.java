@@ -39,6 +39,7 @@ public class LineBo {
     private List<FlightDetail> msdAirlineInfoList;
     private String flightNo;
     private String beginDate;
+    private Byte sellType;
 
     public String getId() {
         return id;
@@ -270,5 +271,13 @@ public class LineBo {
 
     public void setBeginDate(String beginDate) {
         this.beginDate = beginDate;
+    }
+
+    public Byte getSellType() {
+        return sellType;
+    }
+
+    public void setSellType(Byte sellType) {
+        this.sellType = sellType;
     }
 }

@@ -1,12 +1,12 @@
 package com.apin.airline.base;
 
-import com.apin.airline.common.entity.FlightInfo;
-import com.apin.airline.common.mapper.AirlineMapper;
-import com.apin.airline.line.utils.FastJsonUtils;
 import com.apin.airline.common.HttpFlightUtils;
+import com.apin.airline.common.entity.FlightInfo;
+import com.apin.airline.common.entity.VariFlight;
+import com.apin.airline.common.mapper.AirlineMapper;
 import com.apin.util.DateHelper;
 import com.apin.util.Generator;
-import org.apache.commons.beanutils.BeanUtils;
+import com.apin.util.JsonUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
-import java.net.URLDecoder;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -26,8 +26,8 @@ import java.util.*;
  * @remark 飞常准查询接口
  */
 @Component
-public class VariFlight {
-    private Logger logger = LoggerFactory.getLogger(VariFlight.class);
+public class VariFlightService {
+    private Logger logger = LoggerFactory.getLogger(VariFlightService.class);
     @Autowired
     AirlineMapper airlineMapper;
     @Value("${variflight.appid}")
@@ -44,9 +44,9 @@ public class VariFlight {
      * @param departDate
      * @return
      */
-    public List<Map<String, String>> getFlightInfo(String flightNo, String departDate) {
+    public List<VariFlight> getFlightInfo(String flightNo, String departDate) {
         StringBuffer content = new StringBuffer();
-        Map<String, String> resultMap;
+        List<VariFlight> variFlights;
         Map<String, String> paramMap = new HashMap<String, String>();
         paramMap.put("fnum", flightNo);
         paramMap.put("appid", appId);
@@ -64,13 +64,12 @@ public class VariFlight {
         try {
             String result = HttpFlightUtils.net(url, paramMap, "GET");
             logger.info("====the variflight result is : " + result);
+            variFlights = JsonUtils.toBean(result,JsonUtils.getJavaType(List.class, VariFlight.class));
             if (result.contains("error")) {
-                resultMap = FastJsonUtils.parseToMap(result);
-                System.out.println("解码后:" + URLDecoder.decode(resultMap.get("error"), "utf-8"));
+//                System.out.println("解码后:" + URLDecoder.decode(resultMap.get("error"), "utf-8"));
                 return null;
             }
-            List<Map<String, String>> flightInfoMapList = FastJsonUtils.parseMapInList(result);
-            return flightInfoMapList;
+            return variFlights;
         } catch (Exception e) {
             e.printStackTrace();
             logger.info("=====the variflight interface get something wrong======");
@@ -89,16 +88,16 @@ public class VariFlight {
      */
     @Transactional
     public List<FlightInfo> initVariFlightData(String flightNo, String departDate) throws InvocationTargetException, IllegalAccessException {
-        // 查询7天的航线
-        List<Map<String, String>> flightList;
-        Map<String, Object> resultMap = new HashMap<>();
+        List<VariFlight> variFlights = new ArrayList<>();
+        List<List<VariFlight>> variFlights1 = new ArrayList<>();
+//        Map<String, Object> resultMap = new HashMap<>();
         int[] days = new int[7];
         for (int i = 0; i < 7; i++) {
-            flightList = getFlightInfo(flightNo, departDate);
+            variFlights = getFlightInfo(flightNo, departDate);
             Date dateS = DateHelper.parseDate(departDate);
             int week = DateHelper.getWeek(departDate);
-            if (flightList != null && flightList.size() > 0) {
-                resultMap.put("flightList1", flightList);
+            if (variFlights != null && variFlights.size() > 0) {
+                variFlights1.add(variFlights);
                 if (week == 7) {
                     days[0] = 1;
                 } else {
@@ -108,36 +107,30 @@ public class VariFlight {
             Date dateAdd = new Date(dateS.getTime() + 1 * 24 * 60 * 60 * 1000);
             departDate = new SimpleDateFormat("yyyy-MM-dd").format(dateAdd);
         }
-        String flights = Arrays.toString(days).replace("[", "").replace("]", "").replace(" ", "");
-        List<Map<String, String>> list = (List<Map<String, String>>) resultMap.get("flightList1");
-        List<FlightInfo> flightInfoList = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            Map<String, String> map = new HashMap<>();
-            for (String key : list.get(i).keySet()) {
-                char[] chars = new char[1];
-                chars[0] = key.charAt(0);
-                String temp = new String(chars);
-                switch (key) {
-                    case "FlightDeptimePlanDate":
-                        String deptimePlanDate = list.get(i).get(key).substring(11);
-                        map.put(key.replaceFirst(temp, temp.toLowerCase()), deptimePlanDate);
-                        break;
-                    case "FlightArrtimePlanDate":
-                        String arrtimePlanDate = list.get(i).get(key).substring(11);
-                        map.put(key.replaceFirst(temp, temp.toLowerCase()), arrtimePlanDate);
-                        break;
-                    default:
-                        map.put(key.replaceFirst(temp, temp.toLowerCase()), list.get(i).get(key));
-                        break;
-                }
-                map.put("flights", flights);
-            }
-            Object flightInfo = new FlightInfo();
-            BeanUtils.populate(flightInfo, map);
-            FlightInfo info = (FlightInfo) flightInfo;
-            info.setId(Generator.uuid());
-            flightInfoList.add(info);
+        if(variFlights1 == null || variFlights1.size() == 0){
+            return null;
         }
+        String flights = Arrays.toString(days).replace("[", "").replace("]", "").replace(" ", "");
+        List<FlightInfo> flightInfoList = new ArrayList<>();
+            List<VariFlight> variFlightList = variFlights1.get(0);
+            variFlightList.forEach(i ->{
+            FlightInfo info = new FlightInfo();
+            info.setId(Generator.uuid());
+            info.setFcategory(Byte.valueOf(i.getFcategory()));
+            info.setFlightNo(i.getFlightNo());
+            info.setFlightArr(i.getFlightArr());
+            info.setFlightDep(i.getFlightDep());
+            info.setFlightArrAirport(i.getFlightArrAirport());
+            info.setFlightArrcode(i.getFlightArrcode());
+            info.setFlightArrtimePlanDate(new Time(DateHelper.parseDate(i.getFlightArrtimePlanDate().substring(11)).getTime()));
+            info.setFlightCompany(i.getFlightCompany());
+            info.setFlightDepAirport(i.getFlightDepAirport());
+            info.setFlightDepcode(i.getFlightDepcode());
+            info.getFlightDeptimePlanDate(new Time(DateHelper.parseDate(i.getFlightArrtimePlanDate().substring(11)).getTime()));
+            info.setStopFlag(i.getStopFlag().equals(1));
+            info.setFlights(flights);
+            flightInfoList.add(info);
+            });
         airlineMapper.addFlightInfo(flightInfoList);
         return flightInfoList;
     }

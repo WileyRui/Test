@@ -1,6 +1,6 @@
 package com.apin.airline.line;
 
-import com.apin.airline.base.VariFlight;
+import com.apin.airline.base.VariFlightService;
 import com.apin.airline.common.entity.*;
 import com.apin.airline.common.mapper.AirWayMapper;
 import com.apin.airline.common.mapper.AirlineMapper;
@@ -26,7 +26,7 @@ import java.util.List;
 @Service
 public class LineServiceImpl implements LineService {
     @Autowired
-    VariFlight variFlight;
+    VariFlightService variFlight;
     @Autowired
     AirlineMapper airlineMapper;
     @Autowired
@@ -36,10 +36,11 @@ public class LineServiceImpl implements LineService {
 
     @Override
     public Reply addLine(String token, LineBo lineBo) {
+        airlineVO.setLineBo(lineBo,token);
         StringBuilder appendFlight = new StringBuilder();
         airlineVO.checkData(lineBo);
         List<FlightDetail> msdAirlineList = lineBo.getMsdAirlineInfoList();
-        Line line = airlineVO.setLine(token, lineBo, msdAirlineList);
+        Line line = airlineVO.setLine(lineBo, msdAirlineList);
         Airline airline = airlineVO.setAirline(lineBo, msdAirlineList);
         line.setAirlineId(airline.getId());
         Voyage airlineVoyage = new Voyage();
