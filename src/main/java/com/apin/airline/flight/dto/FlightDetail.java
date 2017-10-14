@@ -1,7 +1,5 @@
 package com.apin.airline.flight.dto;
 
-import org.apache.ibatis.annotations.Select;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -15,6 +13,7 @@ public class FlightDetail {
     private Integer seat;
     private BigDecimal price;
     private String img;
+
     public FlightDetail() {
     }
 
@@ -22,7 +21,7 @@ public class FlightDetail {
         return dateList;
     }
 
-//    @Select("select min(b.adult_price) price,sum(b.seat_count) seat from mbs_airline a join mbs_airline_flight b on a.id=b.airline_id" +
+    //    @Select("select min(b.adult_price) price,sum(b.seat_count) seat from mbs_airline a join mbs_airline_flight b on a.id=b.airline_id" +
 //            "join msd_airline c on a.airline_id=c.id where c.voyage=#{voyage} group by c.voyage")
 //    FlightDetail selectFlightDetail(String voyage);
 //    @Select("select img_url from msd_city where city_name=#{deatCity}")

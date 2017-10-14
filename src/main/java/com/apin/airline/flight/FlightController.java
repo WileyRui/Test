@@ -26,6 +26,7 @@ public class FlightController {
 
     /**
      * arm日历查看
+     *
      * @param calendarInfo
      * @return Reply
      * 正常：返回接口调用成功,通过data返回日历相关信息
@@ -34,8 +35,10 @@ public class FlightController {
     public Reply airlineInfo(@RequestBody CalendarInfo calendarInfo) throws Exception {
         return flightService.airlineInfo(calendarInfo);
     }
+
     /**
      * arm库存日历内修改库存
+     *
      * @param stock
      * @return Reply
      * 正常：返回接口调用成功,库存数量修改，座位数修改
@@ -45,8 +48,10 @@ public class FlightController {
     public Reply modifyStock(@RequestBody Stock stock) throws Exception {
         return flightService.modifyStock(stock);
     }
+
     /**
      * arm价格日历修改价格
+     *
      * @param stock
      * @return Reply
      * 正常：返回接口调用成功,价格修改成功
@@ -55,17 +60,21 @@ public class FlightController {
     public Reply modifyPrice(@RequestBody Stock stock) throws Exception {
         return flightService.modifyPrice(stock);
     }
+
     /**
      * 价格批量导入更新
+     *
      * @param priceTemplateBeanList
      * @return
      */
     @PostMapping(value = "/v1.0/flights/batchPrice/update")
-    public Reply importPassenger(@RequestBody List<PriceTemplateBean> priceTemplateBeanList){
+    public Reply importPassenger(@RequestBody List<PriceTemplateBean> priceTemplateBeanList) {
         return flightService.priceImport(priceTemplateBeanList);
     }
+
     /**
      * 根据城市对查询信息
+     *
      * @param searchDto
      * @return Reply
      * 正常：返回接口调用成功,返回数据
@@ -74,8 +83,10 @@ public class FlightController {
     public Reply searchFlight(@RequestBody SearchDto searchDto) throws Exception {
         return flightService.searchFlight(searchDto);
     }
+
     /**
      * 根据城市对与出发日期查询航班
+     *
      * @param searchDto
      * @return Reply
      * 正常：返回接口调用成功,返回数据
@@ -84,8 +95,10 @@ public class FlightController {
     public Reply searchFlights(@RequestBody SearchDto searchDto) throws Exception {
         return flightService.searchFlights(searchDto);
     }
+
     /**
      * 根据城市对与出发日期结束日期查询航班详情
+     *
      * @param searchDto
      * @return Reply
      * 正常：返回接口调用成功,返回数据
@@ -94,8 +107,10 @@ public class FlightController {
     public Reply searchFlightDetail(@RequestBody SearchDto searchDto) throws Exception {
         return flightService.searchFlightDetail(searchDto);
     }
+
     /**
      * 根据条件查询
+     *
      * @param searchDto
      * @return Reply
      * 正常：返回接口调用成功,返回数据
@@ -104,12 +119,6 @@ public class FlightController {
     public Reply searchFlightList(@RequestBody SearchDto searchDto) throws Exception {
         return flightService.searchFlightDetail(searchDto);
     }
-
-
-
-
-
-
 
 
 }

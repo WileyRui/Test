@@ -1,6 +1,5 @@
 package com.apin.airline.ticket;
 
-import com.apin.airline.base.Airline;
 import com.apin.airline.ticket.dto.Deal;
 import com.apin.airline.ticket.dto.Stock;
 import com.apin.util.pojo.Reply;
@@ -25,6 +24,7 @@ public class TicketController {
 
     /**
      * 库存日历内销客
+     *
      * @param stock
      * @return Reply
      * 正常：返回接口调用成功,座位状态修改
@@ -34,8 +34,10 @@ public class TicketController {
     public Reply saleStock(@RequestBody Stock stock) throws Exception {
         return service.saleStock(stock);
     }
+
     /**
      * 分配库存
+     *
      * @param deal
      * @return Reply
      * 正常：返回接口调用成功,座位状态修改
@@ -45,8 +47,10 @@ public class TicketController {
     public Reply dealStock(@RequestBody Deal deal) throws Exception {
         return service.dealStock(deal);
     }
+
     /**
      * 手动收位
+     *
      * @param deal
      * @return Reply
      * 正常：返回接口调用成功,座位状态修改

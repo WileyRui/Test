@@ -10,7 +10,7 @@ import java.util.List;
  * @date 2017/10/11
  * @remark 航线基础数据实体类
  */
-public class Airline implements Serializable{
+public class Airline implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**

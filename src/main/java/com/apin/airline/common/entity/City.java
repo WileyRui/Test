@@ -1,5 +1,6 @@
 package com.apin.airline.common.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -7,7 +8,8 @@ import java.util.Date;
  * @date 2017/10/14
  * @remark 城市基础数据实体类
  */
-public class City {
+public class City implements Serializable {
+    private static final long serialVersionUID = -1L;
 
     /**
      * 主键

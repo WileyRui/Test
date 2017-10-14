@@ -20,6 +20,7 @@ public class PriceTemplateBean implements Serializable {
     private String accountId;
     private String userId;
     private String userName;
+
     public String getAirlineNo() {
         return airlineNo;
     }

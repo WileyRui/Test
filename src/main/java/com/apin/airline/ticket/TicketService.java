@@ -13,6 +13,7 @@ import com.apin.util.pojo.Reply;
 public interface TicketService {
     /**
      * 日历查看
+     *
      * @param calendarInfo
      * @return
      */
@@ -20,6 +21,7 @@ public interface TicketService {
 
     /**
      * 日历内修改库存
+     *
      * @param stock
      * @return
      */
@@ -27,6 +29,7 @@ public interface TicketService {
 
     /**
      * 日历内逍客
+     *
      * @param stock
      * @return
      */
@@ -34,6 +37,7 @@ public interface TicketService {
 
     /**
      * 分配库存
+     *
      * @param deal
      * @return
      */

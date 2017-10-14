@@ -36,7 +36,7 @@ public class LineServiceImpl implements LineService {
 
     @Override
     public Reply addLine(String token, LineBo lineBo) {
-        airlineVO.setLineBo(lineBo,token);
+        airlineVO.setLineBo(lineBo, token);
         StringBuilder appendFlight = new StringBuilder();
         airlineVO.checkData(lineBo);
         List<FlightDetail> msdAirlineList = lineBo.getMsdAirlineInfoList();
@@ -45,7 +45,7 @@ public class LineServiceImpl implements LineService {
         line.setAirlineId(airline.getId());
         Voyage airlineVoyage = new Voyage();
         airlineVoyage.setAirlineId(airline.getId());
-        for (int i = 0; i < msdAirlineList.size(); i++){
+        for (int i = 0; i < msdAirlineList.size(); i++) {
             FlightDetail flightDetail = msdAirlineList.get(i);
 /*            FlightInfo flightInfo = airlineMapper.findByflightNoAndIatacode(
                     msdAirlineList.get(i).getFlightNo(), msdAirlineList.get(i).getDepAirportCode(),
@@ -56,16 +56,16 @@ public class LineServiceImpl implements LineService {
             }
             airline = airlineVO.setMsdAirline(airline, msdAirlineList, i, lineBo.getFlightType(), appendFlight);
         }
-        if (airlineVO.LineRepeat(airline.getHashKey())){
+        if (airlineVO.LineRepeat(airline.getHashKey())) {
             return ReplyHelper.fail("航线已存在");
         }
         airlineMapper.addLine(line);
         airlineMapper.addAirline(airline);
-        List<Flight> flights = airlineVO.setFlight(line,lineBo,msdAirlineList);
+        List<Flight> flights = airlineVO.setFlight(line, lineBo, msdAirlineList);
         airlineMapper.addLineFlights(flights);
-        List<Voyage> voyages = airlineVO.setVoyage(msdAirlineList,airline);
+        List<Voyage> voyages = airlineVO.setVoyage(msdAirlineList, airline);
         airlineMapper.addVoyages(voyages);
-        Log log = airlineVO.setAirlineLog(lineBo,line.getId(),true);
+        Log log = airlineVO.setAirlineLog(lineBo, line.getId(), true);
 //        airlineMapper.addLog(log);
         return ReplyHelper.success();
     }

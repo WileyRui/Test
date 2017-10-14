@@ -16,9 +16,9 @@ import java.util.List;
 public interface FlightService {
 
 
-
     /**
      * 日历查看
+     *
      * @param calendarInfo
      * @return
      */
@@ -26,6 +26,7 @@ public interface FlightService {
 
     /**
      * 日历内修改库存
+     *
      * @param stock
      * @return
      */
@@ -33,6 +34,7 @@ public interface FlightService {
 
     /**
      * 修改价格
+     *
      * @param stock
      * @return
      */
@@ -40,12 +42,14 @@ public interface FlightService {
 
     /**
      * 价格批量导入
+     *
      * @param priceTemplateBeanList
      */
     Reply priceImport(List<PriceTemplateBean> priceTemplateBeanList);
 
     /**
      * 根据城市对查询航班信息
+     *
      * @param searchDto
      * @return
      */
@@ -53,6 +57,7 @@ public interface FlightService {
 
     /**
      * 根据城市对与出发日期查询航班
+     *
      * @param searchDto
      * @return
      */
@@ -60,6 +65,7 @@ public interface FlightService {
 
     /**
      * 根据城市对与出发日期结束日期查询航班详情
+     *
      * @param searchDto
      * @return
      */

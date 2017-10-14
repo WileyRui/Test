@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @date 2017/10/11
  * @remark 航线航程明细实体类
  */
-public class Voyage  implements Serializable {
+public class Voyage implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**

@@ -3,7 +3,7 @@ package com.apin.airline.ticket.dto;
 import java.util.List;
 
 /**
- *Author:huanglei
+ * Author:huanglei
  * Description:
  * Date:2017/10/11
  */

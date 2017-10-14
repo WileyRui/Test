@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Select;
  */
 @Mapper
 public interface AirWayMapper extends Mapper {
-    
+
     /**
      * 根据航司简称查询航司id
      *

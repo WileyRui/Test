@@ -1,19 +1,14 @@
 package com.apin.airline.flight;
 
-import com.apin.airline.base.Airline;
-import com.apin.airline.common.entity.Flight;
 import com.apin.airline.common.mapper.AirlineMapper;
-import com.apin.airline.flight.dto.FlightDetail;
 import com.apin.airline.flight.dto.PriceTemplateBean;
 import com.apin.airline.flight.dto.SearchDto;
 import com.apin.airline.ticket.dto.CalendarInfo;
 import com.apin.airline.ticket.dto.Stock;
-import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -25,6 +20,7 @@ import java.util.List;
 public class FlightServiceImpl implements FlightService {
     @Autowired
     private AirlineMapper airlineMapper;
+
     @Override
     public Reply airlineInfo(CalendarInfo calendarInfo) {
         return null;
@@ -52,10 +48,12 @@ public class FlightServiceImpl implements FlightService {
 //        return ReplyHelper.success();
         return null;
     }
+
     @Override
     public Reply priceImport(List<PriceTemplateBean> priceTemplateBeanList) {
         return null;
     }
+
     @Override
     public Reply searchFlight(SearchDto searchDto) {
 //       String img = airlineMapper.selectCityImg(searchDto.getDestCity());

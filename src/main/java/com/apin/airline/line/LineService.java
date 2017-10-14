@@ -63,6 +63,7 @@ public interface LineService {
 
     /**
      * 航班查询
+     *
      * @param lineBo
      * @return
      */
@@ -71,6 +72,7 @@ public interface LineService {
 
     /**
      * 维护航班
+     *
      * @param flightInfo
      * @return
      */
@@ -78,6 +80,7 @@ public interface LineService {
 
     /**
      * 更新航班
+     *
      * @param lineBo
      * @return
      */

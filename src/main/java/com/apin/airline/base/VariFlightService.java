@@ -27,9 +27,9 @@ import java.util.*;
  */
 @Component
 public class VariFlightService {
-    private Logger logger = LoggerFactory.getLogger(VariFlightService.class);
     @Autowired
     AirlineMapper airlineMapper;
+    private Logger logger = LoggerFactory.getLogger(VariFlightService.class);
     @Value("${variflight.appid}")
     private String appId;
     @Value("${variflight.appSecurity}")
@@ -64,7 +64,7 @@ public class VariFlightService {
         try {
             String result = HttpFlightUtils.net(url, paramMap, "GET");
             logger.info("====the variflight result is : " + result);
-            variFlights = JsonUtils.toBean(result,JsonUtils.getJavaType(List.class, VariFlight.class));
+            variFlights = JsonUtils.toBean(result, JsonUtils.getJavaType(List.class, VariFlight.class));
             if (result.contains("error")) {
 //                System.out.println("解码后:" + URLDecoder.decode(resultMap.get("error"), "utf-8"));
                 return null;
@@ -107,13 +107,13 @@ public class VariFlightService {
             Date dateAdd = new Date(dateS.getTime() + 1 * 24 * 60 * 60 * 1000);
             departDate = new SimpleDateFormat("yyyy-MM-dd").format(dateAdd);
         }
-        if(variFlights1 == null || variFlights1.size() == 0){
+        if (variFlights1 == null || variFlights1.size() == 0) {
             return null;
         }
         String flights = Arrays.toString(days).replace("[", "").replace("]", "").replace(" ", "");
         List<FlightInfo> flightInfoList = new ArrayList<>();
-            List<VariFlight> variFlightList = variFlights1.get(0);
-            variFlightList.forEach(i ->{
+        List<VariFlight> variFlightList = variFlights1.get(0);
+        variFlightList.forEach(i -> {
             FlightInfo info = new FlightInfo();
             info.setId(Generator.uuid());
             info.setFcategory(Byte.valueOf(i.getFcategory()));
@@ -126,11 +126,11 @@ public class VariFlightService {
             info.setFlightCompany(i.getFlightCompany());
             info.setFlightDepAirport(i.getFlightDepAirport());
             info.setFlightDepcode(i.getFlightDepcode());
-            info.getFlightDeptimePlanDate(new Time(DateHelper.parseDate(i.getFlightArrtimePlanDate().substring(11)).getTime()));
+            info.setFlightDeptimePlanDate(new Time(DateHelper.parseDate(i.getFlightArrtimePlanDate().substring(11)).getTime()));
             info.setStopFlag(i.getStopFlag().equals(1));
             info.setFlights(flights);
             flightInfoList.add(info);
-            });
+        });
         airlineMapper.addFlightInfo(flightInfoList);
         return flightInfoList;
     }

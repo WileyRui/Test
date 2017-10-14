@@ -8,7 +8,7 @@ import java.util.Date;
  * @date 2017/10/11
  * @remark 供应商机票资源实体类
  */
-public class Seat  implements Serializable {
+public class Seat implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**

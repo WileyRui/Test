@@ -149,6 +149,15 @@ public interface AirlineMapper extends Mapper {
     @Select("SELECT id FROM msd_airway WHERE LEFT(#{flightNo},2)=iata_code")
     String getAirwayIdByFlightNo(String flightNo);
 
+    @Insert("")
+    Integer addAirway(Airway airway);
+
+    @Update("UPDATE msd_airway SET is_invalid=1 WHERE id=#{id};")
+    Integer deleteAirway(String id);
+
+    @Update("")
+    Integer updateAirway(Airway airway);
+
     /**
      * 新增航班信息数据
      *

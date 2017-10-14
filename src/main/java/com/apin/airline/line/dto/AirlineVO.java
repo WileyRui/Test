@@ -33,7 +33,7 @@ public class AirlineVO {
     @Autowired
     CityMapper cityMapper;
 
-    public LineBo setLineBo(LineBo lineBo,String token){
+    public LineBo setLineBo(LineBo lineBo, String token) {
         AccessToken accessToken = JsonUtils.toAccessToken(token);
         String accountId = accessToken.getAccountId();
         String userId = accessToken.getUserId();

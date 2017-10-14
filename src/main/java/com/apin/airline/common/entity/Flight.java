@@ -9,7 +9,7 @@ import java.util.Date;
  * @date 2017/10/11
  * @remark 供应商航班资源实体类
  */
-public class Flight  implements Serializable {
+public class Flight implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**

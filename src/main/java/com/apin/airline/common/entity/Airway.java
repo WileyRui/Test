@@ -1,77 +1,112 @@
 package com.apin.airline.common.entity;
 
+import java.io.Serializable;
+import java.util.Date;
 
-public class Airway {
+public class Airway implements Serializable {
+    private static final long serialVersionUID = -1L;
 
-  private String id;
-  private String iataCode;
-  private String companyName;
-  private String nationCode;
-  private String logoIco;
-  private java.sql.Timestamp updateTime;
-  private java.sql.Timestamp createdTime;
+    /**
+     * 主键
+     */
+    private String id;
 
+    /**
+     * 航司编码
+     */
+    private String iataCode;
 
-  public String getId() {
-    return id;
-  }
+    /**
+     * 航司名称
+     */
+    private String companyName;
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    /**
+     * 国家代码
+     */
+    private String nationCode;
 
+    /**
+     * 航司LOGO
+     */
+    private String logoIco;
 
-  public String getIataCode() {
-    return iataCode;
-  }
+    /**
+     * 是否失效 false:正常;true:失效
+     */
+    private Boolean isInvalid;
 
-  public void setIataCode(String iataCode) {
-    this.iataCode = iataCode;
-  }
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
 
+    /**
+     * 创建时间
+     */
+    private Date createdTime;
 
-  public String getCompanyName() {
-    return companyName;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public void setCompanyName(String companyName) {
-    this.companyName = companyName;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
+    public String getIataCode() {
+        return iataCode;
+    }
 
-  public String getNationCode() {
-    return nationCode;
-  }
+    public void setIataCode(String iataCode) {
+        this.iataCode = iataCode;
+    }
 
-  public void setNationCode(String nationCode) {
-    this.nationCode = nationCode;
-  }
+    public String getCompanyName() {
+        return companyName;
+    }
 
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
 
-  public String getLogoIco() {
-    return logoIco;
-  }
+    public String getNationCode() {
+        return nationCode;
+    }
 
-  public void setLogoIco(String logoIco) {
-    this.logoIco = logoIco;
-  }
+    public void setNationCode(String nationCode) {
+        this.nationCode = nationCode;
+    }
 
+    public String getLogoIco() {
+        return logoIco;
+    }
 
-  public java.sql.Timestamp getUpdateTime() {
-    return updateTime;
-  }
+    public void setLogoIco(String logoIco) {
+        this.logoIco = logoIco;
+    }
 
-  public void setUpdateTime(java.sql.Timestamp updateTime) {
-    this.updateTime = updateTime;
-  }
+    public Boolean getIsInvalid() {
+        return isInvalid;
+    }
 
+    public void setIsInvalid(Boolean isInvalid) {
+        this.isInvalid = isInvalid;
+    }
 
-  public java.sql.Timestamp getCreatedTime() {
-    return createdTime;
-  }
+    public Date getUpdateTime() {
+        return updateTime;
+    }
 
-  public void setCreatedTime(java.sql.Timestamp createdTime) {
-    this.createdTime = createdTime;
-  }
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
 
+    public Date getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
+    }
 }
