@@ -141,6 +141,15 @@ public interface AirlineMapper extends Mapper {
     List<Airway> getAirwaies(Integer offset, Integer count);
 
     /**
+     * 查询指定航班号的航司ID
+     *
+     * @param flightNo 航班号
+     * @return 航司ID
+     */
+    @Select("SELECT id FROM msd_airway WHERE LEFT(#{flightNo},2)=iata_code")
+    String getAirwayIdByFlightNo(String flightNo);
+
+    /**
      * 新增航班信息数据
      *
      * @param flightInfos 航班信息数据集合
