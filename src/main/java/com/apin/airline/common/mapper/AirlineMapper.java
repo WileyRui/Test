@@ -149,13 +149,34 @@ public interface AirlineMapper extends Mapper {
     @Select("SELECT id FROM msd_airway WHERE LEFT(#{flightNo},2)=iata_code")
     String getAirwayIdByFlightNo(String flightNo);
 
-    @Insert("")
+    /**
+     * 新增航司基础数据
+     *
+     * @param airway 航司基础数据
+     * @return 受影响行数
+     */
+    @Insert("INSERT msd_airway(id,iata_code,company_name,nation_code,logo_ico) " +
+            "VALUES (#{id},#{iataCode},#{companyName},#{nationCode},#{logoIco});")
     Integer addAirway(Airway airway);
 
+    /**
+     * 删除航司基础数据(逻辑删除)
+     *
+     * @param id 航司基础数据ID
+     * @return 受影响行数
+     */
     @Update("UPDATE msd_airway SET is_invalid=1 WHERE id=#{id};")
     Integer deleteAirway(String id);
 
-    @Update("")
+    /**
+     * 更新航司基础数据
+     *
+     * @param airway 航司基础数据
+     * @return 受影响行数
+     */
+    @Update("UPDATE msd_airway SET " +
+            "iata_code=#{iataCode},company_name=#{companyName},nation_code=#{nationCode},logo_ico=#{logoIco} " +
+            "WHEREid=#{id};")
     Integer updateAirway(Airway airway);
 
     /**
