@@ -363,4 +363,7 @@ public interface AirlineMapper extends Mapper {
             "WHERE flight_id=#{flightId} AND owner_id=#{ownerId} AND seat_status<2 " +
             "ORDER BY seat_status DESC LIMIT #{count};")
     List<Seat> getSelledSeats(String flightId, String ownerId, Integer count);
+
+
+//    @Select()
 }
