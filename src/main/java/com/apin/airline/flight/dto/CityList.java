@@ -11,6 +11,7 @@ public class CityList {
     private Integer flightType;
     private String depDate;
     private String arrDate;
+    private Integer day;
 
 
     public String getDepCity() {
@@ -51,5 +52,13 @@ public class CityList {
 
     public void setFlightType(Integer flightType) {
         this.flightType = flightType;
+    }
+
+    public Integer getDay() {
+        return day;
+    }
+
+    public void setDay(Integer day) {
+        this.day = day;
     }
 }

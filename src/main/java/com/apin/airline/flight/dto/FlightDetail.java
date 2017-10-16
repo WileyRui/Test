@@ -10,9 +10,15 @@ import java.util.List;
  */
 public class FlightDetail {
     private List<String> dateList;
-    private Integer seat;
-    private BigDecimal price;
-    private String img;
+    private Integer remainCount;
+    private Integer total;
+    private Integer soldCount;
+    private BigDecimal basePrice;
+    private String arrCityImgUrl;
+    private Integer days;
+    private String depCity;
+    private String arrCity;
+    private String retDate;
 
     public FlightDetail() {
     }
@@ -26,27 +32,77 @@ public class FlightDetail {
         this.dateList = dateList;
     }
 
-    public Integer getSeat() {
-        return seat;
+
+    public Integer getDays() {
+        return days;
     }
 
-    public void setSeat(Integer seat) {
-        this.seat = seat;
+    public void setDays(Integer days) {
+        this.days = days;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public Integer getRemainCount() {
+        return remainCount;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setRemainCount(Integer remainCount) {
+        this.remainCount = remainCount;
     }
 
-    public String getImg() {
-        return img;
+    public Integer getTotal() {
+        return total;
     }
 
-    public void setImg(String img) {
-        this.img = img;
+    public void setTotal(Integer total) {
+        this.total = total;
+    }
+
+    public Integer getSoldCount() {
+
+        return total==null?0:total-remainCount;
+    }
+
+    public void setSoldCount(Integer soldCount) {
+        this.soldCount = soldCount;
+    }
+
+    public BigDecimal getBasePrice() {
+        return basePrice;
+    }
+
+    public void setBasePrice(BigDecimal basePrice) {
+        this.basePrice = basePrice;
+    }
+
+    public String getArrCityImgUrl() {
+        return arrCityImgUrl;
+    }
+
+    public void setArrCityImgUrl(String arrCityImgUrl) {
+        this.arrCityImgUrl = arrCityImgUrl;
+    }
+
+    public String getDepCity() {
+        return depCity;
+    }
+
+    public void setDepCity(String depCity) {
+        this.depCity = depCity;
+    }
+
+    public String getArrCity() {
+        return arrCity;
+    }
+
+    public void setArrCity(String arrCity) {
+        this.arrCity = arrCity;
+    }
+
+    public String getRetDate() {
+        return retDate;
+    }
+
+    public void setRetDate(String retDate) {
+        this.retDate = retDate;
     }
 }

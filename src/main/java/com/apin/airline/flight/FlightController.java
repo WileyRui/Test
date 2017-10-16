@@ -88,7 +88,7 @@ public class FlightController {
     /**
      * 根据城市对与出发日期查询航班
      *
-     * @param searchDto
+     * @param cityList
      * @return Reply
      * 正常：返回接口调用成功,返回数据
      */
@@ -100,7 +100,7 @@ public class FlightController {
     /**
      * 根据城市对与出发日期结束日期查询航班详情
      *
-     * @param searchDto
+     * @param cityList
      * @return Reply
      * 正常：返回接口调用成功,返回数据
      */

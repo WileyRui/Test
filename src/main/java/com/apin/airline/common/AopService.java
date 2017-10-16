@@ -2,6 +2,7 @@ package com.apin.airline.common;
 
 import com.apin.airline.common.entity.Log;
 import com.apin.util.Generator;
+import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 
@@ -10,6 +11,7 @@ import java.sql.Timestamp;
  * Description:切面方法
  * Date:2017/10/16
  */
+@Component
 public class AopService {
     public Boolean insertLog(Log log){
         log.setId(Generator.uuid());
@@ -23,7 +25,8 @@ public class AopService {
             case "1007":{log.setEventName("航线过期");break;}
         }
         log.setCreatedTime(new Timestamp(System.currentTimeMillis()));
-        //return logMapper.insert(log)>0;
+//        return logMapper.insert(log)>0;
         return false;
     }
+
 }

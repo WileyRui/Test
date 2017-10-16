@@ -66,7 +66,7 @@ public class FlightServiceImpl implements FlightService {
             List<String> dateList = queryMapper.selectFlightDates(voyage);
             if (dateList.size() == 0) continue;
             FlightDetail flightDetail = queryMapper.selectFlight(voyage);
-            flightDetail.setImg(img);
+            flightDetail.setArrCityImgUrl(img);
             flightDetail.setDateList(dateList);
             flightDetails.add(flightDetail);
         }
@@ -75,19 +75,25 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public Reply searchFlights(CityList cityList) {
-        queryMapper.selectFlights(cityList);
-        return null;
+        List<FlightDetail> flightDetails = queryMapper.selectFlights(cityList);
+        return ReplyHelper.success(flightDetails);
     }
 
     @Override
     public Reply searchFlightDetail(CityList cityList) {
-        queryMapper.selectFlightDetail(cityList);
-        return null;
+        List<ResponseAirlineDto> responseAirlineDtos = queryMapper.selectFlightDetail(cityList);
+        responseAirlineDtos.forEach((ResponseAirlineDto responseAirlineDto) -> {
+            List<AirlineInfo> airlineInfos=new ArrayList<>();
+            airlineInfos.add(queryMapper.selectByFlightNum(responseAirlineDto.getDepNum()));
+            airlineInfos.add(queryMapper.selectByFlightNum(responseAirlineDto.getArrNum()));
+            responseAirlineDto.setAirlineInfo(airlineInfos);
+        });
+        return ReplyHelper.success(responseAirlineDtos);
     }
 
     @Override
     public Reply searchFlightList(CityList cityList) {
-        ResponseAirlineDto responseAirlineDto = queryMapper.selectFlightList(cityList);
+        List<ResponseAirlineDto> responseAirlineDto = queryMapper.selectFlightList(cityList);
         return ReplyHelper.success(responseAirlineDto);
     }
 

@@ -2,6 +2,7 @@ package com.apin.airline.flight.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author songjia
@@ -49,7 +50,20 @@ public class ResponseAirlineDto implements Serializable {
      * 总数
      */
     private Integer total;
+    /**
+     * 去程航班号
+     */
+    private String depNum;
+    /**
+     * 返程航班号
+     */
+    private String arrNum;
 
+    /**
+     * 飞行信息
+     *
+     */
+    private List<AirlineInfo> airlineInfos;
     public ResponseAirlineDto() {
     }
 
@@ -131,5 +145,29 @@ public class ResponseAirlineDto implements Serializable {
 
     public void setTotal(Integer total) {
         this.total = total;
+    }
+
+    public String getDepNum() {
+        return depNum;
+    }
+
+    public void setDepNum(String depNum) {
+        this.depNum = depNum;
+    }
+
+    public String getArrNum() {
+        return arrNum;
+    }
+
+    public void setArrNum(String arrNum) {
+        this.arrNum = arrNum;
+    }
+
+    public List<AirlineInfo> getAirlineInfo() {
+        return airlineInfos;
+    }
+
+    public void setAirlineInfo(List<AirlineInfo> airlineInfo) {
+        this.airlineInfos = airlineInfo;
     }
 }
