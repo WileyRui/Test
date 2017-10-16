@@ -111,12 +111,17 @@ public interface BaseMapper extends Mapper {
     /**
      * 查询机场基础数据(分页,按三字码排序)
      *
-     * @param offset 偏移量
-     * @param count  记录数量
+     * @param airport 机场基础数据
      * @return 机场基础数据集合
      */
-    @Select("SELECT * FROM msd_airport WHERE is_invalid=0 ORDER BY iata_code LIMIT #{offset},#{count};")
-    List<Airport> getAirports(Integer offset, Integer count);
+    @Select("SELECT * FROM msd_airport " +
+            "WHERE is_invalid=0 " +
+            "AND ('NULL'=#{id} OR id=#{id}) " +
+            "AND ('NULL'=#{cityCode} OR city_code=#{cityCode}) " +
+            "AND ('NULL'=#{iataCode} OR iata_code=#{iataCode}) " +
+            "AND ('NULL'=#{airportName} OR airport_name=#{airportName}) " +
+            "ORDER BY iata_code LIMIT #{offset},#{count};")
+    List<Airport> getAirports(Airport airport);
 
     /**
      * 新增机场基础数据
@@ -150,12 +155,17 @@ public interface BaseMapper extends Mapper {
     /**
      * 查询航司基础数据(分页,按航司代码排序)
      *
-     * @param offset 偏移量
-     * @param count  记录数量
+     * @param airway 航司基础数据
      * @return 航司基础数据集合
      */
-    @Select("SELECT * FROM msd_airway WHERE is_invalid=0 ORDER BY iata_code LIMIT #{offset},#{count};")
-    List<Airway> getAirwaies(Integer offset, Integer count);
+    @Select("SELECT * FROM msd_airway " +
+            "WHERE is_invalid=0 " +
+            "AND ('NULL'=#{id} OR id=#{id}) " +
+            "AND ('NULL'=#{nationCode} OR nation_code=#{nationCode}) " +
+            "AND ('NULL'=#{iataCode} OR iata_code=#{iataCode}) " +
+            "AND ('NULL'=#{companyName} OR company_name LIKE CONCAT('%',#{companyName},'%')) " +
+            "ORDER BY iata_code LIMIT #{offset},#{count};")
+    List<Airway> getAirwaies(Airway airway);
 
     /**
      * 新增航司基础数据
