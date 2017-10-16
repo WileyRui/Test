@@ -154,7 +154,7 @@ public interface AirlineMapper extends Mapper {
     @Select("SELECT v.id,v.airline_id,v.trip_index,i.flight_company,i.flight_no,i.flight_dep_airport," +
             "i.flight_arr_airport,i.flight_deptime_plan_date,i.flight_arrtime_plan_date,i.stop_flag,i.flights " +
             "FROM msd_airline_voyage v JOIN msd_airline_info i ON i.id=v.flight_info_id WHERE v.airline_id=#{id}")
-    List<AirlineDetail> getVoyages(String id);
+    List<FlightInfo> getVoyages(String id);
 
     /**
      * 新增航线资源
@@ -254,6 +254,17 @@ public interface AirlineMapper extends Mapper {
             "</foreach></script>")
     Integer updatePrice(@Param("id") String airlineId, @Param("dates") List<Date> dates,
                         @Param("adultPrice") BigDecimal adultPrice, @Param("childPrice") BigDecimal childPrice);
+
+    /**
+     * 查询指定账户ID及航线基础数据ID的全部航班资源的执飞日期
+     *
+     * @param accountId 供应商账户ID
+     * @param airLineId 航线基础数据ID
+     * @return 执飞日期集合
+     */
+    @Select("SELECT f.flight_date FROM mbs_airline a JOIN mbs_airline_flight f ON f.airline_id=a.id " +
+            "WHERE a.is_invalid=0 AND a.account_id=#{accountId} AND a.airline_id=#{airLineId} ORDER BY f.flight_date")
+    List<Date> getExistedflightDate(@Param("accountId") String accountId, @Param("airLineId") String airLineId);
 
     /**
      * 新增舱位资源

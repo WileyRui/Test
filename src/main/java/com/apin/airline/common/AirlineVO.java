@@ -1,15 +1,12 @@
 package com.apin.airline.common;
 
-import com.apin.airline.common.entity.*;
 import com.apin.airline.common.entity.Airline;
+import com.apin.airline.common.entity.*;
 import com.apin.airline.common.mapper.AirlineMapper;
 import com.apin.util.DateHelper;
 import com.apin.util.Generator;
-import com.apin.util.JsonUtils;
 import com.apin.util.ReplyHelper;
-import com.apin.util.pojo.AccessToken;
 import com.apin.util.pojo.Reply;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +32,7 @@ public class AirlineVO {
      * @param flightDetails
      * @return 航线基础数据实体类
      */
-    public com.apin.airline.common.entity.Airline setAirline(Line line, List<FlightDetail> flightDetails) {
+    public com.apin.airline.common.entity.Airline setAirline(Line line, List<FlightInfo> flightDetails) {
         com.apin.airline.common.entity.Airline airline = new com.apin.airline.common.entity.Airline();
         airline.setId(Generator.uuid());
         airline.setInvalid(false);
@@ -45,8 +42,8 @@ public class AirlineVO {
         return airline;
     }
 
-    public com.apin.airline.common.entity.Airline setMsdAirline(com.apin.airline.common.entity.Airline msdAirline, List<FlightDetail> flightDetails, int i, int flightType, StringBuilder appendFlight) {
-        FlightDetail flightDetail = flightDetails.get(i);
+    public com.apin.airline.common.entity.Airline setMsdAirline(com.apin.airline.common.entity.Airline msdAirline, List<FlightInfo> flightDetails, int i, int flightType, StringBuilder appendFlight) {
+        FlightInfo flightDetail = flightDetails.get(i);
         if (flightType == 1) { // 单程
             msdAirline.setFlightNumber(flightDetail.getFlightNo());
             msdAirline.setVoyage(this.appendVoyage(flightType, flightDetails));
@@ -81,7 +78,7 @@ public class AirlineVO {
      * @param airline
      * @return
      */
-    public List<Voyage> setVoyage(List<FlightDetail> flightDetails, Airline airline) {
+    public List<Voyage> setVoyage(List<FlightInfo> flightDetails, Airline airline) {
         List<Voyage> voyages = new ArrayList<>();
         for (int i = 0; i < flightDetails.size(); i++) {
             Voyage voyage = new Voyage();
@@ -102,7 +99,7 @@ public class AirlineVO {
      * @param flightDetails
      * @return
      */
-    public List<Flight> setFlight(Line line, List<FlightDetail> flightDetails) {
+    public List<Flight> setFlight(Line line, List<FlightInfo> flightDetails) {
         List<Flight> flights = new ArrayList<>();
         String[] datesByWeek = line.getWeekFlights().split(",");
         for (String flightDate : datesByWeek) {
@@ -160,13 +157,13 @@ public class AirlineVO {
      * @param flightDetails 航班詳情
      * @return string
      */
-    public String appendVoyage(int flightType, List<FlightDetail> flightDetails) {
+    public String appendVoyage(int flightType, List<FlightInfo> flightDetails) {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < flightDetails.size(); i++) {
-            FlightDetail flightDetail = flightDetails.get(i);
-            String depAirportCode = flightDetail.getDepAirportCode();
+            FlightInfo flightDetail = flightDetails.get(i);
+            String depAirportCode = flightDetail.getFlightDepcode();
             String depCity = airlineMapper.findCityNameByIataCode(depAirportCode);
-            String arrAirportCode = flightDetail.getArrAirportCode();
+            String arrAirportCode = flightDetail.getFlightArrcode();
             String arrCity = airlineMapper.findCityNameByIataCode(arrAirportCode);
             switch (flightType) {
                 case 1:
@@ -197,33 +194,17 @@ public class AirlineVO {
      * @param details
      * @return hashValue
      */
-    public String hashValue(List<FlightDetail> details) {
-        // hashValue
+    public String hashValue(List<FlightInfo> details) {
         StringBuffer hashValue = new StringBuffer();
-        // 出发城市-到达城市
-        StringBuffer city2City = new StringBuffer();
-        // 出发城市-到达机场
-        StringBuffer city2airport = new StringBuffer();
-        // 出发机场-到达城市
-        StringBuffer airport2City = new StringBuffer();
-        // 出发机场-到达机场
-        StringBuffer airport2airport = new StringBuffer();
-        for (FlightDetail flightDetail : details) {
-            String depAirportCode = flightDetail.getDepAirportCode();
-            String arrAirportCode = flightDetail.getArrAirportCode();
-            String arrCityCode = airlineMapper.findCityCode(arrAirportCode);
-            String depCityCode = airlineMapper.findCityCode(depAirportCode);
-            String days = flightDetail.getDays();
-            city2City.append(depCityCode + arrCityCode + days);
-            city2airport.append(depCityCode + arrAirportCode + days);
-            airport2City.append(depAirportCode + arrCityCode + days);
-            airport2airport.append(depAirportCode + arrAirportCode + days);
-        }
-        hashValue.append(Generator.md5(city2City.toString()) + "," + Generator.md5(city2airport.toString()) + ","
-                + Generator.md5(airport2City.toString()) + "," + Generator.md5(airport2airport.toString()));
+        details.forEach(detail -> {
+            String depCity = detail.getFlightDep();
+            String arrCity = detail.getFlightArr();
+            String flightNo = detail.getFlightNo();
+            String days = detail.getDays();
+            hashValue.append(flightNo + depCity + arrCity + days);
+        });
         return hashValue.toString();
     }
-
 
     /**
      * 验证参数
@@ -232,67 +213,11 @@ public class AirlineVO {
      * @return Reply
      */
     public Reply checkData(Line line) {
-        if (StringUtils.isBlank(line.getFlightType().toString())
-                || StringUtils.isBlank(line.getSeatType().toString())
-                || StringUtils.isBlank(line.getAdultPrice().toString())
-                || StringUtils.isBlank(line.getChildPrice().toString())
-                || StringUtils.isBlank(line.getSeatCount().toString())
-                || StringUtils.isBlank(line.getTicketAdvance().toString())) {
-            return ReplyHelper.fail("参数为空或不符合格式");
-        }
-        if (line.getTicketAdvance() >= line.getRecoveryAdvance()) {
-            return ReplyHelper.fail("余票回收天数必须大于开票提前天数");
-        }
-        List<FlightDetail> msdAirlineList = line.getDetails();
-        if (msdAirlineList == null) {
-            return ReplyHelper.fail("缺少航班信息");
-        }
-        return null;
+        if (line.getTicketAdvance() >= line.getRecoveryAdvance()) return ReplyHelper.invalidParam("余票回收天数必须大于开票提前天数");
+
+        List<FlightInfo> details = line.getDetails();
+        if (details == null || details.size() == 0) return ReplyHelper.invalidParam("缺少航班信息");
+
+        return ReplyHelper.success();
     }
-
-    /**
-     * 判断航线是否重复
-     *
-     * @param hashKey
-     * @return
-     */
-    public boolean LineRepeat(String hashKey) {
-        String airlineId = airlineMapper.getExistedAirline(hashKey);
-        if (StringUtils.isNotBlank(airlineId)) {
-            return true;
-        }
-        return false;
-    }
-
-
-   /* public MbsAirlineFlight setAirlineFlight(MbsAirlineFlight airlineFlight, MbsLine airlineE, String flightDate) {
-        Date date = DateUtil.String2Date(flightDate, "yyyy-MM-dd");
-        airlineFlight.setId(UUID.randomUUID().toString().replace("-", ""));
-        airlineFlight.setFlightDate(date);
-        airlineFlight.setAdultPrice(airlineE.getAdultPrice());
-        airlineFlight.setChildPrice(airlineE.getChildPrice());
-        if (airlineE.getAlertAdvance() != null) {
-            airlineFlight.setAlertDate(DateUtil.dateAddSub(date, -airlineE.getAlertAdvance()));
-        }
-        airlineFlight.setTicketDate(DateUtil.dateAddSub(date, -airlineE.getTicketAdvance()));
-        airlineFlight.setRecoveryDate(DateUtil.dateAddSub(date, -airlineE.getRecoveryAdvance()));
-        return airlineFlight;
-    }
-
-    public MbsAirlineLog setAirlineLog(MbsAirlineE airlineE, String id, boolean flag) {
-        MbsAirlineLog airlineLog = new MbsAirlineLog();
-        airlineLog.setId(Generator.uuid());
-        airlineLog.setEventSource("CRM");
-        airlineLog.setAirlineId(id);
-        if (flag) {
-            airlineLog.setEventName("新增航线");
-            airlineLog.setMessage("新增航线成功");
-        } else {
-            airlineLog.setEventName("编辑航线");
-            airlineLog.setMessage("编辑航线成功");
-        }
-        airlineLog.setOperatorId(airlineE.getCreatorUserId());
-        airlineLog.setOperatorUser(airlineE.getCreatorUser());
-        return airlineLog;
-    }*/
 }
