@@ -1,45 +1,41 @@
 package com.apin.airline.line.dto;
 
-public class FlightDetail {
+import java.io.Serializable;
 
-    private String arrAirportCode;
-    private String datePeriod;
-    private String datesByWeek;
-    private String days;
-    private String depAirportCode;
+/**
+ * @author wiley
+ * @date 2017/10/10
+ * @remark 航程明细封装类
+ */
+public class FlightDetail implements Serializable{
+    private static final long serialVersionUID = -1L;
+
+    /**
+     * 航班号
+     */
     private String flightNo;
-    private String weekFlights;
 
-    public String getArrAirportCode() {
-        return arrAirportCode;
+    /**
+     * 出发机场三字码
+     */
+    private String depAirportCode;
+
+    /**
+     * 到达机场三字码
+     */
+    private String arrAirportCode;
+
+    /**
+     * 返程天数
+     */
+    private String days;
+
+    public String getFlightNo() {
+        return flightNo;
     }
 
-    public void setArrAirportCode(String arrAirportCode) {
-        this.arrAirportCode = arrAirportCode;
-    }
-
-    public String getDatePeriod() {
-        return datePeriod;
-    }
-
-    public void setDatePeriod(String datePeriod) {
-        this.datePeriod = datePeriod;
-    }
-
-    public String getDatesByWeek() {
-        return datesByWeek;
-    }
-
-    public void setDatesByWeek(String datesByWeek) {
-        this.datesByWeek = datesByWeek;
-    }
-
-    public String getDays() {
-        return days;
-    }
-
-    public void setDays(String days) {
-        this.days = days;
+    public void setFlightNo(String flightNo) {
+        this.flightNo = flightNo;
     }
 
     public String getDepAirportCode() {
@@ -50,27 +46,19 @@ public class FlightDetail {
         this.depAirportCode = depAirportCode;
     }
 
-    public String getFlightNo() {
-        return flightNo;
+    public String getArrAirportCode() {
+        return arrAirportCode;
     }
 
-    public void setFlightNo(String flightNo) {
-        this.flightNo = flightNo;
+    public void setArrAirportCode(String arrAirportCode) {
+        this.arrAirportCode = arrAirportCode;
     }
 
-    public String getWeekFlights() {
-        return weekFlights;
+    public String getDays() {
+        return days;
     }
 
-    public void setWeekFlights(String weekFlights) {
-        this.weekFlights = weekFlights;
+    public void setDays(String days) {
+        this.days = days;
     }
-
-    @Override
-    public String toString() {
-        return "FlightDetail [arrAirportCode=" + arrAirportCode + ", datePeriod=" + datePeriod + ", datesByWeek="
-                + datesByWeek + ", days=" + days + ", depAirportCode=" + depAirportCode + ", flightNo=" + flightNo
-                + ", weekFlights=" + weekFlights + "]";
-    }
-
 }

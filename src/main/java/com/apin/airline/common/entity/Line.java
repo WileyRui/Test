@@ -1,8 +1,11 @@
 package com.apin.airline.common.entity;
 
+import com.apin.airline.line.dto.FlightDetail;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 宣炳刚
@@ -166,6 +169,11 @@ public class Line implements Serializable {
      * 创建时间
      */
     private Date createdTime;
+
+    /**
+     * 航程明细
+     */
+    private List<FlightDetail> details;
 
     public String getId() {
         return id;
@@ -413,5 +421,13 @@ public class Line implements Serializable {
 
     public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public List<FlightDetail> getDetails() {
+        return details;
+    }
+
+    public void setDetails(List<FlightDetail> details) {
+        this.details = details;
     }
 }

@@ -27,7 +27,7 @@ public class AirlineVO {
     @Autowired
     AirlineMapper airlineMapper;
 
-    public LineBo setLineBo(LineBo lineBo, String token) {
+    public void setLineBo(LineBo lineBo, String token) {
         AccessToken accessToken = JsonUtils.toAccessToken(token);
         String accountId = accessToken.getAccountId();
         String userId = accessToken.getUserId();
@@ -35,7 +35,6 @@ public class AirlineVO {
         lineBo.setAccountId(accountId);
         lineBo.setCreatorUser(userName);
         lineBo.setCreatorUserId(userId);
-        return lineBo;
     }
 
     /**

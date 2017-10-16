@@ -1,7 +1,6 @@
 package com.apin.airline.line;
 
 import com.apin.airline.common.entity.FlightInfo;
-import com.apin.airline.line.dto.LineBo;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
