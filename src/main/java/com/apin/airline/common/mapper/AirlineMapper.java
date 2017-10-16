@@ -15,171 +15,6 @@ import java.util.List;
 public interface AirlineMapper extends Mapper {
 
     /**
-     * 查询国家基础数据(分页,按国家代码排序)
-     *
-     * @param offset 偏移量
-     * @param count  记录数量
-     * @return 国家基础数据集合
-     */
-    @Select("SELECT * FROM msd_country WHERE is_invalid=0 ORDER BY country_code LIMIT #{offset},#{count};")
-    List<Country> getCountries(Integer offset, Integer count);
-
-    /**
-     * 新增国家基础数据
-     *
-     * @param country 国家基础数据
-     * @return 受影响行数
-     */
-    @Insert("INSERT msd_country(id,zone_code,country_code,country_name) " +
-            "VALUES (#{id},#{zoneCode},#{countryCode},#{countryName});")
-    Integer addCountry(Country country);
-
-    /**
-     * 删除国家基础数据(逻辑删除)
-     *
-     * @param id 国家基础数据ID
-     * @return 受影响行数
-     */
-    @Update("UPDATE msd_country SET is_invalid=1 WHERE id=#{id};")
-    Integer deleteCountry(String id);
-
-    /**
-     * 编辑国家基础数据
-     *
-     * @param country 国家基础数据
-     * @return 受影响行数
-     */
-    @Update("UPDATE msd_country SET zone_code=#{zoneCode},country_code=#{countryCode},country_name=#{countryName} WHERE id=#{id};")
-    Integer updateCountry(Country country);
-
-    /**
-     * 查询城市基础数据(分页,按拼音排序)
-     *
-     * @param offset 偏移量
-     * @param count  记录数量
-     * @return 城市基础数据集合
-     */
-    @Select("SELECT * FROM msd_city WHERE is_invalid=0 ORDER BY en_name LIMIT #{offset},#{count};")
-    List<City> getCities(Integer offset, Integer count);
-
-    /**
-     * 新增城市基础数据
-     *
-     * @param city 城市基础数据
-     * @return 受影响行数
-     */
-    @Insert("INSERT msd_city(id,country_id,city_code,city_name,en_name,pinyin_first,img_url,description,longitude,latitude) " +
-            "VALUES (#{id},#{countryId},#{cityCode},#{cityName},#{enName},#{pinyinFirst},#{imgUrl},#{description},#{longitude},#{latitude});")
-    Integer addCity(City city);
-
-    /**
-     * 删除城市基础数据(逻辑删除)
-     *
-     * @param id 城市基础数据ID
-     * @return 受影响行数
-     */
-    @Update("UPDATE msd_city SET is_invalid=1 WHERE id=#{id};")
-    Integer deleteCity(String id);
-
-    /**
-     * 编辑城市基础数据
-     *
-     * @param city 城市基础数据
-     * @return 受影响行数
-     */
-    @Update("UPDATE msd_city SET country_id=#{countryId},city_code=#{cityCode},city_name=#{cityName},en_name=#{enName},pinyin_first=#{pinyinFirst}," +
-            "img_url=#{imgUrl},description=#{description},longitude=#{longitude},latitude=#{latitude} WHERE id=#{id};")
-    Integer updateCity(City city);
-
-    /**
-     * 查询机场基础数据(分页,按三字码排序)
-     *
-     * @param offset 偏移量
-     * @param count  记录数量
-     * @return 机场基础数据集合
-     */
-    @Select("SELECT * FROM msd_airport WHERE is_invalid=0 ORDER BY iata_code LIMIT #{offset},#{count};")
-    List<Airport> getAirports(Integer offset, Integer count);
-
-    /**
-     * 新增机场基础数据
-     *
-     * @param airport 机场基础数据
-     * @return 受影响行数
-     */
-    @Insert("INSERT msd_airport(id,city_code,iata_code,icao_code,airport_name,longitude,latitude,time_zone) " +
-            "VALUES (#{id},#{cityCode},#{iataCode},#{icaoCode},#{airportName},#{longitude},#{latitude},#{timeZone});")
-    Integer addAirport(Airport airport);
-
-    /**
-     * 删除机场基础数据(逻辑删除)
-     *
-     * @param id 机场基础数据ID
-     * @return 受影响行数
-     */
-    @Update("UPDATE msd_airport SET is_invalid=1 WHERE id=#{id};")
-    Integer deleteAirport(String id);
-
-    /**
-     * 编辑机场基础数据
-     *
-     * @param airport 机场基础数据
-     * @return 受影响行数
-     */
-    @Update("UPDATE msd_airport SET city_code=#{cityCode},iata_code=#{iataCode},icao_code=#{icaoCode},airport_name=#{airportName}," +
-            "longitude=#{longitude},latitude=#{latitude},time_zone=#{timeZone} WHEREid=#{id};")
-    Integer updateAirport(Airport airport);
-
-    /**
-     * 查询航司基础数据(分页,按航司代码排序)
-     *
-     * @param offset 偏移量
-     * @param count  记录数量
-     * @return 航司基础数据集合
-     */
-    @Select("SELECT * FROM msd_airway WHERE is_invalid=0 ORDER BY iata_code LIMIT #{offset},#{count};")
-    List<Airway> getAirwaies(Integer offset, Integer count);
-
-    /**
-     * 查询指定航班号的航司ID
-     *
-     * @param flightNo 航班号
-     * @return 航司ID
-     */
-    @Select("SELECT id FROM msd_airway WHERE LEFT(#{flightNo},2)=iata_code")
-    String getAirwayIdByFlightNo(String flightNo);
-
-    /**
-     * 新增航司基础数据
-     *
-     * @param airway 航司基础数据
-     * @return 受影响行数
-     */
-    @Insert("INSERT msd_airway(id,iata_code,company_name,nation_code,logo_ico) " +
-            "VALUES (#{id},#{iataCode},#{companyName},#{nationCode},#{logoIco});")
-    Integer addAirway(Airway airway);
-
-    /**
-     * 删除航司基础数据(逻辑删除)
-     *
-     * @param id 航司基础数据ID
-     * @return 受影响行数
-     */
-    @Update("UPDATE msd_airway SET is_invalid=1 WHERE id=#{id};")
-    Integer deleteAirway(String id);
-
-    /**
-     * 更新航司基础数据
-     *
-     * @param airway 航司基础数据
-     * @return 受影响行数
-     */
-    @Update("UPDATE msd_airway SET " +
-            "iata_code=#{iataCode},company_name=#{companyName},nation_code=#{nationCode},logo_ico=#{logoIco} " +
-            "WHEREid=#{id};")
-    Integer updateAirway(Airway airway);
-
-    /**
      * 新增航班信息数据
      *
      * @param flightInfos 航班信息数据集合
@@ -219,8 +54,8 @@ public interface AirlineMapper extends Mapper {
      * @param airline 航线基础数据
      * @return 受影响行数
      */
-    @Insert("INSERT msd_airline(id,hash_key,flight_type,voyage,flight_number,flight_time,week_flights,creator_user,creator_user_id) " +
-            "VALUES (#{id},#{hashKey},#{flightype},#{voyage},#{flightNumber},#{flightTime},#{weekFlights},#{creatorUser},#{creatorUserId});")
+    @Insert("INSERT msd_airline(id,hash_key,flight_type,dep_city,arr_city,voyage,flight_number,flight_time,week_flights,creator_user,creator_user_id) " +
+            "VALUES (#{id},#{hashKey},#{flightype},#{depCity},#{arrCity},#{voyage},#{flightNumber},#{flightTime},#{weekFlights},#{creatorUser},#{creatorUserId});")
     Integer addAirline(Airline airline);
 
     /**
@@ -252,6 +87,43 @@ public interface AirlineMapper extends Mapper {
      */
     @Select("SELECT id FROM msd_airline WHERE hash_key=#{hashKey} ORDER BY created_time LIMIT 1;")
     String getExistedAirline(String hashKey);
+
+    /**
+     * 查询指定航班号的航司ID
+     *
+     * @param flightNo 航班号
+     * @return 航司ID
+     */
+    @Select("SELECT id FROM msd_airway WHERE LEFT(#{flightNo},2)=iata_code")
+    String getAirwayIdByFlightNo(String flightNo);
+
+    /**
+     * 根据航司简称查询航司id
+     *
+     * @param iataCode
+     * @return
+     */
+    @Select("select id from msd_airway where iata_code = #{iataCode}")
+    String findByIataCode(String iataCode);
+
+    /**
+     * 机场三字码查询城市三字码
+     *
+     * @param iataCode
+     * @return
+     */
+    @Select("SELECT city_code cityCode FROM msd_airport WHERE iata_code = #{iataCode}")
+    String findCityCode(String iataCode);
+
+    /**
+     * 城市三字码获取城市名称
+     *
+     * @param iataCode
+     * @return cityName
+     */
+    @Select("SELECT mc.city_name as cityName FROM msd_airport ma LEFT JOIN msd_city mc ON ma.city_code = mc.city_code " +
+            "WHERE ma.iata_code =#{iataCode}")
+    String findCityNameByIataCode(@Param("iataCode") String iataCode);
 
     /**
      * 查询指定ID的航线基础数据

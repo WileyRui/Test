@@ -2,7 +2,6 @@ package com.apin.airline.line;
 
 import com.apin.airline.base.VariFlightService;
 import com.apin.airline.common.entity.*;
-import com.apin.airline.common.mapper.AirWayMapper;
 import com.apin.airline.common.mapper.AirlineMapper;
 import com.apin.airline.line.dto.AirlineVO;
 import com.apin.airline.line.dto.FlightDetail;
@@ -29,8 +28,6 @@ public class LineServiceImpl implements LineService {
     VariFlightService variFlight;
     @Autowired
     AirlineMapper airlineMapper;
-    @Autowired
-    AirWayMapper airWayMapper;
     @Autowired
     AirlineVO airlineVO;
 

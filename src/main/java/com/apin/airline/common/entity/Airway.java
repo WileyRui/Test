@@ -34,7 +34,7 @@ public class Airway implements Serializable {
     /**
      * 是否失效 false:正常;true:失效
      */
-    private Boolean isInvalid;
+    private Boolean invalid;
 
     /**
      * 更新时间
@@ -45,6 +45,16 @@ public class Airway implements Serializable {
      * 创建时间
      */
     private Date createdTime;
+
+    /**
+     * 偏移量
+     */
+    private Integer offset;
+
+    /**
+     * 记录数量
+     */
+    private Integer count;
 
     public String getId() {
         return id;
@@ -86,12 +96,12 @@ public class Airway implements Serializable {
         this.logoIco = logoIco;
     }
 
-    public Boolean getIsInvalid() {
-        return isInvalid;
+    public Boolean getInvalid() {
+        return invalid;
     }
 
-    public void setIsInvalid(Boolean isInvalid) {
-        this.isInvalid = isInvalid;
+    public void setInvalid(Boolean invalid) {
+        this.invalid = invalid;
     }
 
     public Date getUpdateTime() {
@@ -108,5 +118,21 @@ public class Airway implements Serializable {
 
     public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public Integer getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Integer offset) {
+        this.offset = offset;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

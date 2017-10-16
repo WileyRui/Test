@@ -2,8 +2,6 @@ package com.apin.airline.line.dto;
 
 import com.apin.airline.common.entity.*;
 import com.apin.airline.common.mapper.AirlineMapper;
-import com.apin.airline.common.mapper.AirportMapper;
-import com.apin.airline.common.mapper.CityMapper;
 import com.apin.util.DateHelper;
 import com.apin.util.Generator;
 import com.apin.util.JsonUtils;
@@ -28,10 +26,6 @@ import java.util.List;
 public class AirlineVO {
     @Autowired
     AirlineMapper airlineMapper;
-    @Autowired
-    AirportMapper airportMapper;
-    @Autowired
-    CityMapper cityMapper;
 
     public LineBo setLineBo(LineBo lineBo, String token) {
         AccessToken accessToken = JsonUtils.toAccessToken(token);
@@ -246,9 +240,9 @@ public class AirlineVO {
         for (int i = 0; i < flightDetails.size(); i++) {
             FlightDetail flightDetail = flightDetails.get(i);
             String depAirportCode = flightDetail.getDepAirportCode();
-            String depCity = cityMapper.findCityNameByIataCode(depAirportCode);
+            String depCity = airlineMapper.findCityNameByIataCode(depAirportCode);
             String arrAirportCode = flightDetail.getArrAirportCode();
-            String arrCity = cityMapper.findCityNameByIataCode(arrAirportCode);
+            String arrCity = airlineMapper.findCityNameByIataCode(arrAirportCode);
             switch (flightType) {
                 case 1:
                     buffer.append(depCity + "-").append(arrCity);
@@ -292,8 +286,8 @@ public class AirlineVO {
         for (FlightDetail flightDetail : flightDetails) {
             String depAirportCode = flightDetail.getDepAirportCode();
             String arrAirportCode = flightDetail.getArrAirportCode();
-            String arrCityCode = airportMapper.findCityCode(arrAirportCode);
-            String depCityCode = airportMapper.findCityCode(depAirportCode);
+            String arrCityCode = airlineMapper.findCityCode(arrAirportCode);
+            String depCityCode = airlineMapper.findCityCode(depAirportCode);
             String days = flightDetail.getDays();
             city2City.append(depCityCode + arrCityCode + days);
             city2airport.append(depCityCode + arrAirportCode + days);

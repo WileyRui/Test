@@ -29,6 +29,16 @@ public class Airline implements Serializable {
     private Byte flightype;
 
     /**
+     * 出发城市
+     */
+    private String depCity;
+
+    /**
+     * 到达城市
+     */
+    private String arrCity;
+
+    /**
      * 航程 拼接的中文字符串,如 北京<->曼谷;北京->曼谷->巴厘岛->北京
      */
     private String voyage;
@@ -100,6 +110,22 @@ public class Airline implements Serializable {
 
     public void setFlightype(Byte flightype) {
         this.flightype = flightype;
+    }
+
+    public String getDepCity() {
+        return depCity;
+    }
+
+    public void setDepCity(String depCity) {
+        this.depCity = depCity;
+    }
+
+    public String getArrCity() {
+        return arrCity;
+    }
+
+    public void setArrCity(String arrCity) {
+        this.arrCity = arrCity;
     }
 
     public String getVoyage() {
