@@ -1,4 +1,4 @@
-package com.apin.airline.base;
+package com.apin.airline.common;
 
 import com.apin.airline.flight.dto.SearchDto;
 import com.apin.airline.ticket.dto.CalendarInfo;

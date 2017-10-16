@@ -1,6 +1,5 @@
-package com.apin.airline.base;
+package com.apin.airline.common;
 
-import com.apin.airline.common.HttpFlightUtils;
 import com.apin.airline.common.entity.FlightInfo;
 import com.apin.airline.common.entity.VariFlight;
 import com.apin.airline.common.mapper.AirlineMapper;
