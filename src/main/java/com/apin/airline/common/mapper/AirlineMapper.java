@@ -15,6 +15,16 @@ import java.util.List;
 public interface AirlineMapper extends Mapper {
 
     /**
+     * 新增操作日志
+     *
+     * @param log 操作日志数据实体
+     * @return 受影响行数
+     */
+    @Insert("INSERT mbs_airline_log(id,airline_id,event_source,event_code,event_name,message,operator_user,operator_id) " +
+            "VALUES (#{id},#{airlineId},#{eventSource},#{eventCode},#{eventName},#{message},#{operatorUser},#{operatorId});")
+    Integer addLog(Log log);
+
+    /**
      * 新增航班信息数据
      *
      * @param flightInfos 航班信息数据集合
