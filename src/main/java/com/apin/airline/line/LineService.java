@@ -1,7 +1,7 @@
 package com.apin.airline.line;
 
 import com.apin.airline.common.entity.FlightInfo;
-import com.apin.airline.common.entity.Line;
+import com.apin.airline.line.dto.LineBo;
 import com.apin.util.pojo.Reply;
 
 import java.lang.reflect.InvocationTargetException;
@@ -16,58 +16,58 @@ public interface LineService {
     /**
      * 新增航线
      *
-     * @param line
+     * @param lineBo
      * @return
      */
-    Reply addLine(String token, Line line);
+    Reply addLine(String token, LineBo lineBo);
 
     /**
      * 编辑航线
      *
-     * @param line
+     * @param lineBo
      * @return
      */
-    Reply editLine(Line line);
+    Reply editLine(LineBo lineBo);
 
     /**
      * 删除航线
      *
-     * @param line
+     * @param lineBo
      * @return
      */
-    Reply delLine(Line line);
+    Reply delLine(LineBo lineBo);
 
     /**
      * 航线列表/查询
      *
-     * @param line
+     * @param lineBo
      * @return
      */
-    Reply lineList(Line line);
+    Reply lineList(LineBo lineBo);
 
     /**
      * 航线详情
      *
-     * @param line
+     * @param lineBo
      * @return
      */
-    Reply lineInfo(Line line);
+    Reply lineInfo(LineBo lineBo);
 
     /**
      * 航线上下架
      *
-     * @param line
+     * @param lineBo
      * @return
      */
-    Reply upOrDown(Line line);
+    Reply upOrDown(LineBo lineBo);
 
     /**
      * 航班查询
      *
-     * @param line
+     * @param lineBo
      * @return
      */
-    Reply queryFlightInfo(Line line) throws InvocationTargetException, IllegalAccessException;
+    Reply queryFlightInfo(LineBo lineBo) throws InvocationTargetException, IllegalAccessException;
 
 
     /**
@@ -81,8 +81,8 @@ public interface LineService {
     /**
      * 更新航班
      *
-     * @param line
+     * @param lineBo
      * @return
      */
-    Reply updateFlightInfo(Line line) throws InvocationTargetException, IllegalAccessException;
+    Reply updateFlightInfo(LineBo lineBo) throws InvocationTargetException, IllegalAccessException;
 }
