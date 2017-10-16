@@ -46,7 +46,7 @@ public class Line implements Serializable {
     /**
      * 航程类型 0:未定义;1:单程;2:往返;3:多程
      */
-    private Byte flighType;
+    private Byte flightType;
 
     /**
      * 资源类型 0:线下资源;1:包机商资源;2:一般供应商资源;3:软切资源;4:硬切资源
@@ -231,12 +231,12 @@ public class Line implements Serializable {
         this.airlineId = airlineId;
     }
 
-    public Byte getFlighType() {
-        return flighType;
+    public Byte getFlightType() {
+        return flightType;
     }
 
-    public void setFlighType(Byte flighType) {
-        this.flighType = flighType;
+    public void setFlightType(Byte flightType) {
+        this.flightType = flightType;
     }
 
     public Byte getResType() {

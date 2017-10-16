@@ -27,93 +27,19 @@ public class AirlineVO {
     @Autowired
     AirlineMapper airlineMapper;
 
-    public void setLine(Line Line, String token) {
-        AccessToken accessToken = JsonUtils.toAccessToken(token);
-        String accountId = accessToken.getAccountId();
-        String userId = accessToken.getUserId();
-        String userName = accessToken.getUserName();
-        Line.setAccountId(accountId);
-        Line.setCreatorUser(userName);
-        Line.setCreatorUserId(userId);
-    }
-
-    /**
-     * 初始化航线数据
-     *
-     * @param Line
-     * @param flightDetails
-     * @return 航线实体类
-     */
-    public Line setLine(Line Line, List<FlightDetail> flightDetails) {
-        Line line = new Line();
-        line.setId(Generator.uuid());
-        line.setAccountId(Line.getAccountId());
-        line.setSupplierName(Line.getSupplireName());
-        line.setCreatorUserId(Line.getCreatorUserId());
-        line.setCreatorUser(Line.getCreatorUser());
-        line.setAirwayId("123321");
-        line.setResType(Line.getResType().byteValue());
-        String[] dateArray = flightDetails.get(0).getDatePeriod().split("/");
-        line.setDepartureStart(DateHelper.parseDate(dateArray[0]));
-        line.setDepartureEnd(DateHelper.parseDate(dateArray[1]));
-        // 舱位类型：1、系列团；2、余位
-        line.setSeatType(Line.getSeatType().byteValue());
-        // 舱位数量
-        line.setSeatCount(Line.getSeatCount());
-        // 定金
-        line.setDepositAmount(Line.getDepositAmount());
-        // 成人、儿童票价
-        line.setAdultPrice(Line.getAdultPrice());
-        line.setChildPrice(Line.getChildPrice());
-        // 尾款、余票回收、出票最晚天数
-        line.setPayAdvance(Line.getPayAdvance());
-        line.setTicketAdvance(Line.getTicketAdvance());
-        line.setRecoveryAdvance(Line.getRecoveryAdvance());
-        // 行李规则
-        line.setFreeBag(Line.getFreeBag());
-        line.setWeightLimit(Line.getWeightLimit());
-        // 预警 选填
-        if (Line.getAlertAdvance() != null) {
-            line.setAlertAdvance(Line.getAlertAdvance());
-        }
-        if (Line.getAlertRate() != null) {
-            line.setAlertRate(Line.getAlertRate());
-        }
-        String manager = Line.getManager().toString();
-        String managerId = Line.getManagerId();
-        if (!StringUtils.isBlank(manager)) {
-            line.setManager(manager);
-        }
-        if (!StringUtils.isBlank(managerId)) {
-            line.setManagerId(managerId);
-        }
-        // 退、该、签
-        line.setCanReturn(false);
-        line.setCanChange(false);
-        line.setCanSign(false);
-        // 新增航线默认待上架、有效
-        line.setAirlineStatus((byte) 0);
-        line.setInvalid(false);
-        line.setCreatedTime(new Date());
-        return line;
-    }
-
     /**
      * 初始化航线基础数据
      *
-     * @param Line
+     * @param line
      * @param flightDetails
      * @return 航线基础数据实体类
      */
-    public Airline setAirline(Line Line, List<FlightDetail> flightDetails) {
+    public Airline setAirline(Line line, List<FlightDetail> flightDetails) {
         Airline airline = new Airline();
         airline.setId(Generator.uuid());
-        airline.setWeekFlights(flightDetails.get(0).getWeekFlights());
-        Integer flightType = Line.getFlightType();
-        airline.setFlighType(flightType.byteValue());
         airline.setInvalid(false);
-        airline.setCreatorUser(Line.getCreatorUser());
-        airline.setCreatorUserId(Line.getCreatorUserId());
+        airline.setCreatorUser(line.getCreatorUser());
+        airline.setCreatorUserId(line.getCreatorUserId());
         airline.setCreatedTime(new Date());
         return airline;
     }
@@ -172,31 +98,30 @@ public class AirlineVO {
      * 初始化航线班次数据
      *
      * @param line
-     * @param Line
      * @param flightDetails
      * @return
      */
-    public List<Flight> setFlight(Line line, Line Line, List<FlightDetail> flightDetails) {
+    public List<Flight> setFlight(Line line, List<FlightDetail> flightDetails) {
         List<Flight> flights = new ArrayList<>();
-        String[] datesByWeek = flightDetails.get(0).getDatesByWeek().split(",");
+        String[] datesByWeek = line.getWeekFlights().split(",");
         for (String flightDate : datesByWeek) {
             Flight airlineFlight = new Flight();
-            if (Line.getAlertRate() != null) {
-                airlineFlight.setAlertThreshold((int) (line.getSeatCount() * Line.getAlertRate() * 0.01));
+            if (line.getAlertRate() != null) {
+                airlineFlight.setAlertThreshold((int) (line.getSeatCount() * line.getAlertRate() * 0.01));
             }
-            airlineFlight.setSellType(Line.getSellType());
+
             airlineFlight.setAirlineId(line.getId());
             airlineFlight.setSeatCount(line.getSeatCount());
             Date date = DateHelper.parseDate(flightDate);
             airlineFlight.setId(Generator.uuid());
             airlineFlight.setFlightDate(date);
-            airlineFlight.setAdultPrice(Line.getAdultPrice());
-            airlineFlight.setChildPrice(Line.getChildPrice());
-            if (Line.getAlertAdvance() != null) {
-                airlineFlight.setAlertDate(new Date(date.getTime() - Line.getAlertAdvance() * 24 * 60 * 60 * 1000));
+            airlineFlight.setAdultPrice(line.getAdultPrice());
+            airlineFlight.setChildPrice(line.getChildPrice());
+            if (line.getAlertAdvance() != null) {
+                airlineFlight.setAlertDate(new Date(date.getTime() - line.getAlertAdvance() * 24 * 60 * 60 * 1000));
             }
-            airlineFlight.setTicketDate(new Date(date.getTime() - Line.getTicketAdvance() * 24 * 60 * 60 * 1000));
-            airlineFlight.setRecoveryDate(new Date(date.getTime() - Line.getRecoveryAdvance() * 24 * 60 * 60 * 1000));
+            airlineFlight.setTicketDate(new Date(date.getTime() - line.getTicketAdvance() * 24 * 60 * 60 * 1000));
+            airlineFlight.setRecoveryDate(new Date(date.getTime() - line.getRecoveryAdvance() * 24 * 60 * 60 * 1000));
             flights.add(airlineFlight);
         }
         return flights;
@@ -268,10 +193,10 @@ public class AirlineVO {
     /**
      * 生成hashValue
      *
-     * @param flightDetails
+     * @param details
      * @return hashValue
      */
-    public String hashValue(List<FlightDetail> flightDetails) {
+    public String hashValue(List<FlightDetail> details) {
         // hashValue
         StringBuffer hashValue = new StringBuffer();
         // 出发城市-到达城市
@@ -282,7 +207,7 @@ public class AirlineVO {
         StringBuffer airport2City = new StringBuffer();
         // 出发机场-到达机场
         StringBuffer airport2airport = new StringBuffer();
-        for (FlightDetail flightDetail : flightDetails) {
+        for (FlightDetail flightDetail : details) {
             String depAirportCode = flightDetail.getDepAirportCode();
             String arrAirportCode = flightDetail.getArrAirportCode();
             String arrCityCode = airlineMapper.findCityCode(arrAirportCode);
@@ -302,22 +227,22 @@ public class AirlineVO {
     /**
      * 验证参数
      *
-     * @param Line
+     * @param line
      * @return Reply
      */
-    public Reply checkData(Line Line) {
-        if (StringUtils.isBlank(Line.getFlightType().toString())
-                || StringUtils.isBlank(Line.getSeatType().toString())
-                || StringUtils.isBlank(Line.getAdultPrice().toString())
-                || StringUtils.isBlank(Line.getChildPrice().toString())
-                || StringUtils.isBlank(Line.getSeatCount().toString())
-                || StringUtils.isBlank(Line.getTicketAdvance().toString())) {
+    public Reply checkData(Line line) {
+        if (StringUtils.isBlank(line.getFlightType().toString())
+                || StringUtils.isBlank(line.getSeatType().toString())
+                || StringUtils.isBlank(line.getAdultPrice().toString())
+                || StringUtils.isBlank(line.getChildPrice().toString())
+                || StringUtils.isBlank(line.getSeatCount().toString())
+                || StringUtils.isBlank(line.getTicketAdvance().toString())) {
             return ReplyHelper.fail("参数为空或不符合格式");
         }
-        if (Line.getTicketAdvance() >= Line.getRecoveryAdvance()) {
+        if (line.getTicketAdvance() >= line.getRecoveryAdvance()) {
             return ReplyHelper.fail("余票回收天数必须大于开票提前天数");
         }
-        List<FlightDetail> msdAirlineList = Line.getMsdAirlineInfoList();
+        List<FlightDetail> msdAirlineList = line.getDetails();
         if (msdAirlineList == null) {
             return ReplyHelper.fail("缺少航班信息");
         }

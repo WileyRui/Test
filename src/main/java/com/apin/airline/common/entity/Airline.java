@@ -26,7 +26,7 @@ public class Airline implements Serializable {
     /**
      * 航程类型 0:未定义;1:单程;2:往返;3:多程
      */
-    private Byte flighType;
+    private Byte flightType;
 
     /**
      * 出发城市
@@ -109,12 +109,12 @@ public class Airline implements Serializable {
         this.hashKey = hashKey;
     }
 
-    public Byte getFlighType() {
-        return flighType;
+    public Byte getFlightType() {
+        return flightType;
     }
 
-    public void setFlighType(Byte flighType) {
-        this.flighType = flighType;
+    public void setFlightType(Byte flightType) {
+        this.flightType = flightType;
     }
 
     public String getDepCity() {
