@@ -182,6 +182,15 @@ public interface AirlineMapper extends Mapper {
     Integer addSeats(String accountId, String flightId, String owner, Integer count);
 
     /**
+     * 删除航线资源
+     *
+     * @param id 航线资源ID
+     * @return 受影响行数
+     */
+    @Update("UPDATE mbs_airline SET is_invalid=1 WHERE id=#{id};")
+    Integer deleteLine(String id);
+
+    /**
      * 更新航线资源
      *
      * @param line 航线资源数据
@@ -192,7 +201,7 @@ public interface AirlineMapper extends Mapper {
             "adult_price=#{adultPrice},child_price=#{childPrice},free_bag=#{freeBag},weight_limit=#{weightLimit}," +
             "alert_advance=#{alertAdvance},alert_rate=#{alertRate},can_return=#{canReturn},can_change=#{canChange}," +
             "can_sign=#{canSign},manager=#{manager},manager_id=#{managerId} WHEREid=#{id};")
-    Integer updateAirLine(Line line);
+    Integer updateLine(Line line);
 
     /**
      * 更新航线资源状态
