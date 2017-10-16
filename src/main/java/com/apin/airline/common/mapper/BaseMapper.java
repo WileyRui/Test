@@ -64,12 +64,20 @@ public interface BaseMapper extends Mapper {
     /**
      * 查询城市基础数据(分页,按拼音排序)
      *
-     * @param offset 偏移量
-     * @param count  记录数量
+     * @param city 城市基础数据
      * @return 城市基础数据集合
      */
-    @Select("SELECT * FROM msd_city WHERE is_invalid=0 ORDER BY en_name LIMIT #{offset},#{count};")
-    List<City> getCities(Integer offset, Integer count);
+    @Select("SELECT g.country_name,c.*,GROUP_CONCAT(p.airport_name) AS airports " +
+            "FROM msd_city c LEFT JOIN msd_country g ON g.id=c.country_id JOIN msd_airport p ON p.city_code=c.city_code " +
+            "WHERE c.is_invalid=0 " +
+            "AND ('NULL'=#{id} OR c.id=#{id}) " +
+            "AND ('NULL'=#{countryName} OR g.country_name=#{countryName}) " +
+            "AND ('NULL'=#{cityCode} OR c.city_code=#{cityCode}) " +
+            "AND ('NULL'=#{cityName} OR c.city_name=#{cityName}) " +
+            "AND ('NULL'=#{enName} OR c.en_name=#{enName}) " +
+            "AND ('NULL'=#{pinyinFirst} OR c.pinyin_first=#{pinyinFirst}) " +
+            "GROUP BY c.id ORDER BY c.en_name LIMIT #{offset},#{count};")
+    List<City> getCities(City city);
 
     /**
      * 新增城市基础数据

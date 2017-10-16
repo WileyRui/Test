@@ -22,6 +22,16 @@ public class City implements Serializable {
     private String countryId;
 
     /**
+     * 国家名称
+     */
+    private String countryName;
+
+    /**
+     * 机场名称
+     */
+    private String airports;
+
+    /**
      * 城市三字码 例如:PEK(北京)
      */
     private String cityCode;
@@ -100,6 +110,22 @@ public class City implements Serializable {
 
     public void setCountryId(String countryId) {
         this.countryId = countryId;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
+    }
+
+    public String getAirports() {
+        return airports;
+    }
+
+    public void setAirports(String airports) {
+        this.airports = airports;
     }
 
     public String getCityCode() {

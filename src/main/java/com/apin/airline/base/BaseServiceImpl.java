@@ -100,7 +100,17 @@ public class BaseServiceImpl implements BaseService {
      */
     @Override
     public Reply getCities(String token, City city) {
-        return null;
+        // 处理空值
+        city.setId(city.getId() == null ? "NULL" : city.getId());
+        city.setCountryName(city.getCountryName() == null ? "NULL" : city.getCountryName());
+        city.setCityCode(city.getCityCode() == null ? "NULL" : city.getCityCode());
+        city.setCityName(city.getCityName() == null ? "NULL" : city.getCityName());
+        city.setEnName(city.getEnName() == null ? "NULL" : city.getEnName());
+        city.setPinyinFirst(city.getPinyinFirst() == null ? "NULL" : city.getPinyinFirst());
+
+        // 查询数据
+        List<City> cities = mapper.getCities(city);
+        return ReplyHelper.success(cities);
     }
 
     /**
