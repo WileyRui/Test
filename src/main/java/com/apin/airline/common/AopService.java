@@ -23,6 +23,7 @@ public class AopService {
             case "1007":{log.setEventName("航线过期");break;}
         }
         log.setCreatedTime(new Timestamp(System.currentTimeMillis()));
-        return logMapper.insert(log)>0;
-    };
+        //return logMapper.insert(log)>0;
+        return false;
+    }
 }

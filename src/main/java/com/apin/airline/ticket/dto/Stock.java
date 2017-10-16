@@ -1,6 +1,7 @@
 package com.apin.airline.ticket.dto;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,7 +37,7 @@ public class Stock {
     /**
      * 日期集合
      */
-    private List<String> dateList;
+    private List<Date> dateList;
     /**
      * 日志操作id
      */
@@ -101,11 +102,11 @@ public class Stock {
         this.childPrice = childPrice;
     }
 
-    public List<String> getDateList() {
+    public List<Date> getDateList() {
         return dateList;
     }
 
-    public void setDateList(List<String> dateList) {
+    public void setDateList(List<Date> dateList) {
         this.dateList = dateList;
     }
 

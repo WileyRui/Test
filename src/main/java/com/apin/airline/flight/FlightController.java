@@ -1,5 +1,6 @@
 package com.apin.airline.flight;
 
+import com.apin.airline.flight.dto.CityList;
 import com.apin.airline.flight.dto.PriceTemplateBean;
 import com.apin.airline.flight.dto.SearchDto;
 import com.apin.airline.ticket.dto.CalendarInfo;
@@ -92,8 +93,8 @@ public class FlightController {
      * 正常：返回接口调用成功,返回数据
      */
     @PostMapping(value = "/v1.0/flights/query")
-    public Reply searchFlights(@RequestBody SearchDto searchDto) throws Exception {
-        return flightService.searchFlights(searchDto);
+    public Reply searchFlights(@RequestBody CityList cityList) throws Exception {
+        return flightService.searchFlights(cityList);
     }
 
     /**
@@ -104,20 +105,20 @@ public class FlightController {
      * 正常：返回接口调用成功,返回数据
      */
     @PostMapping(value = "/v1.0/flightDetail/query")
-    public Reply searchFlightDetail(@RequestBody SearchDto searchDto) throws Exception {
-        return flightService.searchFlightDetail(searchDto);
+    public Reply searchFlightDetail(@RequestBody CityList cityList) throws Exception {
+        return flightService.searchFlightDetail(cityList);
     }
 
     /**
      * 根据条件查询
      *
-     * @param searchDto
+     * @param cityList
      * @return Reply
      * 正常：返回接口调用成功,返回数据
      */
     @PostMapping(value = "/v1.0/flightDetail/list")
-    public Reply searchFlightList(@RequestBody SearchDto searchDto) throws Exception {
-        return flightService.searchFlightDetail(searchDto);
+    public Reply searchFlightList(@RequestBody CityList cityList) throws Exception {
+        return flightService.searchFlightList(cityList);
     }
 
 
