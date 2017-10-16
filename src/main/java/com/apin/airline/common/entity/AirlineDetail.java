@@ -29,7 +29,7 @@ public class AirlineDetail implements Serializable {
     /**
      * 航空公司名称
      */
-    private String company;
+    private String flightCompany;
 
     /**
      * 航班号
@@ -39,27 +39,27 @@ public class AirlineDetail implements Serializable {
     /**
      * 出发机场名
      */
-    private String depAirport;
+    private String flightDepAirport;
 
     /**
      * 到达机场名
      */
-    private String arrAirport;
+    private String flightArrAirport;
 
     /**
      * 计划起飞时间
      */
-    private Time deptime;
+    private Time flightDeptimePlanDate;
 
     /**
      * 计划到达时间
      */
-    private Time arrtime;
+    private Time flightArrtimePlanDate;
 
     /**
      * 是否经停 false:不经停;true:经停
      */
-    private Boolean stop;
+    private Boolean stopFlag;
 
     /**
      * 飞行班次 周日开始 0,1,0,1,0,1,0代表每周135有航班飞行
@@ -90,14 +90,6 @@ public class AirlineDetail implements Serializable {
         this.tripIndex = tripIndex;
     }
 
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company;
-    }
-
     public String getFlightNo() {
         return flightNo;
     }
@@ -106,44 +98,12 @@ public class AirlineDetail implements Serializable {
         this.flightNo = flightNo;
     }
 
-    public String getDepAirport() {
-        return depAirport;
+    public Boolean getStopFlag() {
+        return stopFlag;
     }
 
-    public void setDepAirport(String depAirport) {
-        this.depAirport = depAirport;
-    }
-
-    public String getArrAirport() {
-        return arrAirport;
-    }
-
-    public void setArrAirport(String arrAirport) {
-        this.arrAirport = arrAirport;
-    }
-
-    public Time getDeptime() {
-        return deptime;
-    }
-
-    public void setDeptime(Time deptime) {
-        this.deptime = deptime;
-    }
-
-    public Time getArrtime() {
-        return arrtime;
-    }
-
-    public void setArrtime(Time arrtime) {
-        this.arrtime = arrtime;
-    }
-
-    public Boolean getStop() {
-        return stop;
-    }
-
-    public void setStop(Boolean stop) {
-        this.stop = stop;
+    public void setStopFlag(Boolean stopFlag) {
+        this.stopFlag = stopFlag;
     }
 
     public String getFlights() {
@@ -152,5 +112,45 @@ public class AirlineDetail implements Serializable {
 
     public void setFlights(String flights) {
         this.flights = flights;
+    }
+
+    public String getFlightCompany() {
+        return flightCompany;
+    }
+
+    public void setFlightCompany(String flightCompany) {
+        this.flightCompany = flightCompany;
+    }
+
+    public String getFlightDepAirport() {
+        return flightDepAirport;
+    }
+
+    public void setFlightDepAirport(String flightDepAirport) {
+        this.flightDepAirport = flightDepAirport;
+    }
+
+    public String getFlightArrAirport() {
+        return flightArrAirport;
+    }
+
+    public void setFlightArrAirport(String flightArrAirport) {
+        this.flightArrAirport = flightArrAirport;
+    }
+
+    public Time getFlightDeptimePlanDate() {
+        return flightDeptimePlanDate;
+    }
+
+    public void setFlightDeptimePlanDate(Time flightDeptimePlanDate) {
+        this.flightDeptimePlanDate = flightDeptimePlanDate;
+    }
+
+    public Time getFlightArrtimePlanDate() {
+        return flightArrtimePlanDate;
+    }
+
+    public void setFlightArrtimePlanDate(Time flightArrtimePlanDate) {
+        this.flightArrtimePlanDate = flightArrtimePlanDate;
     }
 }

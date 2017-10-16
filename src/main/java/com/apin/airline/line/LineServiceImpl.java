@@ -3,11 +3,11 @@ package com.apin.airline.line;
 import com.apin.airline.common.VariFlightService;
 import com.apin.airline.common.entity.*;
 import com.apin.airline.common.mapper.AirlineMapper;
-import com.apin.airline.line.dto.AirlineVO;
-import com.apin.airline.line.dto.FlightDetail;
-import com.apin.airline.line.dto.LineBo;
+import com.apin.airline.common.AirlineVO;
 import com.apin.util.Generator;
+import com.apin.util.JsonUtils;
 import com.apin.util.ReplyHelper;
+import com.apin.util.pojo.AccessToken;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author wiley
@@ -32,73 +34,91 @@ public class LineServiceImpl implements LineService {
     AirlineVO airlineVO;
 
     @Override
-    public Reply addLine(String token, LineBo lineBo) {
-        airlineVO.setLineBo(lineBo, token);
-        StringBuilder appendFlight = new StringBuilder();
-        airlineVO.checkData(lineBo);
-        List<FlightDetail> msdAirlineList = lineBo.getMsdAirlineInfoList();
-        Line line = airlineVO.setLine(lineBo, msdAirlineList);
-        Airline airline = airlineVO.setAirline(lineBo, msdAirlineList);
-        line.setAirlineId(airline.getId());
-        Voyage airlineVoyage = new Voyage();
-        airlineVoyage.setAirlineId(airline.getId());
-        for (int i = 0; i < msdAirlineList.size(); i++) {
-            FlightDetail flightDetail = msdAirlineList.get(i);
-/*            FlightInfo flightInfo = airlineMapper.findByflightNoAndIatacode(
-                    msdAirlineList.get(i).getFlightNo(), msdAirlineList.get(i).getDepAirportCode(),
-                    msdAirlineList.get(i).getArrAirportCode());*/
-            if (i == 0) {
-//                airline.setFlightTime(flightInfo.getFlightDeptimePlanDate());
-//                line.setAirwayId(airWayMapper.findByIataCode(flightInfo.getFlightNo().substring(0, 2)));
-            }
-            airline = airlineVO.setMsdAirline(airline, msdAirlineList, i, lineBo.getFlightType(), appendFlight);
+    @Transactional
+    public Reply addLine(String token, Line line) {
+
+        // 校验数据
+
+        // 根据城市、航班号和行程天数计算摘要
+        String key = airlineVO.hashValue(line.getDetails());
+
+        // 根据摘要字符串查询航线基础数据ID,如航线基础数据不存在,则生成相应的航线基础数据并持久化到数据库
+        String airLineId = airlineMapper.getExistedAirline(key);
+        if (airLineId == null){
+            airLineId = Generator.uuid();
         }
-        if (airlineVO.LineRepeat(airline.getHashKey())) {
-            return ReplyHelper.fail("航线已存在");
-        }
-        airlineMapper.addLine(line);
-        airlineMapper.addAirline(airline);
-        List<Flight> flights = airlineVO.setFlight(line, lineBo, msdAirlineList);
-        airlineMapper.addLineFlights(flights);
-        List<Voyage> voyages = airlineVO.setVoyage(msdAirlineList, airline);
-        airlineMapper.addVoyages(voyages);
-        Log log = airlineVO.setAirlineLog(lineBo, line.getId(), true);
-//        airlineMapper.addLog(log);
+
+        // 处理航线资源数据
+        line.setId(Generator.uuid());
+        line.setAirwayId(airlineMapper.getAirwayIdByFlightNo(line.getDetails().get(0).getFlightNo()));
+        line.setAirlineId(airLineId);
+
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        line.setAccountId(accessToken.getAccountId());
+        line.setCreatorUser(accessToken.getUserName());
+        line.setCreatorUserId(accessToken.getUserId());
+
+        // 生成航班资源数据集合
+
+        // 持久化数据
+        Integer count = airlineMapper.addLine(line);
+        if (count <= 0) return ReplyHelper.error();
+
         return ReplyHelper.success();
     }
 
     @Override
-    public Reply editLine(LineBo lineBo) {
+    public Reply editLine(String token, Line line) {
         return null;
     }
 
     @Override
-    public Reply delLine(LineBo lineBo) {
+    @Transactional
+    public Reply delLine(String token, Line line) {
+
+        Integer row = airlineMapper.deleteLine(line.getId());
+        if (row <= 0){
+            return ReplyHelper.error();
+        }
+        return ReplyHelper.success();
+    }
+
+    @Override
+    public Reply lineList(Line line) {
         return null;
     }
 
     @Override
-    public Reply lineList(LineBo lineBo) {
-        return null;
+    public Reply lineInfo(String token,Line line) {
+
+        Line line1 = airlineMapper.getLine(line.getId());
+        Airline airline = airlineMapper.getAirlineById(line1.getAirlineId());
+        List<AirlineDetail> voyages = airlineMapper.getVoyages(airline.getId());
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("line",line);
+        resultMap.put("airline",airline);
+        resultMap.put("voyages",voyages);
+        return ReplyHelper.success(resultMap);
     }
 
     @Override
-    public Reply lineInfo(LineBo lineBo) {
-        return null;
+    @Transactional
+    public Reply upOrDown(String token,Line line) {
+
+        Integer row = airlineMapper.updateAirLineStatus(line.getId(),line.getAirlineStatus());
+        if (row<=0){
+            return ReplyHelper.error();
+        }
+        return ReplyHelper.success();
     }
 
     @Override
-    public Reply upOrDown(LineBo lineBo) {
-        return null;
-    }
-
-    @Override
-    public Reply queryFlightInfo(LineBo lineBo) throws InvocationTargetException, IllegalAccessException {
-        List<FlightInfo> airlineList = airlineMapper.getFlightInfos(lineBo.getFlightNo());
+    public Reply queryFlightInfo(FlightInfo info) throws InvocationTargetException, IllegalAccessException {
+        List<FlightInfo> airlineList = airlineMapper.getFlightInfos(info.getFlightNo());
         if (airlineList.size() > 0) {
             return ReplyHelper.success(airlineList);
         }
-        List<FlightInfo> flightInfoList = variFlight.initVariFlightData(lineBo.getFlightNo(), lineBo.getBeginDate());
+        List<FlightInfo> flightInfoList = variFlight.initVariFlightData(info.getFlightNo(), info.getBeginDate());
         if (flightInfoList.size() == 0) {
             return ReplyHelper.fail("航班信息不存在，手工录入");
         }
@@ -117,12 +137,17 @@ public class LineServiceImpl implements LineService {
 
     @Transactional
     @Override
-    public Reply updateFlightInfo(LineBo lineBo) throws InvocationTargetException, IllegalAccessException { //需求待确认
-        Integer row = airlineMapper.deleteFlightInfo(lineBo.getFlightNo());
+    public Reply updateFlightInfo(FlightInfo info) throws InvocationTargetException, IllegalAccessException { //需求待确认
+        Integer row = airlineMapper.deleteFlightInfo(info.getFlightNo());
         if (row <= 0) {
             return ReplyHelper.error();
         }
-        List<FlightInfo> flightInfoList = variFlight.initVariFlightData(lineBo.getFlightNo(), lineBo.getBeginDate());
+        List<FlightInfo> flightInfoList = variFlight.initVariFlightData(info.getFlightNo(), info.getBeginDate());
         return ReplyHelper.success(flightInfoList, "航班信息更新成功");
+    }
+
+    @Override
+    public Reply newLineInfo() {
+        return null;
     }
 }

@@ -23,6 +23,11 @@ public class FlightInfo implements Serializable {
     private String flightNo;
 
     /**
+     * 出发日期
+     */
+    private String beginDate;
+
+    /**
      * 航空公司名称
      */
     private String flightCompany;
@@ -102,6 +107,14 @@ public class FlightInfo implements Serializable {
 
     public String getFlightNo() {
         return flightNo;
+    }
+
+    public String getBeginDate() {
+        return beginDate;
+    }
+
+    public void setBeginDate(String beginDate) {
+        this.beginDate = beginDate;
     }
 
     public void setFlightNo(String flightNo) {

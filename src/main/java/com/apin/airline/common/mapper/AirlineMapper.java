@@ -75,7 +75,7 @@ public interface AirlineMapper extends Mapper {
      * @return 受影响行数
      */
     @Insert("INSERT msd_airline(id,hash_key,flight_type,dep_city,arr_city,days,voyage,flight_number,flight_time,week_flights,creator_user,creator_user_id) " +
-            "VALUES (#{id},#{hashKey},#{flightype},#{depCity},#{arrCity},#{days},#{voyage},#{flightNumber},#{flightTime},#{weekFlights},#{creatorUser},#{creatorUserId});")
+            "VALUES (#{id},#{hashKey},#{flightType},#{depCity},#{arrCity},#{days},#{voyage},#{flightNumber},#{flightTime},#{weekFlights},#{creatorUser},#{creatorUserId});")
     Integer addAirline(Airline airline);
 
     /**
