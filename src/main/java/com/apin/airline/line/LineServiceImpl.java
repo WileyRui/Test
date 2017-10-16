@@ -3,7 +3,6 @@ package com.apin.airline.line;
 import com.apin.airline.common.AirlineVO;
 import com.apin.airline.common.VariFlightService;
 import com.apin.airline.common.entity.Airline;
-import com.apin.airline.common.entity.AirlineDetail;
 import com.apin.airline.common.entity.FlightInfo;
 import com.apin.airline.common.entity.Line;
 import com.apin.airline.common.mapper.AirlineMapper;
@@ -99,7 +98,7 @@ public class LineServiceImpl implements LineService {
 
         Line line1 = airlineMapper.getLine(line.getId());
         Airline airline = airlineMapper.getAirlineById(line1.getAirlineId());
-        List<AirlineDetail> voyages = airlineMapper.getVoyages(airline.getId());
+        List<FlightInfo> voyages = airlineMapper.getVoyages(airline.getId());
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("line", line);
         resultMap.put("airline", airline);

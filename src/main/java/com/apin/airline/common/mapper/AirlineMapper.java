@@ -154,7 +154,7 @@ public interface AirlineMapper extends Mapper {
     @Select("SELECT v.id,v.airline_id,v.trip_index,i.flight_company,i.flight_no,i.flight_dep_airport," +
             "i.flight_arr_airport,i.flight_deptime_plan_date,i.flight_arrtime_plan_date,i.stop_flag,i.flights " +
             "FROM msd_airline_voyage v JOIN msd_airline_info i ON i.id=v.flight_info_id WHERE v.airline_id=#{id}")
-    List<AirlineDetail> getVoyages(String id);
+    List<FlightInfo> getVoyages(String id);
 
     /**
      * 新增航线资源

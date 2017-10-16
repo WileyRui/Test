@@ -81,7 +81,7 @@ public interface LineService {
     /**
      * 更新航班
      *
-     * @param line
+     * @param info
      * @return
      */
     Reply updateFlightInfo(FlightInfo info) throws InvocationTargetException, IllegalAccessException;
