@@ -164,34 +164,6 @@ public interface AirlineMapper extends Mapper {
     Integer addLine(Line line);
 
     /**
-     * 新增航班资源
-     *
-     * @param flights 航班资源数据集合
-     * @return 受影响行数
-     */
-    @Insert("<script>INSERT mbs_airline_flight(id,airline_id,sell_type,flight_date,seat_count,adult_price," +
-            "child_price,alert_threshold,alert_date,recovery_date,ticket_date) VALUES " +
-            "<foreach collection = \"list\" item = \"item\" index = \"index\" separator = \",\"> " +
-            "(#{item.id},#{item.airlineId},#{item.sellType},#{item.flightDate},#{item.seatCount},#{item.adultPrice}," +
-            "#{item.childPrice},#{item.alertThreshold},#{item.alertDate},#{item.recoveryDate},#{item.ticketDate}) " +
-            "</foreach></script>")
-    Integer addLineFlights(List<Flight> flights);
-
-    /**
-     * 新增舱位资源
-     *
-     * @param accountId 账户ID
-     * @param flightId  航班资源ID
-     * @param owner     拥有者名称
-     * @param count     舱位数量
-     * @return 受影响行数
-     */
-    @Insert("INSERT mbs_airline_flight_seat(id,account_id,flight_id,owner,owner_id) " +
-            "SELECT (REPLACE(UUID(),'-',''),#{accountId},#{flightId},#{owner},#{accountId} " +
-            "FROM msd_airline_info LIMIT #{count};")
-    Integer addSeats(String accountId, String flightId, String owner, Integer count);
-
-    /**
      * 删除航线资源
      *
      * @param id 航线资源ID
@@ -224,6 +196,29 @@ public interface AirlineMapper extends Mapper {
     Integer updateAirLineStatus(String id, Byte status);
 
     /**
+     * 查询指定ID的航线资源数据
+     *
+     * @param id 航线资源ID
+     * @return 航线资源数据
+     */
+    @Select("SELECT * FROM mbs_airline WHERE id=#{id};")
+    Line getLine(String id);
+
+    /**
+     * 新增航班资源
+     *
+     * @param flights 航班资源数据集合
+     * @return 受影响行数
+     */
+    @Insert("<script>INSERT mbs_airline_flight(id,airline_id,sell_type,flight_date,seat_count,adult_price," +
+            "child_price,alert_threshold,alert_date,recovery_date,ticket_date) VALUES " +
+            "<foreach collection = \"list\" item = \"item\" index = \"index\" separator = \",\"> " +
+            "(#{item.id},#{item.airlineId},#{item.sellType},#{item.flightDate},#{item.seatCount},#{item.adultPrice}," +
+            "#{item.childPrice},#{item.alertThreshold},#{item.alertDate},#{item.recoveryDate},#{item.ticketDate}) " +
+            "</foreach></script>")
+    Integer addLineFlights(List<Flight> flights);
+
+    /**
      * 修改库存
      *
      * @param flightId 航班资源ID
@@ -243,6 +238,20 @@ public interface AirlineMapper extends Mapper {
      */
     @Update("UPDATE mbs_airline_flight SET adult_price=#{adultPrice},child_price=#{childPrice} WHERE id=#{flightId};")
     Integer updatePrice(String flightId, BigDecimal adultPrice, BigDecimal childPrice);
+
+    /**
+     * 新增舱位资源
+     *
+     * @param accountId 账户ID
+     * @param flightId  航班资源ID
+     * @param owner     拥有者名称
+     * @param count     舱位数量
+     * @return 受影响行数
+     */
+    @Insert("INSERT mbs_airline_flight_seat(id,account_id,flight_id,owner,owner_id) " +
+            "SELECT (REPLACE(UUID(),'-',''),#{accountId},#{flightId},#{owner},#{accountId} " +
+            "FROM msd_airline_info LIMIT #{count};")
+    Integer addSeats(String accountId, String flightId, String owner, Integer count);
 
     /**
      * 分配舱位
@@ -295,19 +304,6 @@ public interface AirlineMapper extends Mapper {
     Integer sellSeat(String flightId, String ownerId, Integer count);
 
     /**
-     * 获取要更新乘客信息的舱位数据
-     *
-     * @param flightId 航班资源ID
-     * @param ownerId  资源原拥有者ID
-     * @param count    销售数量
-     * @return 舱位数据集合
-     */
-    @Select("SELECT * FROM mbs_airline_flight_seat " +
-            "WHERE flight_id=#{flightId} AND owner_id=#{ownerId} AND seat_status<2 " +
-            "ORDER BY seat_status DESC LIMIT #{count};")
-    List<Seat> getSelledSeats(String flightId, String ownerId, Integer count);
-
-    /**
      * 更新乘客信息
      *
      * @param seats 舱位数据实体集合
@@ -326,4 +322,17 @@ public interface AirlineMapper extends Mapper {
      */
     @Update("UPDATE mbs_airline_flight_seat SET grade=#{grade},ticket=#{ticket} WHERE id=#{id};")
     Integer updateTicket(List<Seat> seats);
+
+    /**
+     * 获取要更新乘客信息的舱位数据
+     *
+     * @param flightId 航班资源ID
+     * @param ownerId  资源原拥有者ID
+     * @param count    销售数量
+     * @return 舱位数据集合
+     */
+    @Select("SELECT * FROM mbs_airline_flight_seat " +
+            "WHERE flight_id=#{flightId} AND owner_id=#{ownerId} AND seat_status<2 " +
+            "ORDER BY seat_status DESC LIMIT #{count};")
+    List<Seat> getSelledSeats(String flightId, String ownerId, Integer count);
 }
