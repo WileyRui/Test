@@ -91,7 +91,7 @@ public class Airline implements Serializable {
     /**
      * 航程明细
      */
-    private List<AirlineDetail> details;
+    private List<FlightInfo> details;
 
     public String getId() {
         return id;
@@ -213,11 +213,11 @@ public class Airline implements Serializable {
         this.createdTime = createdTime;
     }
 
-    public List<AirlineDetail> getDetails() {
+    public List<FlightInfo> getDetails() {
         return details;
     }
 
-    public void setDetails(List<AirlineDetail> details) {
+    public void setDetails(List<FlightInfo> details) {
         this.details = details;
     }
 }

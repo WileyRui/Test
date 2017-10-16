@@ -88,12 +88,12 @@ public class LineController {
     /**
      * 航班信息查询
      *
-     * @param line
+     * @param info
      * @return
      */
     @PostMapping("/v1.0/flightInfo/query")
-    public Reply queryFlightInfo(@RequestBody Line line) throws InvocationTargetException, IllegalAccessException {
-        return service.queryFlightInfo(line);
+    public Reply queryFlightInfo(@RequestBody FlightInfo info) throws InvocationTargetException, IllegalAccessException {
+        return service.queryFlightInfo(info);
     }
 
     /**
@@ -110,12 +110,12 @@ public class LineController {
     /**
      * 航班信息更新
      *
-     * @param line
+     * @param info
      * @return
      */
     @PostMapping("/v1.0/flightInfo/update")
-    public Reply updateFlightInfo(@RequestBody Line line) throws InvocationTargetException, IllegalAccessException {
-        return service.updateFlightInfo(line);
+    public Reply updateFlightInfo(@RequestBody FlightInfo info) throws InvocationTargetException, IllegalAccessException {
+        return service.updateFlightInfo(info);
     }
 
     /**

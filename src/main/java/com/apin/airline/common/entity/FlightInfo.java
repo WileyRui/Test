@@ -18,6 +18,16 @@ public class FlightInfo implements Serializable {
     private String id;
 
     /**
+     * 航线ID
+     */
+    private String airlineId;
+
+    /**
+     * 航段序号,第一程为0
+     */
+    private Byte tripIndex;
+
+    /**
      * 航班号
      */
     private String flightNo;
@@ -108,6 +118,22 @@ public class FlightInfo implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getAirlineId() {
+        return airlineId;
+    }
+
+    public void setAirlineId(String airlineId) {
+        this.airlineId = airlineId;
+    }
+
+    public Byte getTripIndex() {
+        return tripIndex;
+    }
+
+    public void setTripIndex(Byte tripIndex) {
+        this.tripIndex = tripIndex;
     }
 
     public String getFlightNo() {
