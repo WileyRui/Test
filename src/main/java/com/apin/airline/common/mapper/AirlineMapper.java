@@ -98,32 +98,23 @@ public interface AirlineMapper extends Mapper {
     String getAirwayIdByFlightNo(String flightNo);
 
     /**
-     * 根据航司简称查询航司id
-     *
-     * @param iataCode
-     * @return
-     */
-    @Select("select id from msd_airway where iata_code = #{iataCode}")
-    String findByIataCode(String iataCode);
-
-    /**
      * 机场三字码查询城市三字码
      *
      * @param iataCode
      * @return
      */
-    @Select("SELECT city_code cityCode FROM msd_airport WHERE iata_code = #{iataCode}")
+    @Select("SELECT city_code FROM msd_airport WHERE iata_code = #{iataCode};")
     String findCityCode(String iataCode);
 
     /**
-     * 城市三字码获取城市名称
+     * 根据机场三字码查询城市名称
      *
      * @param iataCode
      * @return cityName
      */
-    @Select("SELECT mc.city_name as cityName FROM msd_airport ma LEFT JOIN msd_city mc ON ma.city_code = mc.city_code " +
-            "WHERE ma.iata_code =#{iataCode}")
-    String findCityNameByIataCode(@Param("iataCode") String iataCode);
+    @Select("SELECT c.city_name FROM msd_airport a LEFT JOIN msd_city c ON a.city_code=c.city_code " +
+            "WHERE a.iata_code=#{iataCode};")
+    String findCityNameByIataCode(String iataCode);
 
     /**
      * 查询指定ID的航线基础数据
