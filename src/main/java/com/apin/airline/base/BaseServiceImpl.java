@@ -40,7 +40,7 @@ public class BaseServiceImpl implements BaseService {
      */
     @Override
     public Reply getCountries(String token, Country country) {
-
+        
         // 处理空值
         country.setId(country.getId() == null ? "NULL" : country.getId());
         country.setZoneCode(country.getZoneCode() == null ? "NULL" : country.getZoneCode());

@@ -37,9 +37,19 @@ public class Stock {
      * 日期集合
      */
     private List<String> dateList;
+    /**
+     * 日志操作id
+     */
     private String userId;
+    /**
+     * 日志操作者名字
+     */
     private String userName;
 
+    /**
+     * 来源
+     */
+    private String eventSource;
     public Stock() {
     }
 
@@ -113,5 +123,13 @@ public class Stock {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getEventSource() {
+        return eventSource;
+    }
+
+    public void setEventSource(String eventSource) {
+        this.eventSource = eventSource;
     }
 }
