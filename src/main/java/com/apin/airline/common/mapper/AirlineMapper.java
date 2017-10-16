@@ -202,8 +202,8 @@ public interface AirlineMapper extends Mapper {
      * @param status 航线资源状态
      * @return 受影响行数
      */
-    @Update("UPDATE mbs_airline SET airlineStatus=#{status} WHERE id=#{id}")
-    Integer updateAirLineStatus(String id, Byte status);
+    @Update("UPDATE mbs_airline SET airline_status=#{status} WHERE id=#{id}")
+    Integer updateAirLineStatus(@Param("id") String id, @Param("status") Byte status);
 
     /**
      * 查询指定ID的航线资源数据
@@ -235,8 +235,8 @@ public interface AirlineMapper extends Mapper {
      * @param count    库存数量
      * @return 受影响行数
      */
-    @Update("UPDATE mbs_airline_flight SET seat_count=#{count} WHERE id=#{flightId};")
-    Integer updateSeatCount(String flightId, Integer count);
+    @Update("UPDATE mbs_airline_flight SET seat_count=#{count} WHERE id=#{id};")
+    Integer updateSeatCount(@Param("id") String flightId, @Param("count") Integer count);
 
     /**
      * 修改价格
@@ -248,11 +248,12 @@ public interface AirlineMapper extends Mapper {
      * @return 受影响行数
      */
     @Update("<script>UPDATE mbs_airline_flight SET adult_price=#{adultPrice},child_price=#{childPrice} " +
-            "WHERE airline_id=#{airlineId} AND flight_date in" +
+            "WHERE airline_id=#{id} AND flight_date in" +
             "<foreach collection = \"dates\" item = \"item\" index = \"index\" pen=\"(\" separator=\",\" close=\")\"> " +
             "#{item}" +
             "</foreach></script>")
-    Integer updatePrice(String airlineId, List<Date> dates, BigDecimal adultPrice, BigDecimal childPrice);
+    Integer updatePrice(@Param("id") String airlineId, @Param("dates") List<Date> dates,
+                        @Param("adultPrice") BigDecimal adultPrice, @Param("childPrice") BigDecimal childPrice);
 
     /**
      * 新增舱位资源
@@ -266,7 +267,8 @@ public interface AirlineMapper extends Mapper {
     @Insert("INSERT mbs_airline_flight_seat(id,account_id,flight_id,owner,owner_id) " +
             "SELECT (REPLACE(UUID(),'-',''),#{accountId},#{flightId},#{owner},#{accountId} " +
             "FROM msd_airline_info LIMIT #{count};")
-    Integer addSeats(String accountId, String flightId, String owner, Integer count);
+    Integer addSeats(@Param("accountId") String accountId, @Param("flightId") String flightId,
+                     @Param("owner") String owner, @Param("count") Integer count);
 
     /**
      * 分配舱位
@@ -279,7 +281,7 @@ public interface AirlineMapper extends Mapper {
     @Update("UPDATE mbs_airline_flight_seat " +
             "SETowner`=#{owner},owner_id=#{ownerId},divider=#{divider},divider_id=#{dividerId},assigned_time=now() " +
             "WHERE flight_id=#{flightId} AND owner_id=account_id AND seat_status=0 LIMIT #{count};")
-    Integer assignSeat(Seat seat, String flightId, Integer count);
+    Integer assignSeat(@Param("seat") Seat seat, @Param("flightId") String flightId, @Param("count") Integer count);
 
     /**
      * 回收舱位
@@ -292,7 +294,7 @@ public interface AirlineMapper extends Mapper {
     @Update("UPDATE mbs_airline_flight_seat s JOIN mbs_airline a ON a.account_id=s.account_id " +
             "SET s.`owner`=a.supplier_name,s.owner_id=s.account_id,s.seat_status=0 " +
             "WHERE s.flight_id=#{flightId} AND s.owner_id=#{ownerId} AND s.seat_status=0 LIMIT #{count};")
-    Integer recoverSeat(String flightId, String ownerId, Integer count);
+    Integer recoverSeat(@Param("flightId") String flightId, @Param("ownerId") String ownerId, @Param("count") Integer count);
 
     /**
      * 强制回收舱位
