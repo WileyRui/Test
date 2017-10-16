@@ -38,8 +38,8 @@ public class LineServiceImpl implements LineService {
         airlineVO.setLine(line, token);
         StringBuilder appendFlight = new StringBuilder();
         airlineVO.checkData(line);
-        List<FlightDetail> msdAirlineList = line.getMsdAirlineInfoList();
-        Line line = airlineVO.setLine(line, msdAirlineList);
+        List<FlightDetail> msdAirlineList = line.getDetails();
+        Line line1 = airlineVO.setLine(line, msdAirlineList);
         Airline airline = airlineVO.setAirline(line, msdAirlineList);
         line.setAirlineId(airline.getId());
         Voyage airlineVoyage = new Voyage();
@@ -93,8 +93,8 @@ public class LineServiceImpl implements LineService {
     @Override
     public Reply lineInfo(String token,Line line) {
         airlineVO.setLine(line,token);
-        Line line = airlineMapper.getLine(line.getId());
-        Airline airline = airlineMapper.getAirlineById(line.getAirlineId());
+        Line line1 = airlineMapper.getLine(line.getId());
+        Airline airline = airlineMapper.getAirlineById(line1.getAirlineId());
         List<AirlineDetail> voyages = airlineMapper.getVoyages(airline.getId());
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("line",line);
@@ -146,5 +146,10 @@ public class LineServiceImpl implements LineService {
         }
         List<FlightInfo> flightInfoList = variFlight.initVariFlightData(line.getFlightNo(), line.getBeginDate());
         return ReplyHelper.success(flightInfoList, "航班信息更新成功");
+    }
+
+    @Override
+    public Reply newLineInfo() {
+        return null;
     }
 }

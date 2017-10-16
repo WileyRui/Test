@@ -117,4 +117,13 @@ public class LineController {
     public Reply updateFlightInfo(@RequestBody Line line) throws InvocationTargetException, IllegalAccessException {
         return service.updateFlightInfo(line);
     }
+
+    /**
+     *获取最新的航线信息
+     * @return
+     */
+    @PostMapping("/v1.0/lines/new")
+    public Reply newLineInfo(){
+        return service.newLineInfo();
+    }
 }

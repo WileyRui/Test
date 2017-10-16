@@ -27,60 +27,60 @@ public class AirlineVO {
     @Autowired
     AirlineMapper airlineMapper;
 
-    public void setLineBo(LineBo lineBo, String token) {
+    public void setLine(Line Line, String token) {
         AccessToken accessToken = JsonUtils.toAccessToken(token);
         String accountId = accessToken.getAccountId();
         String userId = accessToken.getUserId();
         String userName = accessToken.getUserName();
-        lineBo.setAccountId(accountId);
-        lineBo.setCreatorUser(userName);
-        lineBo.setCreatorUserId(userId);
+        Line.setAccountId(accountId);
+        Line.setCreatorUser(userName);
+        Line.setCreatorUserId(userId);
     }
 
     /**
      * 初始化航线数据
      *
-     * @param lineBo
+     * @param Line
      * @param flightDetails
      * @return 航线实体类
      */
-    public Line setLine(LineBo lineBo, List<FlightDetail> flightDetails) {
+    public Line setLine(Line Line, List<FlightDetail> flightDetails) {
         Line line = new Line();
         line.setId(Generator.uuid());
-        line.setAccountId(lineBo.getAccountId());
-        line.setSupplierName(lineBo.getSupplireName());
-        line.setCreatorUserId(lineBo.getCreatorUserId());
-        line.setCreatorUser(lineBo.getCreatorUser());
+        line.setAccountId(Line.getAccountId());
+        line.setSupplierName(Line.getSupplireName());
+        line.setCreatorUserId(Line.getCreatorUserId());
+        line.setCreatorUser(Line.getCreatorUser());
         line.setAirwayId("123321");
-        line.setResType(lineBo.getResType().byteValue());
+        line.setResType(Line.getResType().byteValue());
         String[] dateArray = flightDetails.get(0).getDatePeriod().split("/");
         line.setDepartureStart(DateHelper.parseDate(dateArray[0]));
         line.setDepartureEnd(DateHelper.parseDate(dateArray[1]));
         // 舱位类型：1、系列团；2、余位
-        line.setSeatType(lineBo.getSeatType().byteValue());
+        line.setSeatType(Line.getSeatType().byteValue());
         // 舱位数量
-        line.setSeatCount(lineBo.getSeatCount());
+        line.setSeatCount(Line.getSeatCount());
         // 定金
-        line.setDepositAmount(lineBo.getDepositAmount());
+        line.setDepositAmount(Line.getDepositAmount());
         // 成人、儿童票价
-        line.setAdultPrice(lineBo.getAdultPrice());
-        line.setChildPrice(lineBo.getChildPrice());
+        line.setAdultPrice(Line.getAdultPrice());
+        line.setChildPrice(Line.getChildPrice());
         // 尾款、余票回收、出票最晚天数
-        line.setPayAdvance(lineBo.getPayAdvance());
-        line.setTicketAdvance(lineBo.getTicketAdvance());
-        line.setRecoveryAdvance(lineBo.getRecoveryAdvance());
+        line.setPayAdvance(Line.getPayAdvance());
+        line.setTicketAdvance(Line.getTicketAdvance());
+        line.setRecoveryAdvance(Line.getRecoveryAdvance());
         // 行李规则
-        line.setFreeBag(lineBo.getFreeBag());
-        line.setWeightLimit(lineBo.getWeightLimit());
+        line.setFreeBag(Line.getFreeBag());
+        line.setWeightLimit(Line.getWeightLimit());
         // 预警 选填
-        if (lineBo.getAlertAdvance() != null) {
-            line.setAlertAdvance(lineBo.getAlertAdvance());
+        if (Line.getAlertAdvance() != null) {
+            line.setAlertAdvance(Line.getAlertAdvance());
         }
-        if (lineBo.getAlertRate() != null) {
-            line.setAlertRate(lineBo.getAlertRate());
+        if (Line.getAlertRate() != null) {
+            line.setAlertRate(Line.getAlertRate());
         }
-        String manager = lineBo.getManager().toString();
-        String managerId = lineBo.getManagerId();
+        String manager = Line.getManager().toString();
+        String managerId = Line.getManagerId();
         if (!StringUtils.isBlank(manager)) {
             line.setManager(manager);
         }
@@ -101,19 +101,19 @@ public class AirlineVO {
     /**
      * 初始化航线基础数据
      *
-     * @param lineBo
+     * @param Line
      * @param flightDetails
      * @return 航线基础数据实体类
      */
-    public Airline setAirline(LineBo lineBo, List<FlightDetail> flightDetails) {
+    public Airline setAirline(Line Line, List<FlightDetail> flightDetails) {
         Airline airline = new Airline();
         airline.setId(Generator.uuid());
         airline.setWeekFlights(flightDetails.get(0).getWeekFlights());
-        Integer flightType = lineBo.getFlightType();
+        Integer flightType = Line.getFlightType();
         airline.setFlightype(flightType.byteValue());
         airline.setInvalid(false);
-        airline.setCreatorUser(lineBo.getCreatorUser());
-        airline.setCreatorUserId(lineBo.getCreatorUserId());
+        airline.setCreatorUser(Line.getCreatorUser());
+        airline.setCreatorUserId(Line.getCreatorUserId());
         airline.setCreatedTime(new Date());
         return airline;
     }
@@ -172,31 +172,31 @@ public class AirlineVO {
      * 初始化航线班次数据
      *
      * @param line
-     * @param lineBo
+     * @param Line
      * @param flightDetails
      * @return
      */
-    public List<Flight> setFlight(Line line, LineBo lineBo, List<FlightDetail> flightDetails) {
+    public List<Flight> setFlight(Line line, Line Line, List<FlightDetail> flightDetails) {
         List<Flight> flights = new ArrayList<>();
         String[] datesByWeek = flightDetails.get(0).getDatesByWeek().split(",");
         for (String flightDate : datesByWeek) {
             Flight airlineFlight = new Flight();
-            if (lineBo.getAlertRate() != null) {
-                airlineFlight.setAlertThreshold((int) (line.getSeatCount() * lineBo.getAlertRate() * 0.01));
+            if (Line.getAlertRate() != null) {
+                airlineFlight.setAlertThreshold((int) (line.getSeatCount() * Line.getAlertRate() * 0.01));
             }
-            airlineFlight.setSellType(lineBo.getSellType());
+            airlineFlight.setSellType(Line.getSellType());
             airlineFlight.setAirlineId(line.getId());
             airlineFlight.setSeatCount(line.getSeatCount());
             Date date = DateHelper.parseDate(flightDate);
             airlineFlight.setId(Generator.uuid());
             airlineFlight.setFlightDate(date);
-            airlineFlight.setAdultPrice(lineBo.getAdultPrice());
-            airlineFlight.setChildPrice(lineBo.getChildPrice());
-            if (lineBo.getAlertAdvance() != null) {
-                airlineFlight.setAlertDate(new Date(date.getTime() - lineBo.getAlertAdvance() * 24 * 60 * 60 * 1000));
+            airlineFlight.setAdultPrice(Line.getAdultPrice());
+            airlineFlight.setChildPrice(Line.getChildPrice());
+            if (Line.getAlertAdvance() != null) {
+                airlineFlight.setAlertDate(new Date(date.getTime() - Line.getAlertAdvance() * 24 * 60 * 60 * 1000));
             }
-            airlineFlight.setTicketDate(new Date(date.getTime() - lineBo.getTicketAdvance() * 24 * 60 * 60 * 1000));
-            airlineFlight.setRecoveryDate(new Date(date.getTime() - lineBo.getRecoveryAdvance() * 24 * 60 * 60 * 1000));
+            airlineFlight.setTicketDate(new Date(date.getTime() - Line.getTicketAdvance() * 24 * 60 * 60 * 1000));
+            airlineFlight.setRecoveryDate(new Date(date.getTime() - Line.getRecoveryAdvance() * 24 * 60 * 60 * 1000));
             flights.add(airlineFlight);
         }
         return flights;
@@ -205,12 +205,12 @@ public class AirlineVO {
     /**
      * 增加日志
      *
-     * @param lineBo
+     * @param Line
      * @param id
      * @param flag
      * @return
      */
-    public Log setAirlineLog(LineBo lineBo, String id, boolean flag) {
+    public Log setAirlineLog(Line Line, String id, boolean flag) {
         Log log = new Log();
         log.setId(Generator.uuid());
         log.setEventSource("CRM");
@@ -222,8 +222,8 @@ public class AirlineVO {
             log.setEventName("编辑航线");
             log.setMessage("编辑航线成功");
         }
-        log.setOperatorId(lineBo.getCreatorUserId());
-        log.setOperatorUser(lineBo.getCreatorUser());
+        log.setOperatorId(Line.getCreatorUserId());
+        log.setOperatorUser(Line.getCreatorUser());
         return log;
     }
 
@@ -302,22 +302,22 @@ public class AirlineVO {
     /**
      * 验证参数
      *
-     * @param lineBo
+     * @param Line
      * @return Reply
      */
-    public Reply checkData(LineBo lineBo) {
-        if (StringUtils.isBlank(lineBo.getFlightType().toString())
-                || StringUtils.isBlank(lineBo.getSeatType().toString())
-                || StringUtils.isBlank(lineBo.getAdultPrice().toString())
-                || StringUtils.isBlank(lineBo.getChildPrice().toString())
-                || StringUtils.isBlank(lineBo.getSeatCount().toString())
-                || StringUtils.isBlank(lineBo.getTicketAdvance().toString())) {
+    public Reply checkData(Line Line) {
+        if (StringUtils.isBlank(Line.getFlightType().toString())
+                || StringUtils.isBlank(Line.getSeatType().toString())
+                || StringUtils.isBlank(Line.getAdultPrice().toString())
+                || StringUtils.isBlank(Line.getChildPrice().toString())
+                || StringUtils.isBlank(Line.getSeatCount().toString())
+                || StringUtils.isBlank(Line.getTicketAdvance().toString())) {
             return ReplyHelper.fail("参数为空或不符合格式");
         }
-        if (lineBo.getTicketAdvance() >= lineBo.getRecoveryAdvance()) {
+        if (Line.getTicketAdvance() >= Line.getRecoveryAdvance()) {
             return ReplyHelper.fail("余票回收天数必须大于开票提前天数");
         }
-        List<FlightDetail> msdAirlineList = lineBo.getMsdAirlineInfoList();
+        List<FlightDetail> msdAirlineList = Line.getMsdAirlineInfoList();
         if (msdAirlineList == null) {
             return ReplyHelper.fail("缺少航班信息");
         }
@@ -339,7 +339,7 @@ public class AirlineVO {
     }
 
 
-   /* public MbsAirlineFlight setAirlineFlight(MbsAirlineFlight airlineFlight, MbslineBo airlineE, String flightDate) {
+   /* public MbsAirlineFlight setAirlineFlight(MbsAirlineFlight airlineFlight, MbsLine airlineE, String flightDate) {
         Date date = DateUtil.String2Date(flightDate, "yyyy-MM-dd");
         airlineFlight.setId(UUID.randomUUID().toString().replace("-", ""));
         airlineFlight.setFlightDate(date);
