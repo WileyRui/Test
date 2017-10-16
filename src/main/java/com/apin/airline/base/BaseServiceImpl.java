@@ -49,7 +49,8 @@ public class BaseServiceImpl implements BaseService {
 
         // 查询数据
         List<Country> countries = mapper.getCountries(country);
-        return ReplyHelper.success(countries);
+        Integer total = mapper.getTotalCountries(country);
+        return ReplyHelper.success(countries, total);
     }
 
     /**
@@ -110,7 +111,8 @@ public class BaseServiceImpl implements BaseService {
 
         // 查询数据
         List<City> cities = mapper.getCities(city);
-        return ReplyHelper.success(cities);
+        Integer total = mapper.getTotalCities(city);
+        return ReplyHelper.success(cities, total);
     }
 
     /**
@@ -169,7 +171,8 @@ public class BaseServiceImpl implements BaseService {
 
         // 查询数据
         List<Airport> airports = mapper.getAirports(airport);
-        return ReplyHelper.success(airports);
+        Integer total = mapper.getTotalAirports(airport);
+        return ReplyHelper.success(airports, total);
     }
 
     /**
@@ -228,7 +231,8 @@ public class BaseServiceImpl implements BaseService {
 
         // 查询数据
         List<Airway> airways = mapper.getAirwaies(airway);
-        return ReplyHelper.success(airways);
+        Integer total = mapper.getTotalAirwaies(airway);
+        return ReplyHelper.success(airways, total);
     }
 
     /**

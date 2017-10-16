@@ -1,6 +1,6 @@
 package com.apin.airline.common;
 
-import com.apin.airline.common.entity.FlightInfo;
+import com.apin.airline.common.entity.LineDetail;
 import com.apin.airline.common.entity.VariFlight;
 import com.apin.airline.common.mapper.AirlineMapper;
 import com.apin.util.DateHelper;
@@ -80,7 +80,7 @@ public class VariFlightService {
      * @throws IllegalAccessException
      */
     @Transactional
-    public List<FlightInfo> initVariFlightData(String flightNo, String departDate) throws InvocationTargetException, IllegalAccessException {
+    public List<LineDetail> initVariFlightData(String flightNo, String departDate) throws InvocationTargetException, IllegalAccessException {
         List<VariFlight> variFlights = new ArrayList<>();
         List<List<VariFlight>> variFlights1 = new ArrayList<>();
 //        Map<String, Object> resultMap = new HashMap<>();
@@ -104,10 +104,10 @@ public class VariFlightService {
             return null;
         }
         String flights = Arrays.toString(days).replace("[", "").replace("]", "").replace(" ", "");
-        List<FlightInfo> flightInfoList = new ArrayList<>();
+        List<LineDetail> lineDetails = new ArrayList<>();
 //        List<VariFlight> variFlightList = variFlights1.get(0);
         variFlights.forEach(i -> {
-            FlightInfo info = new FlightInfo();
+            LineDetail info = new LineDetail();
             info.setId(Generator.uuid());
             info.setFcategory(Byte.valueOf(i.getFcategory()));
             info.setFlightNo(i.getFlightNo());
@@ -122,10 +122,10 @@ public class VariFlightService {
             info.setFlightDeptimePlanDate(new Time(DateHelper.parseDate(i.getFlightArrtimePlanDate().substring(11)).getTime()));
             info.setStopFlag(i.getStopFlag().equals(1));
             info.setFlights(flights);
-            flightInfoList.add(info);
+            lineDetails.add(info);
         });
-        airlineMapper.addFlightInfo(flightInfoList);
-        return flightInfoList;
+        airlineMapper.addFlightInfo(lineDetails);
+        return lineDetails;
     }
 }
 

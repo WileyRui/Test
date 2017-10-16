@@ -35,42 +35,19 @@ public class AirlineVO {
      * @return 航线基础数据实体类
      */
     public Airline setAirline(Line line) {
-        com.apin.airline.common.entity.Airline airline = new com.apin.airline.common.entity.Airline();
+        com.apin.airline.common.entity.Airline airline = new Airline();
+
+        List<LineDetail> details = line.getDetails();
+
         airline.setId(Generator.uuid());
+        airline.setHashKey(hashValue(details));
+        airline.setFlightNumber(appendFlightNumber(details));
+        airline.setVoyage(appendVoyage(airline.getFlightType(), details));
         airline.setInvalid(false);
         airline.setCreatorUser(line.getCreatorUser());
         airline.setCreatorUserId(line.getCreatorUserId());
         airline.setCreatedTime(new Date());
         return airline;
-    }
-
-    public Airline setMsdAirline(Airline msdAirline, List<FlightInfo> flightDetails, int i, int flightType, StringBuilder appendFlight) {
-        FlightInfo flightDetail = flightDetails.get(i);
-        if (flightType == 1) { // 单程
-            msdAirline.setFlightNumber(flightDetail.getFlightNo());
-            msdAirline.setVoyage(this.appendVoyage(flightType, flightDetails));
-            msdAirline.setHashKey(this.hashValue(flightDetails));
-        }
-        if (flightType == 2) { // 往返
-            String flightNo = flightDetail.getFlightNo();
-            msdAirline.setHashKey(this.hashValue(flightDetails));
-            if (i == flightDetails.size() - 1) {
-                msdAirline.setFlightNumber(msdAirline.getFlightNumber() + "<->" + flightNo);
-                msdAirline.setVoyage(this.appendVoyage(flightType, flightDetails));
-            } else {
-                msdAirline.setFlightNumber(flightNo);
-            }
-        }
-        if (flightType == 3) { // 多程
-            msdAirline.setHashKey(this.hashValue(flightDetails));
-            if (i == flightDetails.size() - 1) {
-                msdAirline.setFlightNumber(appendFlight.append(flightDetail.getFlightNo()).toString());
-                msdAirline.setVoyage(this.appendVoyage(flightType, flightDetails));
-            } else {
-                appendFlight.append(flightDetail.getFlightNo() + ",");
-            }
-        }
-        return msdAirline;
     }
 
     /**
@@ -79,7 +56,7 @@ public class AirlineVO {
      * @param details
      * @return
      */
-    public List<Voyage> setVoyage(List<FlightInfo> details) {
+    public List<Voyage> setVoyage(List<LineDetail> details) {
         List<Voyage> voyages = new ArrayList<>();
         details.forEach(i -> {
             Voyage voyage = new Voyage();
@@ -150,16 +127,28 @@ public class AirlineVO {
     }
 
     /**
+     * 拼接航班号
+     *
+     * @param details 航程明细
+     * @return 航班号
+     */
+    public String appendFlightNumber(List<LineDetail> details) {
+        StringBuilder flightNumber = new StringBuilder();
+        details.forEach(i -> flightNumber.append(i.getFlightNo() + "-"));
+        return flightNumber.substring(0, flightNumber.length() - 1);
+    }
+
+    /**
      * 拼接航程
      *
      * @param flightType    航线类型
      * @param flightDetails 航班詳情
      * @return string
      */
-    public String appendVoyage(int flightType, List<FlightInfo> flightDetails) {
+    public String appendVoyage(int flightType, List<LineDetail> flightDetails) {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < flightDetails.size(); i++) {
-            FlightInfo flightDetail = flightDetails.get(i);
+            LineDetail flightDetail = flightDetails.get(i);
             String depAirportCode = flightDetail.getFlightDepcode();
             String depCity = airlineMapper.findCityNameByIataCode(depAirportCode);
             String arrAirportCode = flightDetail.getFlightArrcode();
@@ -193,7 +182,7 @@ public class AirlineVO {
      * @param details
      * @return hashValue
      */
-    public String hashValue(List<FlightInfo> details) {
+    public String hashValue(List<LineDetail> details) {
         StringBuffer hashValue = new StringBuffer();
         details.forEach(detail -> {
             String depCity = detail.getFlightDep();
@@ -214,7 +203,7 @@ public class AirlineVO {
     public Reply checkData(Line line) {
         if (line.getTicketAdvance() >= line.getRecoveryAdvance()) return ReplyHelper.invalidParam("余票回收天数必须大于开票提前天数");
 
-        List<FlightInfo> details = line.getDetails();
+        List<LineDetail> details = line.getDetails();
         if (details == null || details.size() == 0) return ReplyHelper.invalidParam("缺少航班信息");
 
         return ReplyHelper.success();
