@@ -52,6 +52,15 @@ public interface AirlineMapper extends Mapper {
     /**
      * 查询指定航班号的航班信息
      *
+     * @param id 航班信息ID
+     * @return 航班信息集合
+     */
+    @Select("SELECT * FROM msd_airline_info WHERE id=#{id};")
+    FlightInfo getFlightInfo(String id);
+
+    /**
+     * 查询指定航班号的航班信息
+     *
      * @param flightNo 航班号
      * @return 航班信息集合
      */
@@ -64,8 +73,8 @@ public interface AirlineMapper extends Mapper {
      * @param airline 航线基础数据
      * @return 受影响行数
      */
-    @Insert("INSERT msd_airline(id,hash_key,flight_type,dep_city,arr_city,voyage,flight_number,flight_time,week_flights,creator_user,creator_user_id) " +
-            "VALUES (#{id},#{hashKey},#{flightype},#{depCity},#{arrCity},#{voyage},#{flightNumber},#{flightTime},#{weekFlights},#{creatorUser},#{creatorUserId});")
+    @Insert("INSERT msd_airline(id,hash_key,flight_type,dep_city,arr_city,days,voyage,flight_number,flight_time,week_flights,creator_user,creator_user_id) " +
+            "VALUES (#{id},#{hashKey},#{flightype},#{depCity},#{arrCity},#{days},#{voyage},#{flightNumber},#{flightTime},#{weekFlights},#{creatorUser},#{creatorUserId});")
     Integer addAirline(Airline airline);
 
     /**
