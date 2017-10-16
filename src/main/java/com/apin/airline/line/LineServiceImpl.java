@@ -153,6 +153,6 @@ public class LineServiceImpl implements LineService {
 
     @Override
     public Reply newLineInfo() {
-        return null;
+        return ReplyHelper.success(airlineMapper.newLineData());
     }
 }

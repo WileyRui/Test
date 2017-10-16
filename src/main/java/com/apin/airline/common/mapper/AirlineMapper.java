@@ -1,6 +1,7 @@
 package com.apin.airline.common.mapper;
 
 import com.apin.airline.common.entity.*;
+import com.apin.airline.line.dto.NewLine;
 import org.apache.ibatis.annotations.*;
 
 import java.math.BigDecimal;
@@ -363,4 +364,15 @@ public interface AirlineMapper extends Mapper {
             "WHERE flight_id=#{flightId} AND owner_id=#{ownerId} AND seat_status<2 " +
             "ORDER BY seat_status DESC LIMIT #{count};")
     List<Seat> getSelledSeats(String flightId, String ownerId, Integer count);
+
+    /**
+     * 获取最新的航线信息
+     * @return
+     */
+    @Select("SELECT mba.id lineId,mda.voyage voyage,mba.adult_price price,MIN(f.flightDate) departDate," +
+            "mba.seat_count-f.seat_count saled FROM mbs_airline mba JOIN msd_airline mda ON mba.airline_id=mda.id " +
+            "JOIN (SELECT airline_id,MIN(flight_date) flightDate,seat_count FROM mbs_airline_flight " +
+            "WHERE flight_date > CURDATE() GROUP BY airline_id) f ON f.airline_id=mba.id WHERE mda.flight_type !='3' " +
+            "GROUP BY mda.voyage ORDER BY mba.created_time DESC LIMIT 2500")
+    List<NewLine> newLineData();
 }
