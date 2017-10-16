@@ -26,7 +26,7 @@ public class LineBo {
     private Integer weightLimit;
     private Integer alertAdvance;
     private Integer alertRate;
-    private Integer airlineStatus;
+    private Byte airlineStatus;
     private String manager;
     private String managerId;
     private String creatorUser;
@@ -161,11 +161,11 @@ public class LineBo {
         this.alertRate = alertRate;
     }
 
-    public Integer getAirlineStatus() {
+    public Byte getAirlineStatus() {
         return airlineStatus;
     }
 
-    public void setAirlineStatus(Integer airlineStatus) {
+    public void setAirlineStatus(Byte airlineStatus) {
         this.airlineStatus = airlineStatus;
     }
 

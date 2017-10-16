@@ -37,8 +37,8 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/edit")
-    public Reply editLine(@RequestBody LineBo lineBo) {
-        return service.editLine(lineBo);
+    public Reply editLine(@RequestHeader("accessToken") String token, @RequestBody LineBo lineBo) {
+        return service.editLine(token, lineBo);
     }
 
     /**
@@ -48,8 +48,8 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/delete")
-    public Reply delLine(@RequestBody LineBo lineBo) {
-        return service.delLine(lineBo);
+    public Reply delLine(@RequestHeader("accessToken") String token, @RequestBody LineBo lineBo) {
+        return service.delLine(token, lineBo);
     }
 
     /**
@@ -70,8 +70,8 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/detail/query")
-    public Reply lineInfo(@RequestBody LineBo lineBo) {
-        return service.lineInfo(lineBo);
+    public Reply lineInfo(@RequestHeader("accessToken") String token,@RequestBody LineBo lineBo) {
+        return service.lineInfo(token,lineBo);
     }
 
     /**
@@ -81,8 +81,8 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/status/update")
-    public Reply upOrDown(@RequestBody LineBo lineBo) {
-        return service.upOrDown(lineBo);
+    public Reply upOrDown(@RequestHeader("accessToken") String token,@RequestBody LineBo lineBo) {
+        return service.upOrDown(token,lineBo);
     }
 
     /**

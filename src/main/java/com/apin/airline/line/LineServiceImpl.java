@@ -15,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author wiley
@@ -32,6 +34,7 @@ public class LineServiceImpl implements LineService {
     AirlineVO airlineVO;
 
     @Override
+    @Transactional
     public Reply addLine(String token, LineBo lineBo) {
         airlineVO.setLineBo(lineBo, token);
         StringBuilder appendFlight = new StringBuilder();
@@ -49,7 +52,7 @@ public class LineServiceImpl implements LineService {
                     msdAirlineList.get(i).getArrAirportCode());*/
             if (i == 0) {
 //                airline.setFlightTime(flightInfo.getFlightDeptimePlanDate());
-//                line.setAirwayId(airWayMapper.findByIataCode(flightInfo.getFlightNo().substring(0, 2)));
+//                line.setAirwayId(airlineMapper.getAirwayIdByFlightNo(flightInfo.getFlightNo()));
             }
             airline = airlineVO.setMsdAirline(airline, msdAirlineList, i, lineBo.getFlightType(), appendFlight);
         }
@@ -63,18 +66,24 @@ public class LineServiceImpl implements LineService {
         List<Voyage> voyages = airlineVO.setVoyage(msdAirlineList, airline);
         airlineMapper.addVoyages(voyages);
         Log log = airlineVO.setAirlineLog(lineBo, line.getId(), true);
-//        airlineMapper.addLog(log);
+        airlineMapper.addLog(log);
         return ReplyHelper.success();
     }
 
     @Override
-    public Reply editLine(LineBo lineBo) {
+    public Reply editLine(String token, LineBo lineBo) {
         return null;
     }
 
     @Override
-    public Reply delLine(LineBo lineBo) {
-        return null;
+    @Transactional
+    public Reply delLine(String token, LineBo lineBo) {
+        airlineVO.setLineBo(lineBo,token);
+        Integer row = airlineMapper.deleteLine(lineBo.getId());
+        if (row <= 0){
+            return ReplyHelper.error();
+        }
+        return ReplyHelper.success();
     }
 
     @Override
@@ -83,13 +92,27 @@ public class LineServiceImpl implements LineService {
     }
 
     @Override
-    public Reply lineInfo(LineBo lineBo) {
-        return null;
+    public Reply lineInfo(String token,LineBo lineBo) {
+        airlineVO.setLineBo(lineBo,token);
+        Line line = airlineMapper.getLine(lineBo.getId());
+        Airline airline = airlineMapper.getAirlineById(line.getAirlineId());
+        List<AirlineDetail> voyages = airlineMapper.getVoyages(airline.getId());
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("line",line);
+        resultMap.put("airline",airline);
+        resultMap.put("voyages",voyages);
+        return ReplyHelper.success(resultMap);
     }
 
     @Override
-    public Reply upOrDown(LineBo lineBo) {
-        return null;
+    @Transactional
+    public Reply upOrDown(String token,LineBo lineBo) {
+        airlineVO.setLineBo(lineBo,token);
+        Integer row = airlineMapper.updateAirLineStatus(lineBo.getId(),lineBo.getAirlineStatus());
+        if (row<=0){
+            return ReplyHelper.error();
+        }
+        return ReplyHelper.success();
     }
 
     @Override
