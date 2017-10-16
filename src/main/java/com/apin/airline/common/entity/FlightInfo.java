@@ -110,7 +110,7 @@ public class FlightInfo implements Serializable {
     /**
      * 返程天数
      */
-    private String days;
+    private Integer days;
 
     public String getId() {
         return id;
@@ -264,11 +264,11 @@ public class FlightInfo implements Serializable {
         this.createdTime = createdTime;
     }
 
-    public String getDays() {
+    public Integer getDays() {
         return days;
     }
 
-    public void setDays(String days) {
+    public void setDays(Integer days) {
         this.days = days;
     }
 }

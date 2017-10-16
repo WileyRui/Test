@@ -2,9 +2,7 @@ package com.apin.airline.line;
 
 import com.apin.airline.common.AirlineVO;
 import com.apin.airline.common.VariFlightService;
-import com.apin.airline.common.entity.Airline;
-import com.apin.airline.common.entity.FlightInfo;
-import com.apin.airline.common.entity.Line;
+import com.apin.airline.common.entity.*;
 import com.apin.airline.common.mapper.AirlineMapper;
 import com.apin.util.Generator;
 import com.apin.util.JsonUtils;
@@ -39,34 +37,44 @@ public class LineServiceImpl implements LineService {
         if (!result.getSuccess()) return result;
 
         AccessToken accessToken = JsonUtils.toAccessToken(token);
+        List<Date> dates = airlineVO.getDates(line.getDepartureStart(), line.getDepartureEnd(), line.getWeekFlights());
 
-        // 根据城市、航班号和行程天数计算摘要
+        // 根据城市、航班号和行程天数计算摘要并查询航线基础数据ID
         String key = airlineVO.hashValue(line.getDetails());
-
-        // 根据摘要字符串查询航线基础数据ID,如航线基础数据不存在,则生成相应的航线基础数据并持久化到数据库
         String airLineId = airlineMapper.getExistedAirline(key);
+
+        // 如航线基础数据不存在,则生成相应的航线基础数据并持久化到数据库
         if (airLineId == null) {
-            airLineId = Generator.uuid();
+            line.setAirlineId(Generator.uuid());
+
+            Airline airline = airlineVO.setAirline(line);
+            List<Voyage> voyages = airlineVO.setVoyage(line.getDetails());
+            Integer count = airlineMapper.addAirline(airline);
+            count += airlineMapper.addVoyages(voyages);
+            if (count <= 0) return ReplyHelper.error();
 
         } else {
             // 校验数据是否重复
             List<Date> existedDates = airlineMapper.getExistedflightDate(accessToken.getAccountId(), airLineId);
+            if (dates.retainAll(existedDates)) return ReplyHelper.invalidParam("重复的航班");
 
+            line.setAirlineId(airLineId);
         }
 
         // 处理航线资源数据
         line.setId(Generator.uuid());
         line.setAirwayId(airlineMapper.getAirwayIdByFlightNo(line.getDetails().get(0).getFlightNo()));
-        line.setAirlineId(airLineId);
 
         line.setAccountId(accessToken.getAccountId());
         line.setCreatorUser(accessToken.getUserName());
         line.setCreatorUserId(accessToken.getUserId());
 
         // 生成航班资源数据集合
+        List<Flight> flights = airlineVO.setFlight(line, dates);
 
         // 持久化数据
         Integer count = airlineMapper.addLine(line);
+        count += airlineMapper.addLineFlights(flights);
         if (count <= 0) return ReplyHelper.error();
 
         return ReplyHelper.success();
