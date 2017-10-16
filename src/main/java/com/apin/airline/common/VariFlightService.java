@@ -62,16 +62,10 @@ public class VariFlightService {
         paramMap.put("token", token);
         try {
             String result = HttpFlightUtils.net(url, paramMap, "GET");
-            logger.info("====the variflight result is : " + result);
             variFlights = JsonUtils.toBean(result, JsonUtils.getJavaType(List.class, VariFlight.class));
-            if (result.contains("error")) {
-//                System.out.println("解码后:" + URLDecoder.decode(resultMap.get("error"), "utf-8"));
-                return null;
-            }
             return variFlights;
         } catch (Exception e) {
             e.printStackTrace();
-            logger.info("=====the variflight interface get something wrong======");
             return null;
         }
     }
