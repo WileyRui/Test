@@ -56,7 +56,8 @@ public class LineServiceImpl implements LineService {
         } else {
             // 校验数据是否重复
             List<Date> existedDates = airlineMapper.getExistedflightDate(accessToken.getAccountId(), airLineId);
-            if (existedDates.retainAll(dates)) return ReplyHelper.invalidParam("重复的航班");
+
+            if (existedDates.retainAll(dates) && existedDates.size() == 0) return ReplyHelper.invalidParam("重复的航班");
 
             line.setAirlineId(airLineId);
         }
