@@ -110,7 +110,7 @@ public class AirlineVO {
         airline.setId(Generator.uuid());
         airline.setWeekFlights(flightDetails.get(0).getWeekFlights());
         Integer flightType = Line.getFlightType();
-        airline.setFlightype(flightType.byteValue());
+        airline.setFlighType(flightType.byteValue());
         airline.setInvalid(false);
         airline.setCreatorUser(Line.getCreatorUser());
         airline.setCreatorUserId(Line.getCreatorUserId());

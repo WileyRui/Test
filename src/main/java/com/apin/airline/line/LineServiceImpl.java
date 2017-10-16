@@ -4,9 +4,10 @@ import com.apin.airline.common.VariFlightService;
 import com.apin.airline.common.entity.*;
 import com.apin.airline.common.mapper.AirlineMapper;
 import com.apin.airline.line.dto.AirlineVO;
-import com.apin.airline.common.entity.FlightDetail;
 import com.apin.util.Generator;
+import com.apin.util.JsonUtils;
 import com.apin.util.ReplyHelper;
+import com.apin.util.pojo.AccessToken;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,37 +36,22 @@ public class LineServiceImpl implements LineService {
     @Override
     @Transactional
     public Reply addLine(String token, Line line) {
-        airlineVO.setLine(line, token);
-        StringBuilder appendFlight = new StringBuilder();
-        airlineVO.checkData(line);
-        List<FlightDetail> msdAirlineList = line.getDetails();
-        Line line1 = airlineVO.setLine(line, msdAirlineList);
-        Airline airline = airlineVO.setAirline(line, msdAirlineList);
-        line.setAirlineId(airline.getId());
-        Voyage airlineVoyage = new Voyage();
-        airlineVoyage.setAirlineId(airline.getId());
-        for (int i = 0; i < msdAirlineList.size(); i++) {
-            FlightDetail flightDetail = msdAirlineList.get(i);
-/*            FlightInfo flightInfo = airlineMapper.findByflightNoAndIatacode(
-                    msdAirlineList.get(i).getFlightNo(), msdAirlineList.get(i).getDepAirportCode(),
-                    msdAirlineList.get(i).getArrAirportCode());*/
-            if (i == 0) {
-//                airline.setFlightTime(flightInfo.getFlightDeptimePlanDate());
-//                line.setAirwayId(airlineMapper.getAirwayIdByFlightNo(flightInfo.getFlightNo()));
-            }
-            airline = airlineVO.setMsdAirline(airline, msdAirlineList, i, line.getFlightType(), appendFlight);
-        }
-        if (airlineVO.LineRepeat(airline.getHashKey())) {
-            return ReplyHelper.fail("航线已存在");
-        }
-        airlineMapper.addLine(line);
-        airlineMapper.addAirline(airline);
-        List<Flight> flights = airlineVO.setFlight(line, line, msdAirlineList);
-        airlineMapper.addLineFlights(flights);
-        List<Voyage> voyages = airlineVO.setVoyage(msdAirlineList, airline);
-        airlineMapper.addVoyages(voyages);
-        Log log = airlineVO.setAirlineLog(line, line.getId(), true);
-        airlineMapper.addLog(log);
+
+        // 校验数据
+
+        // 处理数据
+        line.setId(Generator.uuid());
+        line.setAirwayId(airlineMapper.getAirwayIdByFlightNo(line.getDetails().));
+
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        line.setAccountId(accessToken.getAccountId());
+        line.setCreatorUser(accessToken.getUserName());
+        line.setCreatorUserId(accessToken.getUserId());
+
+        // 持久化数据
+        Integer count = airlineMapper.addLine(line);
+        if (count <= 0) return ReplyHelper.error();
+
         return ReplyHelper.success();
     }
 

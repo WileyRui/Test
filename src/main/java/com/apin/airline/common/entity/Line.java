@@ -44,6 +44,11 @@ public class Line implements Serializable {
     private String airlineId;
 
     /**
+     * 航程类型 0:未定义;1:单程;2:往返;3:多程
+     */
+    private Byte flighType;
+
+    /**
      * 资源类型 0:线下资源;1:包机商资源;2:一般供应商资源;3:软切资源;4:硬切资源
      */
     private Byte resType;
@@ -62,6 +67,11 @@ public class Line implements Serializable {
      * 销售截止日期(出发日期)
      */
     private Date departureEnd;
+
+    /**
+     * 每周飞行班次 周日开始 0,1,0,1,0,1,0代表每周135有航班飞行
+     */
+    private String weekFlights;
 
     /**
      * 舱位数量
@@ -221,6 +231,14 @@ public class Line implements Serializable {
         this.airlineId = airlineId;
     }
 
+    public Byte getFlighType() {
+        return flighType;
+    }
+
+    public void setFlighType(Byte flighType) {
+        this.flighType = flighType;
+    }
+
     public Byte getResType() {
         return resType;
     }
@@ -251,6 +269,14 @@ public class Line implements Serializable {
 
     public void setDepartureEnd(Date departureEnd) {
         this.departureEnd = departureEnd;
+    }
+
+    public String getWeekFlights() {
+        return weekFlights;
+    }
+
+    public void setWeekFlights(String weekFlights) {
+        this.weekFlights = weekFlights;
     }
 
     public Integer getSeatCount() {
