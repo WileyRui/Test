@@ -3,7 +3,7 @@ package com.apin.airline.line;
 import com.apin.airline.common.VariFlightService;
 import com.apin.airline.common.entity.*;
 import com.apin.airline.common.mapper.AirlineMapper;
-import com.apin.airline.line.dto.AirlineVO;
+import com.apin.airline.common.AirlineVO;
 import com.apin.util.Generator;
 import com.apin.util.JsonUtils;
 import com.apin.util.ReplyHelper;
@@ -39,14 +39,26 @@ public class LineServiceImpl implements LineService {
 
         // 校验数据
 
-        // 处理数据
+        // 根据城市、航班号和行程天数计算摘要
+        String key = airlineVO.hashValue(line.getDetails());
+
+        // 根据摘要字符串查询航线基础数据ID,如航线基础数据不存在,则生成相应的航线基础数据并持久化到数据库
+        String airLineId = airlineMapper.getExistedAirline(key);
+        if (airLineId == null){
+            airLineId = Generator.uuid();
+        }
+
+        // 处理航线资源数据
         line.setId(Generator.uuid());
-        line.setAirwayId(airlineMapper.getAirwayIdByFlightNo(line.getDetails().));
+        line.setAirwayId(airlineMapper.getAirwayIdByFlightNo(line.getDetails().get(0).getFlightNo()));
+        line.setAirlineId(airLineId);
 
         AccessToken accessToken = JsonUtils.toAccessToken(token);
         line.setAccountId(accessToken.getAccountId());
         line.setCreatorUser(accessToken.getUserName());
         line.setCreatorUserId(accessToken.getUserId());
+
+        // 生成航班资源数据集合
 
         // 持久化数据
         Integer count = airlineMapper.addLine(line);
@@ -63,7 +75,7 @@ public class LineServiceImpl implements LineService {
     @Override
     @Transactional
     public Reply delLine(String token, Line line) {
-        airlineVO.setLine(line,token);
+
         Integer row = airlineMapper.deleteLine(line.getId());
         if (row <= 0){
             return ReplyHelper.error();
@@ -78,7 +90,7 @@ public class LineServiceImpl implements LineService {
 
     @Override
     public Reply lineInfo(String token,Line line) {
-        airlineVO.setLine(line,token);
+
         Line line1 = airlineMapper.getLine(line.getId());
         Airline airline = airlineMapper.getAirlineById(line1.getAirlineId());
         List<AirlineDetail> voyages = airlineMapper.getVoyages(airline.getId());
@@ -92,7 +104,7 @@ public class LineServiceImpl implements LineService {
     @Override
     @Transactional
     public Reply upOrDown(String token,Line line) {
-        airlineVO.setLine(line,token);
+
         Integer row = airlineMapper.updateAirLineStatus(line.getId(),line.getAirlineStatus());
         if (row<=0){
             return ReplyHelper.error();
