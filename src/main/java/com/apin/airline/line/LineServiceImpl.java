@@ -5,7 +5,6 @@ import com.apin.airline.common.entity.*;
 import com.apin.airline.common.mapper.AirlineMapper;
 import com.apin.airline.line.dto.AirlineVO;
 import com.apin.airline.line.dto.FlightDetail;
-import com.apin.airline.line.dto.LineBo;
 import com.apin.util.Generator;
 import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
@@ -32,8 +31,8 @@ public class LineServiceImpl implements LineService {
     AirlineVO airlineVO;
 
     @Override
-    public Reply addLine(String token, LineBo lineBo) {
-        airlineVO.setLineBo(lineBo, token);
+    public Reply addLine(String token, Line lineBo) {
+        airlineVO.setLine(lineBo, token);
         StringBuilder appendFlight = new StringBuilder();
         airlineVO.checkData(lineBo);
         List<FlightDetail> msdAirlineList = lineBo.getMsdAirlineInfoList();
@@ -68,32 +67,32 @@ public class LineServiceImpl implements LineService {
     }
 
     @Override
-    public Reply editLine(LineBo lineBo) {
+    public Reply editLine(Line lineBo) {
         return null;
     }
 
     @Override
-    public Reply delLine(LineBo lineBo) {
+    public Reply delLine(Line lineBo) {
         return null;
     }
 
     @Override
-    public Reply lineList(LineBo lineBo) {
+    public Reply lineList(Line lineBo) {
         return null;
     }
 
     @Override
-    public Reply lineInfo(LineBo lineBo) {
+    public Reply lineInfo(Line lineBo) {
         return null;
     }
 
     @Override
-    public Reply upOrDown(LineBo lineBo) {
+    public Reply upOrDown(Line lineBo) {
         return null;
     }
 
     @Override
-    public Reply queryFlightInfo(LineBo lineBo) throws InvocationTargetException, IllegalAccessException {
+    public Reply queryFlightInfo(Line lineBo) throws InvocationTargetException, IllegalAccessException {
         List<FlightInfo> airlineList = airlineMapper.getFlightInfos(lineBo.getFlightNo());
         if (airlineList.size() > 0) {
             return ReplyHelper.success(airlineList);
@@ -117,7 +116,7 @@ public class LineServiceImpl implements LineService {
 
     @Transactional
     @Override
-    public Reply updateFlightInfo(LineBo lineBo) throws InvocationTargetException, IllegalAccessException { //需求待确认
+    public Reply updateFlightInfo(Line lineBo) throws InvocationTargetException, IllegalAccessException { //需求待确认
         Integer row = airlineMapper.deleteFlightInfo(lineBo.getFlightNo());
         if (row <= 0) {
             return ReplyHelper.error();
