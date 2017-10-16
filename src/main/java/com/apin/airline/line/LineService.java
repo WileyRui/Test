@@ -27,7 +27,7 @@ public interface LineService {
      * @param line
      * @return
      */
-    Reply editLine(Line line);
+    Reply editLine(String token, Line line);
 
     /**
      * 删除航线
@@ -35,7 +35,7 @@ public interface LineService {
      * @param line
      * @return
      */
-    Reply delLine(Line line);
+    Reply delLine(String token, Line line);
 
     /**
      * 航线列表/查询
@@ -51,7 +51,7 @@ public interface LineService {
      * @param line
      * @return
      */
-    Reply lineInfo(Line line);
+    Reply lineInfo(String token,Line line);
 
     /**
      * 航线上下架
@@ -59,7 +59,7 @@ public interface LineService {
      * @param line
      * @return
      */
-    Reply upOrDown(Line line);
+    Reply upOrDown(String token,Line line);
 
     /**
      * 航班查询

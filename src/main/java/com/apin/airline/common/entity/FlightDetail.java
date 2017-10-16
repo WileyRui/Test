@@ -1,4 +1,4 @@
-package com.apin.airline.line.dto;
+package com.apin.airline.common.entity;
 
 import java.io.Serializable;
 
