@@ -39,6 +39,11 @@ public class Airline implements Serializable {
     private String arrCity;
 
     /**
+     * 往返行程天数,单程为0 (当天往返为0)
+     */
+    private Integer days;
+
+    /**
      * 航程 拼接的中文字符串,如 北京<->曼谷;北京->曼谷->巴厘岛->北京
      */
     private String voyage;
@@ -126,6 +131,14 @@ public class Airline implements Serializable {
 
     public void setArrCity(String arrCity) {
         this.arrCity = arrCity;
+    }
+
+    public Integer getDays() {
+        return days;
+    }
+
+    public void setDays(Integer days) {
+        this.days = days;
     }
 
     public String getVoyage() {
