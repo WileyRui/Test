@@ -2,7 +2,6 @@ package com.apin.airline.line.dto;
 
 import com.apin.airline.common.entity.*;
 import com.apin.airline.common.mapper.AirlineMapper;
-import com.apin.util.DateHelper;
 import com.apin.util.Generator;
 import com.apin.util.JsonUtils;
 import com.apin.util.ReplyHelper;
@@ -27,6 +26,77 @@ public class AirlineVO {
     @Autowired
     AirlineMapper airlineMapper;
 
+    public void setLine(Line Line, String token) {
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        String accountId = accessToken.getAccountId();
+        String userId = accessToken.getUserId();
+        String userName = accessToken.getUserName();
+        Line.setAccountId(accountId);
+        Line.setCreatorUser(userName);
+        Line.setCreatorUserId(userId);
+    }
+
+    /**
+     * 初始化航线数据
+     *
+     * @param line1
+     * @param flightDetails
+     * @return 航线实体类
+     */
+    public Line setLine1(Line line1, List<FlightDetail> flightDetails) {
+        Line line = new Line();
+        line.setId(Generator.uuid());
+        line.setAccountId(line1.getAccountId());
+//        line.setSupplierName(line1.getSupplireName());
+        line.setCreatorUserId(line1.getCreatorUserId());
+        line.setCreatorUser(line1.getCreatorUser());
+        line.setAirwayId("123321");
+        line.setResType(line1.getResType());
+//        String[] dateArray = flightDetails.get(0).getDatePeriod().split("/");
+//        line.setDepartureStart(DateHelper.parseDate(dateArray[0]));
+//        line.setDepartureEnd(DateHelper.parseDate(dateArray[1]));
+        // 舱位类型：1、系列团；2、余位
+        line.setSeatType(line1.getSeatType().byteValue());
+        // 舱位数量
+        line.setSeatCount(line1.getSeatCount());
+        // 定金
+        line.setDepositAmount(line1.getDepositAmount());
+        // 成人、儿童票价
+        line.setAdultPrice(line1.getAdultPrice());
+        line.setChildPrice(line1.getChildPrice());
+        // 尾款、余票回收、出票最晚天数
+        line.setPayAdvance(line1.getPayAdvance());
+        line.setTicketAdvance(line1.getTicketAdvance());
+        line.setRecoveryAdvance(line1.getRecoveryAdvance());
+        // 行李规则
+        line.setFreeBag(line1.getFreeBag());
+        line.setWeightLimit(line1.getWeightLimit());
+        // 预警 选填
+        if (line1.getAlertAdvance() != null) {
+            line.setAlertAdvance(line1.getAlertAdvance());
+        }
+        if (line1.getAlertRate() != null) {
+            line.setAlertRate(line1.getAlertRate());
+        }
+        String manager = line1.getManager().toString();
+        String managerId = line1.getManagerId();
+        if (!StringUtils.isBlank(manager)) {
+            line.setManager(manager);
+        }
+        if (!StringUtils.isBlank(managerId)) {
+            line.setManagerId(managerId);
+        }
+        // 退、该、签
+        line.setCanReturn(false);
+        line.setCanChange(false);
+        line.setCanSign(false);
+        // 新增航线默认待上架、有效
+        line.setAirlineStatus((byte) 0);
+        line.setInvalid(false);
+        line.setCreatedTime(new Date());
+        return line;
+    }
+
     /**
      * 初始化航线基础数据
      *
@@ -37,6 +107,9 @@ public class AirlineVO {
     public Airline setAirline(Line line, List<FlightDetail> flightDetails) {
         Airline airline = new Airline();
         airline.setId(Generator.uuid());
+        airline.setWeekFlights(line.getWeekFlights());
+        Integer flightType = (int)line.getFlighType();
+        airline.setFlighType(flightType.byteValue());
         airline.setInvalid(false);
         airline.setCreatorUser(line.getCreatorUser());
         airline.setCreatorUserId(line.getCreatorUserId());
@@ -98,18 +171,19 @@ public class AirlineVO {
      * 初始化航线班次数据
      *
      * @param line
+     * @param Line
      * @param flightDetails
      * @return
      */
-    public List<Flight> setFlight(Line line, List<FlightDetail> flightDetails) {
+/*    public List<Flight> setFlight(Line line,List<FlightDetail> flightDetails) {
         List<Flight> flights = new ArrayList<>();
-        String[] datesByWeek = line.getWeekFlights().split(",");
+//        String[] datesByWeek = flightDetails.get(0).getDatesByWeek().split(",");
         for (String flightDate : datesByWeek) {
             Flight airlineFlight = new Flight();
             if (line.getAlertRate() != null) {
                 airlineFlight.setAlertThreshold((int) (line.getSeatCount() * line.getAlertRate() * 0.01));
             }
-
+//            airlineFlight.setSellType(line.getSellType());
             airlineFlight.setAirlineId(line.getId());
             airlineFlight.setSeatCount(line.getSeatCount());
             Date date = DateHelper.parseDate(flightDate);
@@ -125,7 +199,7 @@ public class AirlineVO {
             flights.add(airlineFlight);
         }
         return flights;
-    }
+    }*/
 
     /**
      * 增加日志
@@ -193,10 +267,10 @@ public class AirlineVO {
     /**
      * 生成hashValue
      *
-     * @param details
+     * @param flightDetails
      * @return hashValue
      */
-    public String hashValue(List<FlightDetail> details) {
+    public String hashValue(List<FlightDetail> flightDetails) {
         // hashValue
         StringBuffer hashValue = new StringBuffer();
         // 出发城市-到达城市
@@ -207,7 +281,7 @@ public class AirlineVO {
         StringBuffer airport2City = new StringBuffer();
         // 出发机场-到达机场
         StringBuffer airport2airport = new StringBuffer();
-        for (FlightDetail flightDetail : details) {
+        for (FlightDetail flightDetail : flightDetails) {
             String depAirportCode = flightDetail.getDepAirportCode();
             String arrAirportCode = flightDetail.getArrAirportCode();
             String arrCityCode = airlineMapper.findCityCode(arrAirportCode);
@@ -231,7 +305,7 @@ public class AirlineVO {
      * @return Reply
      */
     public Reply checkData(Line line) {
-        if (StringUtils.isBlank(line.getFlightType().toString())
+        if (StringUtils.isBlank(line.getFlighType().toString())
                 || StringUtils.isBlank(line.getSeatType().toString())
                 || StringUtils.isBlank(line.getAdultPrice().toString())
                 || StringUtils.isBlank(line.getChildPrice().toString())

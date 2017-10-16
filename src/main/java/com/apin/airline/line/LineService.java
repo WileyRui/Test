@@ -67,7 +67,7 @@ public interface LineService {
      * @param line
      * @return
      */
-    Reply queryFlightInfo(Line line) throws InvocationTargetException, IllegalAccessException;
+    Reply queryFlightInfo(FlightInfo info) throws InvocationTargetException, IllegalAccessException;
 
 
     /**
@@ -84,5 +84,11 @@ public interface LineService {
      * @param line
      * @return
      */
-    Reply updateFlightInfo(Line line) throws InvocationTargetException, IllegalAccessException;
+    Reply updateFlightInfo(FlightInfo info) throws InvocationTargetException, IllegalAccessException;
+
+    /**
+     * 获取最新的航线信息
+     * @return
+     */
+    Reply newLineInfo();
 }

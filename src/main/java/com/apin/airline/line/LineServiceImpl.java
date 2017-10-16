@@ -101,12 +101,12 @@ public class LineServiceImpl implements LineService {
     }
 
     @Override
-    public Reply queryFlightInfo(Line line) throws InvocationTargetException, IllegalAccessException {
-        List<FlightInfo> airlineList = airlineMapper.getFlightInfos(line.getFlightNo());
+    public Reply queryFlightInfo(FlightInfo info) throws InvocationTargetException, IllegalAccessException {
+        List<FlightInfo> airlineList = airlineMapper.getFlightInfos(info.getFlightNo());
         if (airlineList.size() > 0) {
             return ReplyHelper.success(airlineList);
         }
-        List<FlightInfo> flightInfoList = variFlight.initVariFlightData(line.getFlightNo(), line.getBeginDate());
+        List<FlightInfo> flightInfoList = variFlight.initVariFlightData(info.getFlightNo(), info.getBeginDate());
         if (flightInfoList.size() == 0) {
             return ReplyHelper.fail("航班信息不存在，手工录入");
         }
@@ -125,12 +125,12 @@ public class LineServiceImpl implements LineService {
 
     @Transactional
     @Override
-    public Reply updateFlightInfo(Line line) throws InvocationTargetException, IllegalAccessException { //需求待确认
-        Integer row = airlineMapper.deleteFlightInfo(line.getFlightNo());
+    public Reply updateFlightInfo(FlightInfo info) throws InvocationTargetException, IllegalAccessException { //需求待确认
+        Integer row = airlineMapper.deleteFlightInfo(info.getFlightNo());
         if (row <= 0) {
             return ReplyHelper.error();
         }
-        List<FlightInfo> flightInfoList = variFlight.initVariFlightData(line.getFlightNo(), line.getBeginDate());
+        List<FlightInfo> flightInfoList = variFlight.initVariFlightData(info.getFlightNo(), info.getBeginDate());
         return ReplyHelper.success(flightInfoList, "航班信息更新成功");
     }
 
