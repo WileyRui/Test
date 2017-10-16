@@ -64,7 +64,7 @@ public interface LineService {
     /**
      * 航班查询
      *
-     * @param line
+     * @param info
      * @return
      */
     Reply queryFlightInfo(FlightInfo info) throws InvocationTargetException, IllegalAccessException;

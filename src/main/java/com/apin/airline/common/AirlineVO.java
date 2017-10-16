@@ -11,8 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static javax.xml.bind.DatatypeConverter.parseDateTime;
 
 /**
  * 航线信息操作
@@ -29,10 +32,9 @@ public class AirlineVO {
      * 初始化航线基础数据
      *
      * @param line
-     * @param flightDetails
      * @return 航线基础数据实体类
      */
-    public com.apin.airline.common.entity.Airline setAirline(Line line, List<FlightInfo> flightDetails) {
+    public Airline setAirline(Line line) {
         com.apin.airline.common.entity.Airline airline = new com.apin.airline.common.entity.Airline();
         airline.setId(Generator.uuid());
         airline.setInvalid(false);
@@ -42,7 +44,7 @@ public class AirlineVO {
         return airline;
     }
 
-    public com.apin.airline.common.entity.Airline setMsdAirline(com.apin.airline.common.entity.Airline msdAirline, List<FlightInfo> flightDetails, int i, int flightType, StringBuilder appendFlight) {
+    public Airline setMsdAirline(Airline msdAirline, List<FlightInfo> flightDetails, int i, int flightType, StringBuilder appendFlight) {
         FlightInfo flightDetail = flightDetails.get(i);
         if (flightType == 1) { // 单程
             msdAirline.setFlightNumber(flightDetail.getFlightNo());
@@ -74,21 +76,20 @@ public class AirlineVO {
     /**
      * 初始化航程数据
      *
-     * @param flightDetails
-     * @param airline
+     * @param details
      * @return
      */
-    public List<Voyage> setVoyage(List<FlightInfo> flightDetails, Airline airline) {
+    public List<Voyage> setVoyage(List<FlightInfo> details) {
         List<Voyage> voyages = new ArrayList<>();
-        for (int i = 0; i < flightDetails.size(); i++) {
+        details.forEach(i -> {
             Voyage voyage = new Voyage();
             voyage.setId(Generator.uuid());
-            voyage.setTripIndex((byte) i);
-            voyage.setAirlineId(airline.getId());
-            voyage.setDays(Integer.parseInt(flightDetails.get(i).getDays()));
-            voyage.setFlightInfoId(airline.getId());
+            voyage.setTripIndex(i.getTripIndex());
+            voyage.setAirlineId(i.getAirlineId());
+            voyage.setDays(i.getDays());
+            voyage.setFlightInfoId(i.getId());
             voyages.add(voyage);
-        }
+        });
         return voyages;
     }
 
@@ -96,13 +97,11 @@ public class AirlineVO {
      * 初始化航线班次数据
      *
      * @param line
-     * @param flightDetails
      * @return
      */
-    public List<Flight> setFlight(Line line, List<FlightInfo> flightDetails) {
+    public List<Flight> setFlight(Line line, List<Date> dates) {
         List<Flight> flights = new ArrayList<>();
-        String[] datesByWeek = line.getWeekFlights().split(",");
-        for (String flightDate : datesByWeek) {
+        for (Date date : dates) {
             Flight airlineFlight = new Flight();
             if (line.getAlertRate() != null) {
                 airlineFlight.setAlertThreshold((int) (line.getSeatCount() * line.getAlertRate() * 0.01));
@@ -110,7 +109,7 @@ public class AirlineVO {
 
             airlineFlight.setAirlineId(line.getId());
             airlineFlight.setSeatCount(line.getSeatCount());
-            Date date = DateHelper.parseDate(flightDate);
+
             airlineFlight.setId(Generator.uuid());
             airlineFlight.setFlightDate(date);
             airlineFlight.setAdultPrice(line.getAdultPrice());
@@ -200,7 +199,7 @@ public class AirlineVO {
             String depCity = detail.getFlightDep();
             String arrCity = detail.getFlightArr();
             String flightNo = detail.getFlightNo();
-            String days = detail.getDays();
+            Integer days = detail.getDays();
             hashValue.append(flightNo + depCity + arrCity + days);
         });
         return hashValue.toString();
@@ -219,5 +218,31 @@ public class AirlineVO {
         if (details == null || details.size() == 0) return ReplyHelper.invalidParam("缺少航班信息");
 
         return ReplyHelper.success();
+    }
+
+    public Integer getWeekDay(String strDate) {
+        Calendar cal = parseDateTime(strDate);
+        return cal.get(Calendar.DAY_OF_WEEK);
+    }
+
+    public List<Date> getDates(Date start, Date end, String weeks) {
+        Date date = start;
+        List<Integer> d = new ArrayList<>();
+        List<Date> dates = new ArrayList<>();
+        String[] dayOfWeek = weeks.split(",");
+        for (int i = 0; i < 7; i++) {
+            if (dayOfWeek[i].equals("0")) continue;
+
+            d.add(i);
+        }
+
+        while (date.before(end)) {
+            String cur = DateHelper.formatDate(date);
+            if (!d.contains(getWeekDay(cur))) continue;
+
+            dates.add(date);
+        }
+
+        return dates;
     }
 }

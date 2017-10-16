@@ -161,7 +161,15 @@ public class BaseServiceImpl implements BaseService {
      */
     @Override
     public Reply getAirports(String token, Airport airport) {
-        return null;
+        // 处理空值
+        airport.setId(airport.getId() == null ? "NULL" : airport.getId());
+        airport.setCityCode(airport.getCityCode() == null ? "NULL" : airport.getCityCode());
+        airport.setIataCode(airport.getIataCode() == null ? "NULL" : airport.getIataCode());
+        airport.setAirportName(airport.getAirportName() == null ? "NULL" : airport.getAirportName());
+
+        // 查询数据
+        List<Airport> airports = mapper.getAirports(airport);
+        return ReplyHelper.success(airports);
     }
 
     /**
@@ -212,7 +220,15 @@ public class BaseServiceImpl implements BaseService {
      */
     @Override
     public Reply getAirwaies(String token, Airway airway) {
-        return null;
+        // 处理空值
+        airway.setId(airway.getId() == null ? "NULL" : airway.getId());
+        airway.setNationCode(airway.getNationCode() == null ? "NULL" : airway.getNationCode());
+        airway.setIataCode(airway.getIataCode() == null ? "NULL" : airway.getIataCode());
+        airway.setCompanyName(airway.getCompanyName() == null ? "NULL" : airway.getCompanyName());
+
+        // 查询数据
+        List<Airway> airways = mapper.getAirwaies(airway);
+        return ReplyHelper.success(airways);
     }
 
     /**

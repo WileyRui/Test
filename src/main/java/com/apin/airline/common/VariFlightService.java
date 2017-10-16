@@ -105,8 +105,8 @@ public class VariFlightService {
         }
         String flights = Arrays.toString(days).replace("[", "").replace("]", "").replace(" ", "");
         List<FlightInfo> flightInfoList = new ArrayList<>();
-        List<VariFlight> variFlightList = variFlights1.get(0);
-        variFlightList.forEach(i -> {
+//        List<VariFlight> variFlightList = variFlights1.get(0);
+        variFlights.forEach(i -> {
             FlightInfo info = new FlightInfo();
             info.setId(Generator.uuid());
             info.setFcategory(Byte.valueOf(i.getFcategory()));
