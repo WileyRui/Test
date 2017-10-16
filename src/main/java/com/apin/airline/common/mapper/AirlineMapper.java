@@ -4,6 +4,7 @@ import com.apin.airline.common.entity.*;
 import org.apache.ibatis.annotations.*;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -240,13 +241,18 @@ public interface AirlineMapper extends Mapper {
     /**
      * 修改价格
      *
-     * @param flightId   航班资源ID
+     * @param airlineId  航线资源ID
+     * @param dates      航班日期集合
      * @param adultPrice 成人票价
      * @param childPrice 儿童票价
      * @return 受影响行数
      */
-    @Update("UPDATE mbs_airline_flight SET adult_price=#{adultPrice},child_price=#{childPrice} WHERE id=#{flightId};")
-    Integer updatePrice(String flightId, BigDecimal adultPrice, BigDecimal childPrice);
+    @Update("<script>UPDATE mbs_airline_flight SET adult_price=#{adultPrice},child_price=#{childPrice} " +
+            "WHERE airline_id=#{airlineId} AND flight_date in" +
+            "<foreach collection = \"dates\" item = \"item\" index = \"index\" pen=\"(\" separator=\",\" close=\")\"> " +
+            "#{item}" +
+            "</foreach></script>")
+    Integer updatePrice(String airlineId, List<Date> dates, BigDecimal adultPrice, BigDecimal childPrice);
 
     /**
      * 新增舱位资源
