@@ -64,6 +64,16 @@ public class ResponseAirlineDto implements Serializable {
      *
      */
     private List<AirlineInfo> airlineInfos;
+
+    /**
+     * 航程天数
+     */
+    private Integer days;
+
+    /**
+     * 返程出发日期
+     */
+    private String retDate;
     public ResponseAirlineDto() {
     }
 
@@ -169,5 +179,21 @@ public class ResponseAirlineDto implements Serializable {
 
     public void setAirlineInfo(List<AirlineInfo> airlineInfo) {
         this.airlineInfos = airlineInfo;
+    }
+
+    public Integer getDays() {
+        return days;
+    }
+
+    public void setDays(Integer days) {
+        this.days = days;
+    }
+
+    public String getRetDate() {
+        return retDate;
+    }
+
+    public void setRetDate(String retDate) {
+        this.retDate = retDate;
     }
 }

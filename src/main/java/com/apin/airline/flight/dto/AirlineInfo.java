@@ -17,6 +17,9 @@ public class AirlineInfo {
     private String arrAirport;
     private String depAirport;
     private long flightTime;
+    private String num;
+    private String depDate;
+    private String arrDate;
 
     public String getCompName() {
         return compName;
@@ -35,7 +38,7 @@ public class AirlineInfo {
     }
 
     public String getArrTime() {
-        return arrTime.toString();
+        return arrTime.substring(0,5).toString();
     }
 
     public void setArrTime(String arrTime) {
@@ -43,7 +46,7 @@ public class AirlineInfo {
     }
 
     public String getDepTime() {
-        return depTime.toString();
+        return depTime.substring(0,5).toString();
     }
 
     public void setDepTime(String depTime) {
@@ -66,14 +69,41 @@ public class AirlineInfo {
         this.depAirport = depAirport;
     }
 
-    public long getFlightTime() throws ParseException {
+    public String getFlightTime() throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         Date arr = formatter.parse(arrTime);
         Date dep = formatter.parse(depTime);
-        return arr.getTime()>dep.getTime()?arr.getTime()-dep.getTime():arr.getTime()+24*3600*100-dep.getTime();
+        long l = arr.getTime() > dep.getTime() ? arr.getTime() - dep.getTime() : arr.getTime() + 24 * 3600 * 1000 - dep.getTime();
+        long hours = l/3600000;
+        long minutes = (l - hours * (1000 * 60 * 60)) / (1000 * 60);
+        return hours+":"+minutes;
     }
 
     public void setFlightTime(long flightTime) {
         this.flightTime = flightTime;
+    }
+
+    public String getNum() {
+        return num;
+    }
+
+    public void setNum(String num) {
+        this.num = num;
+    }
+
+    public String getDepDate() {
+        return depDate;
+    }
+
+    public void setDepDate(String depDate) {
+        this.depDate = depDate;
+    }
+
+    public String getArrDate() throws ParseException {
+return arrDate;
+    }
+
+    public void setArrDate(String arrDate) {
+        this.arrDate = arrDate;
     }
 }

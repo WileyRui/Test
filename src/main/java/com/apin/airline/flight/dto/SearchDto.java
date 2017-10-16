@@ -1,5 +1,6 @@
 package com.apin.airline.flight.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  * Description:
  * Date:2017/10/13
  */
-public class SearchDto {
+public class SearchDto implements Serializable {
 
     private List<CityList> cityList;
     private String depDate;

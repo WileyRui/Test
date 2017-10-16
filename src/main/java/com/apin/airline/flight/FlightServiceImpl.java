@@ -15,7 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -62,10 +65,9 @@ public class FlightServiceImpl implements FlightService {
         List<FlightDetail> flightDetails=new ArrayList<>();
         for (CityList cityList : searchDto.getCityList()) {
             String img = queryMapper.selectCityImg(cityList.getArrCity());
-            String voyage = Airline.getVoyage(cityList);
-            List<String> dateList = queryMapper.selectFlightDates(voyage);
+            List<String> dateList = queryMapper.selectFlightDates(cityList);
             if (dateList.size() == 0) continue;
-            FlightDetail flightDetail = queryMapper.selectFlight(voyage);
+            FlightDetail flightDetail = queryMapper.selectFlight(cityList);
             flightDetail.setArrCityImgUrl(img);
             flightDetail.setDateList(dateList);
             flightDetails.add(flightDetail);
@@ -84,8 +86,25 @@ public class FlightServiceImpl implements FlightService {
         List<ResponseAirlineDto> responseAirlineDtos = queryMapper.selectFlightDetail(cityList);
         responseAirlineDtos.forEach((ResponseAirlineDto responseAirlineDto) -> {
             List<AirlineInfo> airlineInfos=new ArrayList<>();
-            airlineInfos.add(queryMapper.selectByFlightNum(responseAirlineDto.getDepNum()));
-            airlineInfos.add(queryMapper.selectByFlightNum(responseAirlineDto.getArrNum()));
+            AirlineInfo airlineInfo = queryMapper.selectByFlightNum(responseAirlineDto.getDepNum());
+            airlineInfo.setNum(responseAirlineDto.getDepNum());
+            airlineInfo.setDepDate(cityList.getDepDate());
+            try {
+                airlineInfo.setArrDate(getArrDate(airlineInfo.getArrTime(),airlineInfo.getDepTime(),cityList.getDepDate()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            airlineInfos.add(airlineInfo);
+            AirlineInfo airlineInfo1 = queryMapper.selectByFlightNum(responseAirlineDto.getArrNum());
+            airlineInfo1.setNum(responseAirlineDto.getArrNum());
+            airlineInfo1.setDepDate(responseAirlineDto.getRetDate());
+            try {
+                airlineInfo1.setArrDate(getArrDate(airlineInfo.getArrTime(),airlineInfo.getDepTime(),airlineInfo1.getDepDate()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            airlineInfos.add(airlineInfo1);
+
             responseAirlineDto.setAirlineInfo(airlineInfos);
         });
         return ReplyHelper.success(responseAirlineDtos);
@@ -97,5 +116,12 @@ public class FlightServiceImpl implements FlightService {
         return ReplyHelper.success(responseAirlineDto);
     }
 
-
+    private String getArrDate(String arrTime,String depTime,String depDate) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
+        Date arr = formatter.parse(arrTime);
+        Date dep = formatter.parse(depTime);
+        SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
+        Date parse = formatter1.parse(depDate);
+        return arr.getTime() > dep.getTime() ? depDate:formatter1.format(new Date(parse.getTime()+24*3600*1000));
+    }
 }

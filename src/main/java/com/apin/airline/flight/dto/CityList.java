@@ -1,11 +1,13 @@
 package com.apin.airline.flight.dto;
 
+import java.io.Serializable;
+
 /**
  * Author:huanglei
  * Description:
  * Date:2017/10/16
  */
-public class CityList {
+public class CityList implements Serializable {
     private String depCity;
     private String arrCity;
     private Integer flightType;
