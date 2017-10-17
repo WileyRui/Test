@@ -78,4 +78,18 @@ public interface FlightService {
      * @return
      */
     Reply searchFlightList(CityList cityList);
+
+    /**
+     * 月份查询
+     * @param cityList
+     * @return
+     */
+    Reply monthQuery(CityList cityList);
+
+    /**
+     * 每日详情查询
+     * @param cityList
+     * @return
+     */
+    Reply dayQuery(CityList cityList);
 }

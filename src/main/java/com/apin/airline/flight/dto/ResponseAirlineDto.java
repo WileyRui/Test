@@ -125,7 +125,7 @@ public class ResponseAirlineDto implements Serializable {
     }
 
     public Integer getSoldCount() {
-        return total-remainCount==0?new Random().nextInt(50)+50:total-remainCount;
+        return total-remainCount;
     }
 
     public void setSoldCount(Integer soldCount) {
