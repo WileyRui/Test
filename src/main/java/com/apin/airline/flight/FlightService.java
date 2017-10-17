@@ -54,7 +54,7 @@ public interface FlightService {
      * @param searchDto
      * @return
      */
-    Reply searchFlight(SearchDto searchDto);
+    Reply searchFlight(List<CityList> cityLists);
 
     /**
      * 根据城市对与出发日期查询航班

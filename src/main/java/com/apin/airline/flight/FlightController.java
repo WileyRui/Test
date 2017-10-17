@@ -81,8 +81,8 @@ public class FlightController {
      * 正常：返回接口调用成功,返回数据
      */
     @PostMapping(value = "/v1.0/flight/query")
-    public Reply searchFlight(@RequestBody SearchDto searchDto) throws Exception {
-        return flightService.searchFlight(searchDto);
+    public Reply searchFlight(@RequestBody List<CityList> cityLists) throws Exception {
+        return flightService.searchFlight(cityLists);
     }
 
     /**

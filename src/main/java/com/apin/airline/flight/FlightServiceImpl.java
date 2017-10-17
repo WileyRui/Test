@@ -61,9 +61,9 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public Reply searchFlight(SearchDto searchDto) {
+    public Reply searchFlight(List<CityList> cityLists) {
         List<FlightDetail> flightDetails=new ArrayList<>();
-        for (CityList cityList : searchDto.getCityList()) {
+        for (CityList cityList : cityLists) {
             String img = queryMapper.selectCityImg(cityList.getArrCity());
             List<String> dateList = queryMapper.selectFlightDates(cityList);
             if (dateList.size() == 0) continue;
