@@ -167,9 +167,9 @@ public class LineServiceImpl implements LineService {
     @Override
     public Reply newLineInfo(Line line) {
         Map<String, Object> resultMap = new HashMap<>();
-        System.out.println(line.getPageIndex());
+        line.setPageIndex(line.getPageIndex() * 25);
         List<NewLine> newLines = airlineMapper.newLineData(line);
-        if (newLines.size() <= 25) {
+        if (newLines.size() < 25) {
             resultMap.put("isLastPage", true);
         } else {
             resultMap.put("isLastPage", false);

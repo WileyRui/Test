@@ -196,7 +196,7 @@ public class Line implements Serializable {
     /**
      * 第几页
      */
-    private String pageIndex;
+    private int pageIndex;
 
     /**
      * 每页条数
@@ -524,11 +524,11 @@ public class Line implements Serializable {
         this.details = details;
     }
 
-    public String getPageIndex() {
+    public int getPageIndex() {
         return pageIndex;
     }
 
-    public void setPageIndex(String pageIndex) {
+    public void setPageIndex(int pageIndex) {
         this.pageIndex = pageIndex;
     }
 
