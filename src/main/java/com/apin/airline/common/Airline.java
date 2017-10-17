@@ -1,5 +1,6 @@
 package com.apin.airline.common;
 
+import com.apin.airline.flight.dto.CityList;
 import com.apin.airline.flight.dto.SearchDto;
 import com.apin.airline.ticket.dto.CalendarInfo;
 import com.apin.airline.ticket.dto.Deal;
@@ -52,33 +53,25 @@ public class Airline {
                 deal.getOwnerElementList(), "airlineId", "dateList", "total", "accountId", "ownerList");
     }
 
-    public static Reply searchCheck(SearchDto searchDto, int i) {
+    public static Reply searchCheck(CityList searchDto, int i) {
         Reply reply = new Reply();
         switch (i) {
             case 1:
-                reply = nullValue(searchDto.getDepartCity(), searchDto.getDestCity(), searchDto.getType(),
+                reply = nullValue(searchDto.getDepCity(), searchDto.getArrCity(), searchDto.getFlightType(),
                         "departCity", "destCity", "type");
-                break;
-            case 2:
-                reply = nullValue(searchDto.getDepartCity(), searchDto.getDestCity(), searchDto.getType(),
-                        searchDto.getDepartDate(), "departCity", "destCity", "type", "departDate");
-                break;
-            case 3:
-                reply = nullValue(searchDto.getDepartCity(), searchDto.getDestCity(), searchDto.getType(),
-                        searchDto.getDepartDate(), searchDto.getDestDate(), "departCity", "destCity", "type", "departDate", "destDate");
                 break;
         }
         return reply;
     }
 
-    public static String getVoyage(SearchDto searchDto) {
+    public static String getVoyage(CityList cityList) {
         String voyageStr = "";
-        switch (searchDto.getType()) {
+        switch (cityList.getFlightType()) {
             case 1:
-                voyageStr = searchDto.getDepartCity() + "-" + searchDto.getDestCity();
+                voyageStr = cityList.getDepCity() + "-" + cityList.getArrCity();
                 break;
             case 2:
-                voyageStr = searchDto.getDepartCity() + "<->" + searchDto.getDestCity();
+                voyageStr = cityList.getDepCity() + "<->" + cityList.getArrCity();
                 break;
         }
         return voyageStr;

@@ -1,57 +1,44 @@
 package com.apin.airline.flight.dto;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
  * Author:huanglei
  * Description:
  * Date:2017/10/13
  */
-public class SearchDto {
-    private String departCity;
-    private String destCity;
-    private Integer type;
-    private String departDate;
-    private String destDate;
+public class SearchDto implements Serializable {
+
+    private List<CityList> cityList;
+    private String depDate;
+    private String arrDate;
 
     public SearchDto() {
     }
 
-    public String getDepartCity() {
-        return departCity;
+    public List<CityList> getCityList() {
+        return cityList;
     }
 
-    public void setDepartCity(String departCity) {
-        this.departCity = departCity;
+    public void setCityList(List<CityList> cityList) {
+        this.cityList = cityList;
     }
 
-    public String getDestCity() {
-        return destCity;
+
+    public String getDepDate() {
+        return depDate;
     }
 
-    public void setDestCity(String destCity) {
-        this.destCity = destCity;
+    public void setDepDate(String depDate) {
+        this.depDate = depDate;
     }
 
-    public Integer getType() {
-        return type;
+    public String getArrDate() {
+        return arrDate;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public String getDepartDate() {
-        return departDate;
-    }
-
-    public void setDepartDate(String departDate) {
-        this.departDate = departDate;
-    }
-
-    public String getDestDate() {
-        return destDate;
-    }
-
-    public void setDestDate(String destDate) {
-        this.destDate = destDate;
+    public void setArrDate(String arrDate) {
+        this.arrDate = arrDate;
     }
 }

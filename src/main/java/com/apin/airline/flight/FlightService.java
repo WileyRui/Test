@@ -1,5 +1,6 @@
 package com.apin.airline.flight;
 
+import com.apin.airline.flight.dto.CityList;
 import com.apin.airline.flight.dto.PriceTemplateBean;
 import com.apin.airline.flight.dto.SearchDto;
 import com.apin.airline.ticket.dto.CalendarInfo;
@@ -53,7 +54,7 @@ public interface FlightService {
      * @param searchDto
      * @return
      */
-    Reply searchFlight(SearchDto searchDto);
+    Reply searchFlight(List<CityList> cityLists);
 
     /**
      * 根据城市对与出发日期查询航班
@@ -61,7 +62,7 @@ public interface FlightService {
      * @param searchDto
      * @return
      */
-    Reply searchFlights(SearchDto searchDto);
+    Reply searchFlights(CityList cityList);
 
     /**
      * 根据城市对与出发日期结束日期查询航班详情
@@ -69,5 +70,12 @@ public interface FlightService {
      * @param searchDto
      * @return
      */
-    Reply searchFlightDetail(SearchDto searchDto);
+    Reply searchFlightDetail(CityList cityList);
+
+    /**
+     * 条件查询航班信息
+     * @param cityList
+     * @return
+     */
+    Reply searchFlightList(CityList cityList);
 }

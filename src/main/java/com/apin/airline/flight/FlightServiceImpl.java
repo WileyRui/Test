@@ -1,14 +1,24 @@
 package com.apin.airline.flight;
 
+import com.apin.airline.common.Airline;
+import com.apin.airline.common.AopService;
+import com.apin.airline.common.entity.Flight;
+import com.apin.airline.common.entity.Log;
 import com.apin.airline.common.mapper.AirlineMapper;
-import com.apin.airline.flight.dto.PriceTemplateBean;
-import com.apin.airline.flight.dto.SearchDto;
+import com.apin.airline.common.mapper.QueryMapper;
+import com.apin.airline.flight.dto.*;
 import com.apin.airline.ticket.dto.CalendarInfo;
 import com.apin.airline.ticket.dto.Stock;
+import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,6 +30,10 @@ import java.util.List;
 public class FlightServiceImpl implements FlightService {
     @Autowired
     private AirlineMapper airlineMapper;
+    @Autowired
+    private AopService aopService;
+    @Autowired
+    private QueryMapper queryMapper;
 
     @Override
     public Reply airlineInfo(CalendarInfo calendarInfo) {
@@ -33,20 +47,12 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public Reply modifyPrice(Stock stock) {
-//        BigDecimal adultPrice = stock.getAdultPrice();
-//        BigDecimal childPrice = stock.getChildPrice();
-//        stock.getDateList().stream().forEach(date->{
-//            Flight flight = airlineMapper.findByAirlineIdAndFlightDate(stock.getAirlineId(),date);
-//            if(flight!=null){
-//                flight.setAdultPrice(adultPrice);
-//                flight.setChildPrice(childPrice);
-//                airlineMapper.updateById(flight);
-//            }
-//        });
-//        Log mbsAirlineLog = new Log(stock.getAirlineId(),"1006","修改价格成功,修改为成人价"+adultPrice+",儿童价"+childPrice,stock.getUserName(),stock.getUserId());
-//        airline.insertLog(mbsAirlineLog);
-//        return ReplyHelper.success();
-        return null;
+        BigDecimal adultPrice = stock.getAdultPrice();
+        BigDecimal childPrice = stock.getChildPrice();
+            airlineMapper.updatePrice(stock.getAirlineId(),stock.getDateList(),stock.getAdultPrice(),stock.getChildPrice());
+        Log mbsAirlineLog = new Log(stock.getAirlineId(),"1006","修改价格成功,修改为成人价"+adultPrice+",儿童价"+childPrice,stock.getUserName(),stock.getUserId(),stock.getEventSource());
+        aopService.insertLog(mbsAirlineLog);
+        return ReplyHelper.success();
     }
 
     @Override
@@ -55,29 +61,67 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public Reply searchFlight(SearchDto searchDto) {
-//       String img = airlineMapper.selectCityImg(searchDto.getDestCity());
-//        String voyage = Airline.getVoyage(searchDto);
-//        List<String> dateList = airlineMapper.selectFlightDates(voyage);
-//        if (dateList.size()==0)
-//            return ReplyHelper.success();
-//        FlightDetail flightDetail = airlineMapper.selectFlightDetail(voyage);
-//        flightDetail.setImg(img);
-//        flightDetail.setDateList(dateList);
-//        return ReplyHelper.success(flightDetail);
-        return null;
+    public Reply searchFlight(List<CityList> cityLists) {
+        List<FlightDetail> flightDetails=new ArrayList<>();
+        for (CityList cityList : cityLists) {
+            String img = queryMapper.selectCityImg(cityList.getArrCity());
+            List<String> dateList = queryMapper.selectFlightDates(cityList);
+            if (dateList.size() == 0) continue;
+            FlightDetail flightDetail = queryMapper.selectFlight(cityList);
+            flightDetail.setArrCityImgUrl(img);
+            flightDetail.setDateList(dateList);
+            flightDetails.add(flightDetail);
+        }
+        return ReplyHelper.success(flightDetails);
     }
 
     @Override
-    public Reply searchFlights(SearchDto searchDto) {
-
-        return null;
+    public Reply searchFlights(CityList cityList) {
+        List<FlightDetail> flightDetails = queryMapper.selectFlights(cityList);
+        return ReplyHelper.success(flightDetails);
     }
 
     @Override
-    public Reply searchFlightDetail(SearchDto searchDto) {
-        return null;
+    public Reply searchFlightDetail(CityList cityList) {
+        List<ResponseAirlineDto> responseAirlineDtos = queryMapper.selectFlightDetail(cityList);
+        responseAirlineDtos.forEach((ResponseAirlineDto responseAirlineDto) -> {
+            List<AirlineInfo> airlineInfos=new ArrayList<>();
+            AirlineInfo airlineInfo = queryMapper.selectByFlightNum(responseAirlineDto.getDepNum());
+            airlineInfo.setNum(responseAirlineDto.getDepNum());
+            airlineInfo.setDepDate(cityList.getDepDate());
+            try {
+                airlineInfo.setArrDate(getArrDate(airlineInfo.getArrTime(),airlineInfo.getDepTime(),cityList.getDepDate()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            airlineInfos.add(airlineInfo);
+            AirlineInfo airlineInfo1 = queryMapper.selectByFlightNum(responseAirlineDto.getArrNum());
+            airlineInfo1.setNum(responseAirlineDto.getArrNum());
+            airlineInfo1.setDepDate(responseAirlineDto.getRetDate());
+            try {
+                airlineInfo1.setArrDate(getArrDate(airlineInfo.getArrTime(),airlineInfo.getDepTime(),airlineInfo1.getDepDate()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            airlineInfos.add(airlineInfo1);
+
+            responseAirlineDto.setAirlineInfo(airlineInfos);
+        });
+        return ReplyHelper.success(responseAirlineDtos);
     }
 
+    @Override
+    public Reply searchFlightList(CityList cityList) {
+        List<ResponseAirlineDto> responseAirlineDto = queryMapper.selectFlightList(cityList);
+        return ReplyHelper.success(responseAirlineDto);
+    }
 
+    private String getArrDate(String arrTime,String depTime,String depDate) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
+        Date arr = formatter.parse(arrTime);
+        Date dep = formatter.parse(depTime);
+        SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
+        Date parse = formatter1.parse(depDate);
+        return arr.getTime() > dep.getTime() ? depDate:formatter1.format(new Date(parse.getTime()+24*3600*1000));
+    }
 }

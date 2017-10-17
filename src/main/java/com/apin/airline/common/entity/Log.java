@@ -56,6 +56,18 @@ public class Log implements Serializable {
      */
     private Date createdTime;
 
+    public Log() {
+    }
+
+    public Log(String airlineId, String eventCode, String message, String operatorUser, String operatorId, String eventSource) {
+        this.eventSource=eventSource;
+        this.airlineId = airlineId;
+        this.eventCode = eventCode;
+        this.message = message;
+        this.operatorUser = operatorUser;
+        this.operatorId = operatorId;
+    }
+
     public String getId() {
         return id;
     }
