@@ -45,7 +45,7 @@ public interface QueryMapper extends Mapper {
             "  b.adult_price;")
     List<ResponseAirlineDto> selectFlightDetail(CityList cityList);
     @Select("select a.flight_company compName,b.logo_ico logo,a.flight_arrtime_plan_date arrTime,a.flight_deptime_plan_date depTime,a.flight_dep_airport depAirport," +
-            "a.flight_arr_airport arrAirport from msd_airline_info a join msd_airway b on a.flight_company=b.company_name where flight_no=#{flightNum}")
+            "a.flight_arr_airport arrAirport from msd_airline_info a join msd_airway b on a.flight_company=b.company_name where a.flight_no=#{flightNum}")
     AirlineInfo selectByFlightNum(String flightNum);
 
 }

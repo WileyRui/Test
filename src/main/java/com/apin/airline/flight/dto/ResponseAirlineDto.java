@@ -74,6 +74,12 @@ public class ResponseAirlineDto implements Serializable {
      * 返程出发日期
      */
     private String retDate;
+
+    /**
+     * 航线id
+     */
+    private String airlineId;
+
     public ResponseAirlineDto() {
     }
 
@@ -195,5 +201,21 @@ public class ResponseAirlineDto implements Serializable {
 
     public void setRetDate(String retDate) {
         this.retDate = retDate;
+    }
+
+    public List<AirlineInfo> getAirlineInfos() {
+        return airlineInfos;
+    }
+
+    public void setAirlineInfos(List<AirlineInfo> airlineInfos) {
+        this.airlineInfos = airlineInfos;
+    }
+
+    public String getAirlineId() {
+        return airlineId;
+    }
+
+    public void setAirlineId(String airlineId) {
+        this.airlineId = airlineId;
     }
 }
