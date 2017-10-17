@@ -96,6 +96,29 @@ public class FlightController {
     public Reply searchFlights(@RequestBody CityList cityList) throws Exception {
         return flightService.searchFlights(cityList);
     }
+    /**
+     * 查询月份
+     *
+     * @param cityList
+     * @return Reply
+     * 正常：返回接口调用成功,返回数据
+     */
+    @PostMapping(value = "/v1.0/flightDetail/month/query")
+    public Reply monthQuery(@RequestBody CityList cityList) throws Exception {
+        return flightService.monthQuery(cityList);
+    }
+    /**
+     * 查询每日详情
+     *
+     * @param cityList
+     * @return Reply
+     * 正常：返回接口调用成功,返回数据
+     */
+    @PostMapping(value = "/v1.0/flightDetail/day/query")
+    public Reply dayQuery(@RequestBody CityList cityList) throws Exception {
+        return flightService.dayQuery(cityList);
+    }
+
 
     /**
      * 根据城市对与出发日期结束日期查询航班详情

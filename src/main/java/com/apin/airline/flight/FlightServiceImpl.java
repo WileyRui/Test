@@ -65,11 +65,8 @@ public class FlightServiceImpl implements FlightService {
         List<FlightDetail> flightDetails=new ArrayList<>();
         for (CityList cityList : searchDto.getCityList()) {
             String img = queryMapper.selectCityImg(cityList.getArrCity());
-            List<DayPrice> dateList = queryMapper.selectFlightDates(cityList);
-            if (dateList.size() == 0) continue;
             FlightDetail flightDetail = queryMapper.selectFlight(cityList);
             flightDetail.setArrCityImgUrl(img);
-            flightDetail.setDateList(dateList);
             flightDetails.add(flightDetail);
         }
         return ReplyHelper.success(flightDetails);
@@ -103,6 +100,18 @@ public class FlightServiceImpl implements FlightService {
     public Reply searchFlightList(CityList cityList) {
         List<ResponseAirlineDto> responseAirlineDto = queryMapper.selectFlightList(cityList);
         return ReplyHelper.success(responseAirlineDto);
+    }
+
+    @Override
+    public Reply monthQuery(CityList cityList) {
+       List<String> months= queryMapper.selectMonthQuery(cityList);
+        return ReplyHelper.success(months);
+    }
+
+    @Override
+    public Reply dayQuery(CityList cityList) {
+        List<DayPrice> dayPrices = queryMapper.selectFlightDates(cityList);
+        return ReplyHelper.success(dayPrices);
     }
 
     private String getArrDate(String arrTime,String depTime,String depDate) throws ParseException {
