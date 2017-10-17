@@ -209,25 +209,39 @@ public class AirlineVO {
         return ReplyHelper.success();
     }
 
+    /**
+     * 日期-周X转换
+     *
+     * @param strDate 日期
+     * @return 周X, 周日在前则周日为0
+     */
     public Integer getWeekDay(String strDate) {
         Calendar cal = parseDateTime(strDate);
         return cal.get(Calendar.DAY_OF_WEEK);
     }
 
+    /**
+     * 生成执飞日期
+     *
+     * @param start 开始日期
+     * @param end   截止日期
+     * @param weeks 执飞规则
+     * @return 执飞日期集合
+     */
     public List<Date> getDates(Date start, Date end, String weeks) {
         Date date = start;
-        List<Integer> d = new ArrayList<>();
+        List<Integer> dayList = new ArrayList<>();
         List<Date> dates = new ArrayList<>();
         String[] dayOfWeek = weeks.split(",");
         for (int i = 0; i < 7; i++) {
             if (dayOfWeek[i].equals("0")) continue;
 
-            d.add(i);
+            dayList.add(i);
         }
 
         while (!date.after(end)) {
             String cur = DateHelper.formatDate(date);
-            if (!d.contains(getWeekDay(cur))) continue;
+            if (!dayList.contains(getWeekDay(cur))) continue;
 
             dates.add(date);
         }
