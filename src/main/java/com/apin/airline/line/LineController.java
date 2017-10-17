@@ -59,8 +59,8 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/list")
-    public Reply lineList(@RequestBody Line line) {
-        return service.lineList(line);
+    public Reply lineList(@RequestBody Line line,@RequestHeader("accessToken") String token) {
+        return service.lineList(line,token);
     }
 
     /**

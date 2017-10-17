@@ -98,8 +98,11 @@ public class LineServiceImpl implements LineService {
     }
 
     @Override
-    public Reply lineList(Line line) {
-        return null;
+    public Reply lineList(Line line,String token) {
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        line.setAccountId("1e1335f81118428d849e1eeb137440dc");
+        List<Line> lines = airlineMapper.queryLineList(line);
+        return ReplyHelper.success(lines);
     }
 
     @Override
