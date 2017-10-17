@@ -120,8 +120,7 @@ public interface BaseMapper extends Mapper {
             "AND ('NULL'=#{cityCode} OR c.city_code=#{cityCode}) " +
             "AND ('NULL'=#{cityName} OR c.city_name=#{cityName}) " +
             "AND ('NULL'=#{enName} OR c.en_name=#{enName}) " +
-            "AND ('NULL'=#{pinyinFirst} OR c.pinyin_first=#{pinyinFirst}) " +
-            "GROUP BY c.id;")
+            "AND ('NULL'=#{pinyinFirst} OR c.pinyin_first=#{pinyinFirst}) ")
     Integer getTotalCities(City city);
 
     /**
