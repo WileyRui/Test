@@ -225,7 +225,7 @@ public class AirlineVO {
             d.add(i);
         }
 
-        while (date.before(end)) {
+        while (!date.after(end)) {
             String cur = DateHelper.formatDate(date);
             if (!d.contains(getWeekDay(cur))) continue;
 
