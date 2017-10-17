@@ -80,6 +80,18 @@ public class BaseController {
     }
 
     /**
+     * 查询城市基础数据(按拼音排序)
+     *
+     * @param token 访问令牌
+     * @param key  单索引词
+     * @return Reply
+     */
+    @PostMapping("/v1.0/cities/list/key")
+    public Reply getCitiesByKey(@RequestHeader("Authorization") String token, @RequestBody String key) throws Exception {
+        return service.getCityNames(token, key);
+    }
+
+    /**
      * 新增城市基础数据
      *
      * @param token 访问令牌
