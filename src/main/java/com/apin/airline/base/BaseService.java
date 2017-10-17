@@ -59,6 +59,15 @@ public interface BaseService {
     Reply getCities(String token, City city);
 
     /**
+     * 查询城市基础数据(分页,按拼音排序)
+     *
+     * @param token 访问令牌
+     * @param key  单索引词
+     * @return Reply
+     */
+    Reply getCityNames(String token, String key);
+
+    /**
      * 新增城市基础数据
      *
      * @param token 访问令牌

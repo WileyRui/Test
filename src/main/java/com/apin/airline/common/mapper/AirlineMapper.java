@@ -373,8 +373,8 @@ public interface AirlineMapper extends Mapper {
             "mba.seat_count-f.seat_count saled FROM mbs_airline mba JOIN msd_airline mda ON mba.airline_id=mda.id " +
             "JOIN (SELECT airline_id,MIN(flight_date) flightDate,seat_count FROM mbs_airline_flight " +
             "WHERE flight_date > CURDATE() GROUP BY airline_id) f ON f.airline_id=mba.id WHERE mda.flight_type !='3' " +
-            "GROUP BY mda.voyage ORDER BY mba.created_time DESC LIMIT 2500")
-    List<NewLine> newLineData();
+            "GROUP BY mda.voyage ORDER BY mba.created_time DESC LIMIT ${pageIndex} , 25 ")
+    List<NewLine> newLineData(Line line);
 
     /**
      * 航线列表查询

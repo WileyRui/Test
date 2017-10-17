@@ -77,6 +77,21 @@ public interface BaseMapper extends Mapper {
     /**
      * 查询城市基础数据(分页,按拼音排序)
      *
+     * @param key  单索引词
+     * @return 城市基础数据集合
+     */
+    @Select("SELECT DISTINCT c.city_name " +
+            "FROM msd_city c JOIN msd_airport p ON p.city_code=c.city_code " +
+            "WHERE c.is_invalid=0 " +
+            "AND (c.city_code like CONCAT('%',#{keyword},'%') " +
+            "OR c.city_name like CONCAT('%',#{keyword},'%') " +
+            "OR c.en_name like CONCAT('%',#{keyword},'%') " +
+            "OR p.iata_code like CONCAT('%',#{keyword},'%'))")
+    List<String> getCityNames(String keyword);
+
+    /**
+     * 查询城市基础数据(分页,按拼音排序)
+     *
      * @param city 城市基础数据
      * @return 城市基础数据集合
      */
@@ -105,8 +120,7 @@ public interface BaseMapper extends Mapper {
             "AND ('NULL'=#{cityCode} OR c.city_code=#{cityCode}) " +
             "AND ('NULL'=#{cityName} OR c.city_name=#{cityName}) " +
             "AND ('NULL'=#{enName} OR c.en_name=#{enName}) " +
-            "AND ('NULL'=#{pinyinFirst} OR c.pinyin_first=#{pinyinFirst}) " +
-            "GROUP BY c.id;")
+            "AND ('NULL'=#{pinyinFirst} OR c.pinyin_first=#{pinyinFirst}) ")
     Integer getTotalCities(City city);
 
     /**
