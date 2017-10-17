@@ -1,6 +1,6 @@
 package com.apin.airline.line;
 
-import com.apin.airline.common.entity.FlightInfo;
+import com.apin.airline.common.entity.LineDetail;
 import com.apin.airline.common.entity.Line;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,19 +92,19 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/flightInfo/query")
-    public Reply queryFlightInfo(@RequestBody FlightInfo info) throws InvocationTargetException, IllegalAccessException {
+    public Reply queryFlightInfo(@RequestBody LineDetail info) throws InvocationTargetException, IllegalAccessException {
         return service.queryFlightInfo(info);
     }
 
     /**
      * 航班信息维护
      *
-     * @param flightInfo
+     * @param lineDetail
      * @return
      */
     @PostMapping("/v1.0/flightInfo/create")
-    public Reply addFlightInfo(@RequestBody FlightInfo flightInfo) {
-        return service.addFlightInfo(flightInfo);
+    public Reply addFlightInfo(@RequestBody LineDetail lineDetail) {
+        return service.addFlightInfo(lineDetail);
     }
 
     /**
@@ -114,7 +114,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/flightInfo/update")
-    public Reply updateFlightInfo(@RequestBody FlightInfo info) throws InvocationTargetException, IllegalAccessException {
+    public Reply updateFlightInfo(@RequestBody LineDetail info) throws InvocationTargetException, IllegalAccessException {
         return service.updateFlightInfo(info);
     }
 

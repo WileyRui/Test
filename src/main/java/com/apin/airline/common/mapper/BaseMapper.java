@@ -34,6 +34,19 @@ public interface BaseMapper extends Mapper {
     List<Country> getCountries(Country country);
 
     /**
+     * 查询国家基础数据总行数
+     *
+     * @param country 国家基础数据
+     * @return 总行数
+     */
+    @Select("SELECT COUNT(*) FROM msd_country WHERE is_invalid=0 " +
+            "AND ('NULL'=#{id} OR id=#{id}) " +
+            "AND ('NULL'=#{zoneCode} OR zone_code=#{zoneCode}) " +
+            "AND ('NULL'=#{countryCode} OR country_code=#{countryCode}) " +
+            "AND ('NULL'=#{countryName} OR country_name=#{countryName});")
+    Integer getTotalCountries(Country country);
+
+    /**
      * 新增国家基础数据
      *
      * @param country 国家基础数据
@@ -80,6 +93,23 @@ public interface BaseMapper extends Mapper {
     List<City> getCities(City city);
 
     /**
+     * 查询城市基础数据总行数
+     *
+     * @param city 城市基础数据
+     * @return 总行数
+     */
+    @Select("SELECT COUNT(*) FROM msd_city c LEFT JOIN msd_country g ON g.id=c.country_id " +
+            "JOIN msd_airport p ON p.city_code=c.city_code WHERE c.is_invalid=0 " +
+            "AND ('NULL'=#{id} OR c.id=#{id}) " +
+            "AND ('NULL'=#{countryName} OR g.country_name=#{countryName}) " +
+            "AND ('NULL'=#{cityCode} OR c.city_code=#{cityCode}) " +
+            "AND ('NULL'=#{cityName} OR c.city_name=#{cityName}) " +
+            "AND ('NULL'=#{enName} OR c.en_name=#{enName}) " +
+            "AND ('NULL'=#{pinyinFirst} OR c.pinyin_first=#{pinyinFirst}) " +
+            "GROUP BY c.id;")
+    Integer getTotalCities(City city);
+
+    /**
      * 新增城市基础数据
      *
      * @param city 城市基础数据
@@ -114,14 +144,26 @@ public interface BaseMapper extends Mapper {
      * @param airport 机场基础数据
      * @return 机场基础数据集合
      */
-    @Select("SELECT * FROM msd_airport " +
-            "WHERE is_invalid=0 " +
+    @Select("SELECT * FROM msd_airport WHERE is_invalid=0 " +
             "AND ('NULL'=#{id} OR id=#{id}) " +
             "AND ('NULL'=#{cityCode} OR city_code=#{cityCode}) " +
             "AND ('NULL'=#{iataCode} OR iata_code=#{iataCode}) " +
             "AND ('NULL'=#{airportName} OR airport_name=#{airportName}) " +
             "ORDER BY iata_code LIMIT #{offset},#{count};")
     List<Airport> getAirports(Airport airport);
+
+    /**
+     * 查询机场基础数据总行数
+     *
+     * @param airport 机场基础数据
+     * @return 总行数
+     */
+    @Select("SELECT COUNT(*) FROM msd_airport WHERE is_invalid=0 " +
+            "AND ('NULL'=#{id} OR id=#{id}) " +
+            "AND ('NULL'=#{cityCode} OR city_code=#{cityCode}) " +
+            "AND ('NULL'=#{iataCode} OR iata_code=#{iataCode}) " +
+            "AND ('NULL'=#{airportName} OR airport_name=#{airportName});")
+    Integer getTotalAirports(Airport airport);
 
     /**
      * 新增机场基础数据
@@ -158,14 +200,26 @@ public interface BaseMapper extends Mapper {
      * @param airway 航司基础数据
      * @return 航司基础数据集合
      */
-    @Select("SELECT * FROM msd_airway " +
-            "WHERE is_invalid=0 " +
+    @Select("SELECT * FROM msd_airway WHERE is_invalid=0 " +
             "AND ('NULL'=#{id} OR id=#{id}) " +
             "AND ('NULL'=#{nationCode} OR nation_code=#{nationCode}) " +
             "AND ('NULL'=#{iataCode} OR iata_code=#{iataCode}) " +
             "AND ('NULL'=#{companyName} OR company_name LIKE CONCAT('%',#{companyName},'%')) " +
             "ORDER BY iata_code LIMIT #{offset},#{count};")
     List<Airway> getAirwaies(Airway airway);
+
+    /**
+     * 查询航司基础数据总行数
+     *
+     * @param airway 航司基础数据
+     * @return 总行数
+     */
+    @Select("SELECT COUNT(*) FROM msd_airway WHERE is_invalid=0 " +
+            "AND ('NULL'=#{id} OR id=#{id}) " +
+            "AND ('NULL'=#{nationCode} OR nation_code=#{nationCode}) " +
+            "AND ('NULL'=#{iataCode} OR iata_code=#{iataCode}) " +
+            "AND ('NULL'=#{companyName} OR company_name LIKE CONCAT('%',#{companyName},'%'));")
+    Integer getTotalAirwaies(Airway airway);
 
     /**
      * 新增航司基础数据

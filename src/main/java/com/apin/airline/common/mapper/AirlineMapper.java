@@ -29,7 +29,7 @@ public interface AirlineMapper extends Mapper {
     /**
      * 新增航班信息数据
      *
-     * @param flightInfos 航班信息数据集合
+     * @param lineDetails 航班信息数据集合
      * @return 受影响行数
      */
     @Insert("<script>INSERT msd_airline_info(id,flight_no,flight_company,fcategory,flight_dep,flight_arr," +
@@ -40,7 +40,7 @@ public interface AirlineMapper extends Mapper {
             "#{item.flightDepAirport},#{item.flightArrAirport},#{item.flightDepcode},#{item.flightArrcode}," +
             "#{item.flightDeptimePlanDate},#{item.flightArrtimePlanDate},#{item.stopFlag},#{item.flights}) " +
             "</foreach></script>")
-    Integer addFlightInfo(List<FlightInfo> flightInfos);
+    Integer addFlightInfo(List<LineDetail> lineDetails);
 
     /**
      * 删除指定航班号的航班信息数据
@@ -58,7 +58,7 @@ public interface AirlineMapper extends Mapper {
      * @return 航班信息
      */
     @Select("SELECT * FROM msd_airline_info WHERE id=#{id};")
-    FlightInfo getFlightInfo(String id);
+    LineDetail getFlightInfo(String id);
 
     /**
      * 查询指定航班号的航班信息
@@ -67,7 +67,7 @@ public interface AirlineMapper extends Mapper {
      * @return 航班信息集合
      */
     @Select("SELECT * FROM msd_airline_info WHERE flight_no=#{flightNo};")
-    List<FlightInfo> getFlightInfos(String flightNo);
+    List<LineDetail> getFlightInfos(String flightNo);
 
     /**
      * 新增航线基础数据
@@ -155,7 +155,7 @@ public interface AirlineMapper extends Mapper {
     @Select("SELECT v.id,v.airline_id,v.trip_index,i.flight_company,i.flight_no,i.flight_dep_airport," +
             "i.flight_arr_airport,i.flight_deptime_plan_date,i.flight_arrtime_plan_date,i.stop_flag,i.flights " +
             "FROM msd_airline_voyage v JOIN msd_airline_info i ON i.id=v.flight_info_id WHERE v.airline_id=#{id}")
-    List<FlightInfo> getVoyages(String id);
+    List<LineDetail> getVoyages(String id);
 
     /**
      * 新增航线资源

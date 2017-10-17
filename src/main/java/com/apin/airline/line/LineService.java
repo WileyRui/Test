@@ -1,6 +1,6 @@
 package com.apin.airline.line;
 
-import com.apin.airline.common.entity.FlightInfo;
+import com.apin.airline.common.entity.LineDetail;
 import com.apin.airline.common.entity.Line;
 import com.apin.util.pojo.Reply;
 
@@ -67,16 +67,16 @@ public interface LineService {
      * @param info
      * @return
      */
-    Reply queryFlightInfo(FlightInfo info) throws InvocationTargetException, IllegalAccessException;
+    Reply queryFlightInfo(LineDetail info) throws InvocationTargetException, IllegalAccessException;
 
 
     /**
      * 维护航班
      *
-     * @param flightInfo
+     * @param lineDetail
      * @return
      */
-    Reply addFlightInfo(FlightInfo flightInfo);
+    Reply addFlightInfo(LineDetail lineDetail);
 
     /**
      * 更新航班
@@ -84,7 +84,7 @@ public interface LineService {
      * @param info
      * @return
      */
-    Reply updateFlightInfo(FlightInfo info) throws InvocationTargetException, IllegalAccessException;
+    Reply updateFlightInfo(LineDetail info) throws InvocationTargetException, IllegalAccessException;
 
     /**
      * 获取最新的航线信息

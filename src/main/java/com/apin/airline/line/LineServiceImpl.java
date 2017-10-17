@@ -56,7 +56,8 @@ public class LineServiceImpl implements LineService {
         } else {
             // 校验数据是否重复
             List<Date> existedDates = airlineMapper.getExistedflightDate(accessToken.getAccountId(), airLineId);
-            if (dates.retainAll(existedDates)) return ReplyHelper.invalidParam("重复的航班");
+            existedDates.retainAll(dates);
+            if (existedDates.size() > 0) return ReplyHelper.invalidParam("重复的航班");
 
             line.setAirlineId(airLineId);
         }
@@ -106,7 +107,7 @@ public class LineServiceImpl implements LineService {
 
         Line line1 = airlineMapper.getLine(line.getId());
         Airline airline = airlineMapper.getAirlineById(line1.getAirlineId());
-        List<FlightInfo> voyages = airlineMapper.getVoyages(airline.getId());
+        List<LineDetail> voyages = airlineMapper.getVoyages(airline.getId());
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("line", line);
         resultMap.put("airline", airline);
@@ -126,37 +127,37 @@ public class LineServiceImpl implements LineService {
     }
 
     @Override
-    public Reply queryFlightInfo(FlightInfo info) throws InvocationTargetException, IllegalAccessException {
-        List<FlightInfo> airlineList = airlineMapper.getFlightInfos(info.getFlightNo());
+    public Reply queryFlightInfo(LineDetail info) throws InvocationTargetException, IllegalAccessException {
+        List<LineDetail> airlineList = airlineMapper.getFlightInfos(info.getFlightNo());
         if (airlineList.size() > 0) {
             return ReplyHelper.success(airlineList);
         }
-        List<FlightInfo> flightInfoList = variFlight.initVariFlightData(info.getFlightNo(), info.getBeginDate());
-        if (flightInfoList.size() == 0) {
+        List<LineDetail> lineDetails = variFlight.initVariFlightData(info.getFlightNo(), info.getBeginDate());
+        if (lineDetails.size() == 0) {
             return ReplyHelper.fail("航班信息不存在，手工录入");
         }
-        return ReplyHelper.success(flightInfoList);
+        return ReplyHelper.success(lineDetails);
     }
 
     @Transactional
     @Override
-    public Reply addFlightInfo(FlightInfo info) {   //需求待确认
+    public Reply addFlightInfo(LineDetail info) {   //需求待确认
         info.setId(Generator.uuid());
-        List<FlightInfo> flightInfoList = new ArrayList<>();
-        flightInfoList.add(info);
-        airlineMapper.addFlightInfo(flightInfoList);
+        List<LineDetail> lineDetails = new ArrayList<>();
+        lineDetails.add(info);
+        airlineMapper.addFlightInfo(lineDetails);
         return ReplyHelper.success();
     }
 
     @Transactional
     @Override
-    public Reply updateFlightInfo(FlightInfo info) throws InvocationTargetException, IllegalAccessException { //需求待确认
+    public Reply updateFlightInfo(LineDetail info) throws InvocationTargetException, IllegalAccessException { //需求待确认
         Integer row = airlineMapper.deleteFlightInfo(info.getFlightNo());
         if (row <= 0) {
             return ReplyHelper.error();
         }
-        List<FlightInfo> flightInfoList = variFlight.initVariFlightData(info.getFlightNo(), info.getBeginDate());
-        return ReplyHelper.success(flightInfoList, "航班信息更新成功");
+        List<LineDetail> lineDetails = variFlight.initVariFlightData(info.getFlightNo(), info.getBeginDate());
+        return ReplyHelper.success(lineDetails, "航班信息更新成功");
     }
 
     @Override
