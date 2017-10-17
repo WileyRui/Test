@@ -91,5 +91,5 @@ public interface LineService {
      * 获取最新的航线信息
      * @return
      */
-    Reply newLineInfo();
+    Reply newLineInfo(Line line);
 }

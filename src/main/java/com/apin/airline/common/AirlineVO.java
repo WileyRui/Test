@@ -109,7 +109,7 @@ public class AirlineVO {
      * @param flag
      * @return
      */
-    public Log setAirlineLog(Line Line, String id, boolean flag) {
+    public Log setAirlineLog(Line line, String id, boolean flag) {
         Log log = new Log();
         log.setId(Generator.uuid());
         log.setEventSource("CRM");
@@ -121,8 +121,8 @@ public class AirlineVO {
             log.setEventName("编辑航线");
             log.setMessage("编辑航线成功");
         }
-        log.setOperatorId(Line.getCreatorUserId());
-        log.setOperatorUser(Line.getCreatorUser());
+        log.setOperatorId(line.getCreatorUserId());
+        log.setOperatorUser(line.getCreatorUser());
         return log;
     }
 

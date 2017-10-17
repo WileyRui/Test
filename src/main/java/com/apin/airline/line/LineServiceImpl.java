@@ -4,6 +4,7 @@ import com.apin.airline.common.AirlineVO;
 import com.apin.airline.common.VariFlightService;
 import com.apin.airline.common.entity.*;
 import com.apin.airline.common.mapper.AirlineMapper;
+import com.apin.airline.line.dto.NewLine;
 import com.apin.util.Generator;
 import com.apin.util.JsonUtils;
 import com.apin.util.ReplyHelper;
@@ -98,9 +99,9 @@ public class LineServiceImpl implements LineService {
     }
 
     @Override
-    public Reply lineList(Line line,String token) {
+    public Reply lineList(Line line, String token) {
         AccessToken accessToken = JsonUtils.toAccessToken(token);
-        line.setAccountId("1e1335f81118428d849e1eeb137440dc");
+        line.setAccountId(accessToken.getAccountId());
         List<Line> lines = airlineMapper.queryLineList(line);
         return ReplyHelper.success(lines);
     }
@@ -164,7 +165,16 @@ public class LineServiceImpl implements LineService {
     }
 
     @Override
-    public Reply newLineInfo() {
-        return ReplyHelper.success(airlineMapper.newLineData());
+    public Reply newLineInfo(Line line) {
+        Map<String, Object> resultMap = new HashMap<>();
+        System.out.println(line.getPageIndex());
+        List<NewLine> newLines = airlineMapper.newLineData(line);
+        if (newLines.size() <= 25) {
+            resultMap.put("isLastPage", true);
+        } else {
+            resultMap.put("isLastPage", false);
+        }
+        resultMap.put("lines", newLines);
+        return ReplyHelper.success(resultMap);
     }
 }
