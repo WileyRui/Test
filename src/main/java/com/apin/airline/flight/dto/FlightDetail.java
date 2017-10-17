@@ -9,7 +9,7 @@ import java.util.List;
  * Date:2017/10/13
  */
 public class FlightDetail {
-    private List<String> dateList;
+    private List<DayPrice> dateList;
     private Integer remainCount;
     private Integer total;
     private Integer soldCount;
@@ -19,16 +19,18 @@ public class FlightDetail {
     private String depCity;
     private String arrCity;
     private String retDate;
+    private String startDate;
+    private String endDate;
 
     public FlightDetail() {
     }
 
-    public List<String> getDateList() {
+    public List<DayPrice> getDateList() {
         return dateList;
     }
 
 
-    public void setDateList(List<String> dateList) {
+    public void setDateList(List<DayPrice> dateList) {
         this.dateList = dateList;
     }
 
@@ -104,5 +106,21 @@ public class FlightDetail {
 
     public void setRetDate(String retDate) {
         this.retDate = retDate;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 }

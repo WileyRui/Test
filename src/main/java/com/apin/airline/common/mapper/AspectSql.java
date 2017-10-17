@@ -14,15 +14,15 @@ public class AspectSql {
                 "c.dep_city depCity,c.arr_city arrCity,c.flight_type ,e.img_url arrCityImgUrl,sum(b.seat_count) remainCount FROM mbs_airline a" +
                 " JOIN mbs_airline_flight b ON a.id = b.airline_id" +
                 " JOIN msd_airline c ON a.airline_id = c.id" +
-                " JOIN msd_city e on c.arr_city=e.city_name " +
-                " WHERE";
+                " JOIN msd_city e on c.arr_city=e.city_name JOIN msd_city f on c.dep_city=f.city_name " +
+                " WHERE   c.flight_type="+cityList.getFlightType();
                 if(StringUtils.isNotBlank(cityList.getArrCity())){
-                    sql+=" c.arr_city='"+cityList.getArrCity()+"'";
+                    sql+=" and c.arr_city='"+cityList.getArrCity()+"'";
                 }
                 if(StringUtils.isNotBlank(cityList.getDepCity())){
-                    sql+=" c.dep_city='"+cityList.getDepCity()+"'";
+                    sql+=" and c.dep_city='"+cityList.getDepCity()+"'";
                 }
-               sql+=" and c.flight_type="+cityList.getFlightType()+" GROUP BY c.voyage order by c.dep_city ,c.arr_city";
+               sql+="  GROUP BY c.voyage order by f.en_name, e.en_name";
         return sql;
     }
     public String selectFlights(CityList cityList){

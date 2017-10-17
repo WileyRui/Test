@@ -81,12 +81,12 @@ public class FlightController {
      * 正常：返回接口调用成功,返回数据
      */
     @PostMapping(value = "/v1.0/flight/query")
-    public Reply searchFlight(@RequestBody List<CityList> cityLists) throws Exception {
-        return flightService.searchFlight(cityLists);
+    public Reply searchFlight(@RequestBody SearchDto searchDto) throws Exception {
+        return flightService.searchFlight(searchDto);
     }
 
     /**
-     * 根据城市对与出发日期查询航班
+     * 根据单城市或
      *
      * @param cityList
      * @return Reply

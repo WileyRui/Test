@@ -1,9 +1,6 @@
 package com.apin.airline.common.mapper;
 
-import com.apin.airline.flight.dto.AirlineInfo;
-import com.apin.airline.flight.dto.CityList;
-import com.apin.airline.flight.dto.FlightDetail;
-import com.apin.airline.flight.dto.ResponseAirlineDto;
+import com.apin.airline.flight.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -18,20 +15,19 @@ import java.util.List;
 @Mapper
 public interface QueryMapper extends Mapper {
 
-    @Select("select min(b.adult_price) basePrice,c.dep_city depCity,c.arr_city arrCity, sum(b.seat_count)  remainCount,sum(a.seat_count) total from mbs_airline a join mbs_airline_flight b on a.id=b.airline_id" +
+    @Select("select min(b.adult_price) basePrice,c.dep_city depCity,c.arr_city arrCity, sum(b.seat_count) remainCount,min(b.flight_date) startDate,max(b.flight_date) endDate  ,sum(a.seat_count) total from mbs_airline a join mbs_airline_flight b on a.id=b.airline_id" +
         " join msd_airline c on a.airline_id=c.id where c.dep_city=#{depCity} and c.arr_city=#{arrCity} group by c.voyage")
     FlightDetail selectFlight(CityList cityList);
     @Select("select img_url from msd_city where city_name=#{deatCity}")
     String selectCityImg(String destCity);
-    @Select("select b.flight_date from mbs_airline a join mbs_airline_flight b on a.id=b.airline_id" +
+    @Select("select b.flight_date retDate,min(b.adult_price) basePrice from mbs_airline a join mbs_airline_flight b on a.id=b.airline_id" +
             " join msd_airline c on a.airline_id=c.id where c.dep_city=#{depCity} and c.arr_city=#{arrCity} group by b.flight_date order by b.flight_date")
-    List<String> selectFlightDates(CityList cityList);
+    List<DayPrice> selectFlightDates(CityList cityList);
     @SelectProvider(type = AspectSql.class,method = "selectFlightList")
     List<ResponseAirlineDto> selectFlightList(CityList cityList);
     @SelectProvider(type = AspectSql.class,method = "selectFlights")
     List<FlightDetail> selectFlights(CityList cityList);
-    @Select("SELECT SUBSTRING_INDEX(c.flight_number, '<', 1) depNum," +
-            "SUBSTRING_INDEX(c.flight_number, '>', - 1) arrNum,sum(a.seat_count) AS total," +
+    @Select("select c.id airlineId,sum(a.seat_count) AS total," +
             "sum(b.seat_count) remainCount, min(b.adult_price) basePrice,e.days+1 days,DATE_ADD(b.flight_date,INTERVAL e.days DAY) retDate,c.flight_type flightType FROM mbs_airline a  " +
             "JOIN mbs_airline_flight b ON a.id = b.airline_id  " +
             "JOIN msd_airline c ON a.airline_id = c.id  " +
@@ -45,7 +41,11 @@ public interface QueryMapper extends Mapper {
             "  b.adult_price;")
     List<ResponseAirlineDto> selectFlightDetail(CityList cityList);
     @Select("select a.flight_company compName,b.logo_ico logo,a.flight_arrtime_plan_date arrTime,a.flight_deptime_plan_date depTime,a.flight_dep_airport depAirport," +
-            "a.flight_arr_airport arrAirport from msd_airline_info a join msd_airway b on a.flight_company=b.company_name where a.flight_no=#{flightNum}")
-    AirlineInfo selectByFlightNum(String flightNum);
+            "a.flight_arr_airport arrAirport,a.flight_no num from msd_airline_info a  " +
+            " JOIN msd_airway b ON a.flight_company = b.company_name  " +
+            " join msd_airline_voyage c on  c.flight_info_id=a.id  " +
+            " join msd_airline e on e.id=c.airline_id  " +
+            " WHERE c.airline_id=#{flightNum}")
+    List<AirlineInfo> selectByFlightNum(String flightNum);
 
 }

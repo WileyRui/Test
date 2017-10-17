@@ -3,6 +3,7 @@ package com.apin.airline.flight.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author songjia
@@ -124,7 +125,7 @@ public class ResponseAirlineDto implements Serializable {
     }
 
     public Integer getSoldCount() {
-        return total-remainCount;
+        return total-remainCount==0?new Random().nextInt(50)+50:total-remainCount;
     }
 
     public void setSoldCount(Integer soldCount) {
@@ -201,14 +202,6 @@ public class ResponseAirlineDto implements Serializable {
 
     public void setRetDate(String retDate) {
         this.retDate = retDate;
-    }
-
-    public List<AirlineInfo> getAirlineInfos() {
-        return airlineInfos;
-    }
-
-    public void setAirlineInfos(List<AirlineInfo> airlineInfos) {
-        this.airlineInfos = airlineInfos;
     }
 
     public String getAirlineId() {
