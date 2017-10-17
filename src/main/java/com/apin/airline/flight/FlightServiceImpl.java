@@ -61,11 +61,11 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public Reply searchFlight(List<CityList> cityLists) {
+    public Reply searchFlight(SearchDto searchDto) {
         List<FlightDetail> flightDetails=new ArrayList<>();
-        for (CityList cityList : cityLists) {
+        for (CityList cityList : searchDto.getCityList()) {
             String img = queryMapper.selectCityImg(cityList.getArrCity());
-            List<String> dateList = queryMapper.selectFlightDates(cityList);
+            List<DayPrice> dateList = queryMapper.selectFlightDates(cityList);
             if (dateList.size() == 0) continue;
             FlightDetail flightDetail = queryMapper.selectFlight(cityList);
             flightDetail.setArrCityImgUrl(img);
@@ -82,31 +82,20 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public Reply searchFlightDetail(CityList cityList) {
+    public Reply searchFlightDetail(CityList cityList) throws Exception{
         List<ResponseAirlineDto> responseAirlineDtos = queryMapper.selectFlightDetail(cityList);
-        responseAirlineDtos.forEach((ResponseAirlineDto responseAirlineDto) -> {
-            List<AirlineInfo> airlineInfos=new ArrayList<>();
-            AirlineInfo airlineInfo = queryMapper.selectByFlightNum(responseAirlineDto.getDepNum());
-            airlineInfo.setNum(responseAirlineDto.getDepNum());
+        for (ResponseAirlineDto responseAirlineDto : responseAirlineDtos) {
+            List<AirlineInfo> airlineInfos = queryMapper.selectByFlightNum(responseAirlineDto.getAirlineId());
+            if (airlineInfos.size() == 2) {
+                AirlineInfo airlineInfo = airlineInfos.get(1);
+                airlineInfo.setDepDate(responseAirlineDto.getRetDate());
+                airlineInfo.setArrDate(getArrDate(airlineInfo.getArrTime(), airlineInfo.getDepTime(), airlineInfo.getDepDate()));
+            }
+            AirlineInfo airlineInfo = airlineInfos.get(0);
             airlineInfo.setDepDate(cityList.getDepDate());
-            try {
-                airlineInfo.setArrDate(getArrDate(airlineInfo.getArrTime(),airlineInfo.getDepTime(),cityList.getDepDate()));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            airlineInfos.add(airlineInfo);
-            AirlineInfo airlineInfo1 = queryMapper.selectByFlightNum(responseAirlineDto.getArrNum());
-            airlineInfo1.setNum(responseAirlineDto.getArrNum());
-            airlineInfo1.setDepDate(responseAirlineDto.getRetDate());
-            try {
-                airlineInfo1.setArrDate(getArrDate(airlineInfo.getArrTime(),airlineInfo.getDepTime(),airlineInfo1.getDepDate()));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            airlineInfos.add(airlineInfo1);
-
+            airlineInfo.setArrDate(getArrDate(airlineInfo.getArrTime(), airlineInfo.getDepTime(), airlineInfo.getDepDate()));
             responseAirlineDto.setAirlineInfo(airlineInfos);
-        });
+        }
         return ReplyHelper.success(responseAirlineDtos);
     }
 

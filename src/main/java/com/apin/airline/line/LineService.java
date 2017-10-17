@@ -41,9 +41,10 @@ public interface LineService {
      * 航线列表/查询
      *
      * @param line
+     * @param token
      * @return
      */
-    Reply lineList(Line line);
+    Reply lineList(Line line,String token);
 
     /**
      * 航线详情
@@ -90,5 +91,5 @@ public interface LineService {
      * 获取最新的航线信息
      * @return
      */
-    Reply newLineInfo();
+    Reply newLineInfo(Line line);
 }

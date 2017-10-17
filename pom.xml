@@ -165,6 +165,13 @@
             </properties>
         </profile>
         <profile>
+            <!-- 开发环境 -->
+            <id>dev182</id>
+            <properties>
+                <profiles.active>dev182</profiles.active>
+            </properties>
+        </profile>
+        <profile>
             <!-- 测试环境 -->
             <id>test</id>
             <properties>
