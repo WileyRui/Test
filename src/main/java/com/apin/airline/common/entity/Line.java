@@ -49,6 +49,11 @@ public class Line implements Serializable {
     private Byte flightType;
 
     /**
+     * 航班号
+     */
+    private String flightNo;
+
+    /**
      * 资源类型 0:线下资源;1:包机商资源;2:一般供应商资源;3:软切资源;4:硬切资源
      */
     private Byte resType;
@@ -67,6 +72,16 @@ public class Line implements Serializable {
      * 销售截止日期(出发日期)
      */
     private Date departureEnd;
+
+    /**
+     * 出发城市
+     */
+    private String depCity;
+
+    /**
+     * 到达城市
+     */
+    private String arrCity;
 
     /**
      * 每周飞行班次 周日开始 0,1,0,1,0,1,0代表每周135有航班飞行
@@ -179,6 +194,36 @@ public class Line implements Serializable {
     private Date createdTime;
 
     /**
+     * 第几页
+     */
+    private String pageIndex;
+
+    /**
+     * 每页条数
+     */
+    private String pageSize;
+
+    /**
+     * 航班号（拼接）
+     */
+    private String flightNumber;
+
+    /**
+     * 未分配
+     */
+    private Integer unAllot;
+
+    /**
+     * 已售
+     */
+    private Integer saled;
+
+    /**
+     * 航程
+     */
+    private String voyage;
+
+    /**
      * 航程明细
      */
     private List<LineDetail> details;
@@ -235,6 +280,14 @@ public class Line implements Serializable {
         return flightType;
     }
 
+    public String getFlightNo() {
+        return flightNo;
+    }
+
+    public void setFlightNo(String flightNo) {
+        this.flightNo = flightNo;
+    }
+
     public void setFlightType(Byte flightType) {
         this.flightType = flightType;
     }
@@ -269,6 +322,22 @@ public class Line implements Serializable {
 
     public void setDepartureEnd(Date departureEnd) {
         this.departureEnd = departureEnd;
+    }
+
+    public String getDepCity() {
+        return depCity;
+    }
+
+    public void setDepCity(String depCity) {
+        this.depCity = depCity;
+    }
+
+    public String getArrCity() {
+        return arrCity;
+    }
+
+    public void setArrCity(String arrCity) {
+        this.arrCity = arrCity;
     }
 
     public String getWeekFlights() {
@@ -453,5 +522,53 @@ public class Line implements Serializable {
 
     public void setDetails(List<LineDetail> details) {
         this.details = details;
+    }
+
+    public String getPageIndex() {
+        return pageIndex;
+    }
+
+    public void setPageIndex(String pageIndex) {
+        this.pageIndex = pageIndex;
+    }
+
+    public String getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(String pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public String getFlightNumber() {
+        return flightNumber;
+    }
+
+    public void setFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
+    }
+
+    public Integer getUnAllot() {
+        return unAllot;
+    }
+
+    public void setUnAllot(Integer unAllot) {
+        this.unAllot = unAllot;
+    }
+
+    public Integer getSaled() {
+        return saled;
+    }
+
+    public void setSaled(Integer saled) {
+        this.saled = saled;
+    }
+
+    public String getVoyage() {
+        return voyage;
+    }
+
+    public void setVoyage(String voyage) {
+        this.voyage = voyage;
     }
 }

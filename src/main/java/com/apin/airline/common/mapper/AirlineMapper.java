@@ -375,4 +375,33 @@ public interface AirlineMapper extends Mapper {
             "WHERE flight_date > CURDATE() GROUP BY airline_id) f ON f.airline_id=mba.id WHERE mda.flight_type !='3' " +
             "GROUP BY mda.voyage ORDER BY mba.created_time DESC LIMIT 2500")
     List<NewLine> newLineData();
+
+    /**
+     * 航线列表查询
+     * @return
+     */
+    @Select("<script>SELECT a.adult_price AS adultPrice, a.child_price as childPrice, a.manager,"  +
+            "a.airline_status as airlineStatus, a.airline_no as airlineNo, a.supplier_name as supplierName,"  +
+            "d.flight_type as flightType, a.departure_start as departureStart,a.departure_end departureEnd," +
+            "f.airline_id as id, sum(f.seat_count) seatCount, v.days, d.voyage," +
+            "d.flight_number as flightNumber, SUM(IFNULL(s.saled, 0)) AS saled," +
+            "SUM(IFNULL(s.unAllot, 0)) AS unAllot " +
+            "FROM mbs_airline_flight f JOIN mbs_airline a ON a.id = f.airline_id " +
+            "JOIN msd_airline d ON d.id = a.airline_id JOIN msd_airline_voyage v ON v.airline_id = d.id " +
+            "AND v.trip_index = 1 LEFT JOIN ( SELECT flight_id, SUM( CASE " +
+            "WHEN seat_status > 0 THEN 1 ELSE 0 END) AS saled, SUM( CASE " +
+            "WHEN account_id = owner_id AND seat_status = 0 THEN 1 ELSE 0 " +
+            "END ) unAllot FROM mbs_airline_flight_seat WHERE " +
+            "<if test=\"accountId != null and accountId != ''\"> account_id = #{accountId} " +
+            "GROUP BY flight_id) s ON s.flight_id = f.id WHERE a.account_id = #{accountId} </if> " +
+            "<if test=\"depCity != null and depCity != ''\"> AND d.voyage LIKE concat('%',#{depCity},'%') </if> " +
+            "<if test=\"arrCity != null and arrCity != ''\"> AND SUBSTRING_INDEX(d.voyage,'-',-1) LIKE concat(#{arrCity},'%') </if> " +
+            "<if test=\"flightNo != null and flightNo != ''\"> AND d.flight_number LIKE concat('%',#{flightNo},'%') </if> " +
+            "<if test=\"departureEnd != null and departureEnd != ''\"><![CDATA[ AND a.departure_start <= #{departureEnd} ]]> </if> " +
+            "<if test=\"departureStart != null and departureStart != ''\"><![CDATA[ AND a.departure_end >= #{departureStart} ]]> </if> " +
+            "<if test=\"airlineStatus != null and airlineStatus != ''\"> AND a.airline_status = #{airlineStatus} </if> " +
+            "<if test=\"manager != null and manager != ''\"> AND a.manager_id = #{manager} </if> " +
+            "AND a.is_invalid = 0 GROUP BY a.id ORDER BY a.created_time DESC " +
+            "LIMIT ${pageIndex} , ${pageSize}</script>")
+    List<Line> queryLineList(Line line);
 }
