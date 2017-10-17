@@ -1,5 +1,7 @@
 package com.apin.airline.line.dto;
 
+import java.math.BigDecimal;
+
 /**
  * @author wiley
  * @date 2017/10/16
@@ -8,9 +10,10 @@ package com.apin.airline.line.dto;
 public class NewLine {
     private String lineId;
     private String voyage;
-    private String price;
-    private String saled;
+    private BigDecimal price;
+    private Integer saled;
     private String departDate;
+    private Byte flightType;
 
     public String getLineId() {
         return lineId;
@@ -28,27 +31,35 @@ public class NewLine {
         this.voyage = voyage;
     }
 
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public String getSaled() {
-        return saled;
-    }
-
-    public void setSaled(String saled) {
-        this.saled = saled;
-    }
-
     public String getDepartDate() {
         return departDate;
     }
 
     public void setDepartDate(String departDate) {
         this.departDate = departDate;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public Integer getSaled() {
+        return saled;
+    }
+
+    public void setSaled(Integer saled) {
+        this.saled = saled;
+    }
+
+    public Byte getFlightType() {
+        return flightType;
+    }
+
+    public void setFlightType(Byte flightType) {
+        this.flightType = flightType;
     }
 }
