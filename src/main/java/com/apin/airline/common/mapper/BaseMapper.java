@@ -74,7 +74,6 @@ public interface BaseMapper extends Mapper {
     /**
      * 查询城市基础数据(分页,按拼音排序)
      *
-     * @param key  单索引词
      * @return 城市基础数据集合
      */
     @Select("SELECT DISTINCT c.city_name " +
@@ -269,7 +268,7 @@ public interface BaseMapper extends Mapper {
      */
     @Update("UPDATE msd_airway SET " +
             "iata_code=#{iataCode},company_name=#{companyName},nation_code=#{nationCode},logo_ico=#{logoIco} " +
-            "WHEREid=#{id};")
+            "WHERE id=#{id};")
     Integer updateAirway(Airway airway);
 
 }
