@@ -107,11 +107,11 @@ public class LineServiceImpl implements LineService {
         count += airlineMapper.deleteFlight(line.getId());
         count += airlineMapper.deleteLine(line.getId());
         //日志
-        count += airlineMapper.addLog(airlineVO.setAirlineLog(line,false));
-        if (count <= 0){
+        count += airlineMapper.addLog(airlineVO.setAirlineLog(line, false));
+        if (count <= 0) {
             return ReplyHelper.error();
         }
-        return addLine(token,line);
+        return addLine(token, line);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class LineServiceImpl implements LineService {
     public Reply lineList(Line line, String token) {
         AccessToken accessToken = JsonUtils.toAccessToken(token);
         line.setAccountId(accessToken.getAccountId());
-        line.setPageIndex((line.getPageIndex()-1)*line.getPageSize());
+        line.setPageIndex((line.getPageIndex() - 1) * line.getPageSize());
         List<Line> lines = airlineMapper.queryLineList(line);
         return ReplyHelper.success(lines);
     }
@@ -206,6 +206,9 @@ public class LineServiceImpl implements LineService {
         Map<String, Object> resultMap = new HashMap<>();
         line.setPageIndex(line.getPageIndex() * 25);
         List<NewLine> newLines = airlineMapper.newLineData(line);
+        for (NewLine newLine : newLines) {
+            newLine.setSaled((Integer.parseInt(newLine.getLineId().substring(0, 1), 16)) % 9 + 1 + newLine.getSaled());
+        }
         if (newLines.size() < 25) {
             resultMap.put("isLastPage", true);
         } else {
