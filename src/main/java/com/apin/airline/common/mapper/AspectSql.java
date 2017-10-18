@@ -22,7 +22,7 @@ public class AspectSql {
                 if(StringUtils.isNotBlank(cityList.getDepCity())){
                     sql+=" and c.dep_city='"+cityList.getDepCity()+"'";
                 }
-               sql+="and (a.manager_id='' or a.manager_id is null) and a.airline_status=1 and c.is_invalid=0   GROUP BY c.voyage order by f.en_name, e.en_name";
+               sql+=" and (a.manager_id='' or a.manager_id is null) and a.airline_status=1 and c.is_invalid=0   GROUP BY c.voyage order by f.en_name, e.en_name";
         return sql;
     }
     public String selectFlights(CityList cityList){
@@ -32,9 +32,9 @@ public class AspectSql {
                 " JOIN msd_airline_voyage e ON e.airline_id = c.id  " +
                 " WHERE c.dep_city='"+cityList.getDepCity()+"' and c.arr_city='"+cityList.getArrCity()+"'" ;
                 if (cityList.getFlightType()==null){
-                    sql+=" and c.flight_type="+cityList.getFlightType();
+                    sql+=" and c.flight_type="+cityList.getFlightType()+" ";
                 }
-                sql+=" and (a.manager_id='' or a.manager_id is null) and a.airline_status=1 and c.is_invalid=0  AND b.flight_date = '"+cityList.getDepDate()+"' AND e.trip_index = 1 and SUBSTRING_INDEX(DATE_ADD(b.flight_date,INTERVAL e.days DAY),'-',2)='"+cityList.getMonth()+"' GROUP BY e.days";
+                sql+="  and (a.manager_id='' or a.manager_id is null) and a.airline_status=1 and c.is_invalid=0  AND b.flight_date = '"+cityList.getDepDate()+"' AND e.trip_index = 1 and SUBSTRING_INDEX(DATE_ADD(b.flight_date,INTERVAL e.days DAY),'-',2)='"+cityList.getMonth()+"' GROUP BY e.days";
                 return sql;
     }
 }
