@@ -11,6 +11,8 @@ import com.apin.airline.ticket.dto.CalendarInfo;
 import com.apin.airline.ticket.dto.Stock;
 import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -105,8 +107,12 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public Reply searchFlightList(CityList cityList) {
+        PageHelper.startPage(cityList.getPageIndex(),cityList.getPageSize());
         List<ResponseAirlineDto> responseAirlineDto = queryMapper.selectFlightList(cityList);
-        return ReplyHelper.success(responseAirlineDto);
+        if (responseAirlineDto.size() == 0)
+            return ReplyHelper.success(new ArrayList<>(),0);
+        PageInfo pageInfo=new PageInfo(responseAirlineDto);
+        return ReplyHelper.success(responseAirlineDto,pageInfo.getTotal());
     }
 
     @Override

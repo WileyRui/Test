@@ -35,7 +35,7 @@ public interface QueryMapper extends Mapper {
             "WHERE  " +
             "  c.dep_city=#{depCity} and c.arr_city=#{arrCity}  " +
             "AND b.flight_date = #{depDate}  " +
-            "AND e.days = #{day}  " +
+            "AND e.days = #{day} and c.flight_type=#{flightType} " +
             "GROUP BY c.flight_number  " +
             "ORDER BY  " +
             "  b.adult_price;")

@@ -85,7 +85,6 @@ public class BaseController {
     /**
      * 查询城市基础数据(按拼音排序)
      *
-     * @param  访问令牌
      * @param key  单索引词
      * @return Reply
      */
