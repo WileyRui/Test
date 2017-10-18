@@ -56,7 +56,7 @@ public class Airline implements Serializable {
     /**
      * 计划起飞时间
      */
-    private Time flightTime;
+    private String flightTime;
 
     /**
      * 每周飞行班次 周日开始 0,1,0,1,0,1,0代表每周135有航班飞行
@@ -157,11 +157,11 @@ public class Airline implements Serializable {
         this.flightNumber = flightNumber;
     }
 
-    public Time getFlightTime() {
+    public String getFlightTime() {
         return flightTime;
     }
 
-    public void setFlightTime(Time flightTime) {
+    public void setFlightTime(String flightTime) {
         this.flightTime = flightTime;
     }
 

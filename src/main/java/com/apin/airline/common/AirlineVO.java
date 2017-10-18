@@ -35,18 +35,26 @@ public class AirlineVO {
      * @return 航线基础数据实体类
      */
     public Airline setAirline(Line line) {
-        com.apin.airline.common.entity.Airline airline = new Airline();
-
         List<LineDetail> details = line.getDetails();
+        Integer days = 0;
+        for (LineDetail i : details) {
+            days += i.getDays();
+        }
 
+        Airline airline = new Airline();
         airline.setId(Generator.uuid());
         airline.setHashKey(hashValue(details));
+        airline.setFlightType(line.getFlightType());
+        airline.setDepCity(line.getDepCity());
+        airline.setArrCity(line.getArrCity());
+        airline.setDays(days);
+        airline.setVoyage(appendVoyage(line.getFlightType(), details));
         airline.setFlightNumber(appendFlightNumber(details));
-        airline.setVoyage(appendVoyage(airline.getFlightType(), details));
-        airline.setInvalid(false);
+        airline.setFlightTime(details.get(0).getFlightDeptimePlanDate());
+        airline.setWeekFlights(line.getWeekFlights());
         airline.setCreatorUser(line.getCreatorUser());
         airline.setCreatorUserId(line.getCreatorUserId());
-        airline.setCreatedTime(new Date());
+
         return airline;
     }
 
@@ -104,7 +112,7 @@ public class AirlineVO {
     /**
      * 增加日志
      *
-     * @param Line
+     * @param line
      * @param id
      * @param flag
      * @return
@@ -141,39 +149,31 @@ public class AirlineVO {
     /**
      * 拼接航程
      *
-     * @param flightType    航线类型
-     * @param flightDetails 航班詳情
+     * @param flightType 航线类型
+     * @param details    航班詳情
      * @return string
      */
-    public String appendVoyage(int flightType, List<LineDetail> flightDetails) {
-        StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < flightDetails.size(); i++) {
-            LineDetail flightDetail = flightDetails.get(i);
-            String depAirportCode = flightDetail.getFlightDepcode();
-            String depCity = airlineMapper.findCityNameByIataCode(depAirportCode);
-            String arrAirportCode = flightDetail.getFlightArrcode();
-            String arrCity = airlineMapper.findCityNameByIataCode(arrAirportCode);
-            switch (flightType) {
-                case 1:
-                    buffer.append(depCity + "-").append(arrCity);
-                    break;
-                case 2:
-                    if (i == 0) {
-                        buffer.append(depCity + "<->").append(arrCity);
-                    }
-                    break;
-                case 3:
-                    if (i == flightDetails.size() - 1) {
-                        buffer.append(depCity + "-").append(arrCity);
-                    } else {
-                        buffer.append(depCity + "-").append(arrCity + ",");
-                    }
-                    break;
-                default:
-                    break;
-            }
+    public String appendVoyage(int flightType, List<LineDetail> details) {
+        switch (flightType) {
+            // 单程
+            case 1:
+                return details.get(0).getFlightDep() + "-" + details.get(0).getFlightArr();
+
+            // 往返
+            case 2:
+                return details.get(0).getFlightDep() + "<->" + details.get(0).getFlightArr();
+
+            // 多程
+            case 3:
+                StringBuffer buffer = new StringBuffer();
+                details.forEach(i -> {
+                    buffer.append(i.getFlightDep() + "-" + i.getFlightArr() + ",");
+                });
+                return buffer.substring(0, buffer.length() - 1);
+
+            default:
+                return null;
         }
-        return buffer.toString();
     }
 
     /**
@@ -191,7 +191,7 @@ public class AirlineVO {
             Integer days = detail.getDays();
             hashValue.append(flightNo + depCity + arrCity + days);
         });
-        return hashValue.toString();
+        return Generator.md5(hashValue.toString());
     }
 
     /**
@@ -217,7 +217,7 @@ public class AirlineVO {
      */
     public Integer getWeekDay(String strDate) {
         Calendar cal = parseDateTime(strDate);
-        return cal.get(Calendar.DAY_OF_WEEK);
+        return cal.get(Calendar.DAY_OF_WEEK) - 1;
     }
 
     /**
@@ -241,9 +241,11 @@ public class AirlineVO {
 
         while (!date.after(end)) {
             String cur = DateHelper.formatDate(date);
-            if (!dayList.contains(getWeekDay(cur))) continue;
+            if (dayList.contains(getWeekDay(cur))) {
+                dates.add(date);
+            }
 
-            dates.add(date);
+            date = new Date(date.getTime() + 1000 * 60 * 60 * 24);
         }
 
         return dates;
