@@ -21,6 +21,7 @@ public class FlightDetail {
     private String retDate;
     private String startDate;
     private String endDate;
+    private Integer flightType;
 
     public FlightDetail() {
     }
@@ -122,5 +123,13 @@ public class FlightDetail {
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
+    }
+
+    public Integer getFlightType() {
+        return flightType;
+    }
+
+    public void setFlightType(Integer flightType) {
+        this.flightType = flightType;
     }
 }

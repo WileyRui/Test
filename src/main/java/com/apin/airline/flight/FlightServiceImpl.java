@@ -66,16 +66,23 @@ public class FlightServiceImpl implements FlightService {
         for (CityList cityList : searchDto.getCityList()) {
             String img = queryMapper.selectCityImg(cityList.getArrCity());
             FlightDetail flightDetail = queryMapper.selectFlight(cityList);
-            flightDetail.setArrCityImgUrl(img);
-            flightDetails.add(flightDetail);
+            if (flightDetail!=null) {
+                flightDetail.setArrCityImgUrl(img);
+                flightDetails.add(flightDetail);
+            }
         }
         return ReplyHelper.success(flightDetails);
     }
 
     @Override
     public Reply searchFlights(CityList cityList) {
+        //cityList.setArrDate(cityList.);
         List<FlightDetail> flightDetails = queryMapper.selectFlights(cityList);
         return ReplyHelper.success(flightDetails);
+    }
+    @Override
+    public Reply searchFlightMonth(CityList cityList) {
+        return ReplyHelper.success(queryMapper.selectFlightsMonth(cityList));
     }
 
     @Override
@@ -113,6 +120,8 @@ public class FlightServiceImpl implements FlightService {
         List<DayPrice> dayPrices = queryMapper.selectFlightDates(cityList);
         return ReplyHelper.success(dayPrices);
     }
+
+
 
     private String getArrDate(String arrTime,String depTime,String depDate) throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");

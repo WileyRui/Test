@@ -127,13 +127,23 @@ public class FlightController {
      * @return Reply
      * 正常：返回接口调用成功,返回数据
      */
+    @PostMapping(value = "/v1.0/retFlight/month/query")
+    public Reply searchMonth(@RequestBody CityList cityList) throws Exception {
+        return flightService.searchFlightMonth(cityList);
+    }
+    /**
+     * 根据城市对与出发日期结束日期查询航班详情
+     *
+     * @param cityList
+     * @return Reply
+     * 正常：返回接口调用成功,返回数据
+     */
     @PostMapping(value = "/v1.0/flightDetail/query")
     public Reply searchFlightDetail(@RequestBody CityList cityList) throws Exception {
         return flightService.searchFlightDetail(cityList);
     }
-
     /**
-     * 根据条件查询
+     * 根据单城市或
      *
      * @param cityList
      * @return Reply

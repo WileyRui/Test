@@ -95,12 +95,11 @@ public class BaseServiceImpl implements BaseService {
     /**
      * 查询城市基础数据(分页,按拼音排序)
      *
-     * @param token 访问令牌
-     * @param key  单索引词
+     * @param key 访问令牌
      * @return Reply
      */
     @Override
-    public Reply getCityNames(String token, String key) {
+    public Reply getCityNames(String key) {
         // 查询数据
         List<String> cityNames = mapper.getCityNames(key);
         return ReplyHelper.success(cityNames);
@@ -287,5 +286,11 @@ public class BaseServiceImpl implements BaseService {
     public Reply updateAirway(String token, Airway airway) {
         Integer count = mapper.updateAirway(airway);
         return count > 0 ? ReplyHelper.success() : ReplyHelper.error();
+    }
+
+    @Override
+    public Reply getCitiesByIds( List<String> ids) {
+        List<String> citys=mapper.getCityNamesByIds(ids);
+        return ReplyHelper.success(citys);
     }
 }
