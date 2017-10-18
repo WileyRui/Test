@@ -74,24 +74,10 @@ public interface BaseMapper extends Mapper {
     /**
      * 查询城市基础数据(分页,按拼音排序)
      *
-     * @return 城市基础数据集合
-     */
-    @Select("SELECT DISTINCT c.city_name " +
-            "FROM msd_city c JOIN msd_airport p ON p.city_code=c.city_code " +
-            "WHERE c.is_invalid=0 " +
-            "AND (c.city_code like CONCAT('%',#{keyword},'%') " +
-            "OR c.city_name like CONCAT('%',#{keyword},'%') " +
-            "OR c.en_name like CONCAT('%',#{keyword},'%') " +
-            "OR p.iata_code like CONCAT('%',#{keyword},'%')) limit 10")
-    List<String> getCityNames(String keyword);
-
-    /**
-     * 查询城市基础数据(分页,按拼音排序)
-     *
      * @param city 城市基础数据
      * @return 城市基础数据集合
      */
-    @Select("SELECT g.country_name,c.*,GROUP_CONCAT(p.airport_name) AS airports " +
+    @Select("SELECT g.country_name,c.*,GROUP_CONCAT(p.airport_name) AS airports,GROUP_CONCAT(p.iata_code) AS codes " +
             "FROM msd_city c LEFT JOIN msd_country g ON g.id=c.country_id JOIN msd_airport p ON p.city_code=c.city_code " +
             "WHERE c.is_invalid=0 " +
             "AND ('NULL'=#{id} OR c.id=#{id}) " +

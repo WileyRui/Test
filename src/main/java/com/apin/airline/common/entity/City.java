@@ -27,9 +27,14 @@ public class City implements Serializable {
     private String countryName;
 
     /**
-     * 机场名称
+     * 机场名称,逗号分隔
      */
     private String airports;
+
+    /**
+     * 机场三字码,逗号分隔
+     */
+    private String codes;
 
     /**
      * 城市三字码 例如:PEK(北京)
@@ -122,6 +127,14 @@ public class City implements Serializable {
 
     public String getAirports() {
         return airports;
+    }
+
+    public String getCodes() {
+        return codes;
+    }
+
+    public void setCodes(String codes) {
+        this.codes = codes;
     }
 
     public void setAirports(String airports) {
