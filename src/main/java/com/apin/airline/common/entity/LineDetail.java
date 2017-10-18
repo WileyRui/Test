@@ -80,12 +80,12 @@ public class LineDetail implements Serializable {
     /**
      * 计划起飞时间
      */
-    private Time flightDeptimePlanDate;
+    private String flightDeptimePlanDate;
 
     /**
      * 计划到达时间
      */
-    private Time flightArrtimePlanDate;
+    private String flightArrtimePlanDate;
 
     /**
      * 是否经停 false:不经停;true:经停
@@ -216,19 +216,19 @@ public class LineDetail implements Serializable {
         this.flightArrcode = flightArrcode;
     }
 
-    public Time getFlightDeptimePlanDate() {
+    public String getFlightDeptimePlanDate() {
         return flightDeptimePlanDate;
     }
 
-    public void setFlightDeptimePlanDate(Time flightDeptimePlanDate) {
+    public void setFlightDeptimePlanDate(String flightDeptimePlanDate) {
         this.flightDeptimePlanDate = flightDeptimePlanDate;
     }
 
-    public Time getFlightArrtimePlanDate() {
+    public String getFlightArrtimePlanDate() {
         return flightArrtimePlanDate;
     }
 
-    public void setFlightArrtimePlanDate(Time flightArrtimePlanDate) {
+    public void setFlightArrtimePlanDate(String flightArrtimePlanDate) {
         this.flightArrtimePlanDate = flightArrtimePlanDate;
     }
 

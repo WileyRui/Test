@@ -101,6 +101,23 @@ public interface AirlineMapper extends Mapper {
     Integer deleteAirline(String id);
 
     /**
+     * 删除指定ID的航线班次数据
+     * @param id 航线ID
+     * @return 受影响行数
+     */
+    @Delete("DELETE FROM mbs_airline_flight WHERE airline_id = #{id}")
+    Integer deleteFlight(String id);
+
+    /**
+     * 删除指定ID的航线航程数据
+     * @param airlineId 航线基础数据ID
+     * @return 受影响行数
+     */
+    @Delete("DELETE FROM msd_airline_voyage WHERE airline_id = #{airlineId}")
+    Integer deleteVoyage(String airlineId);
+
+
+    /**
      * 查询符合条件的航线基础数据
      *
      * @param hashKey 航程摘要字符串
@@ -250,7 +267,7 @@ public interface AirlineMapper extends Mapper {
      */
     @Update("<script>UPDATE mbs_airline_flight SET adult_price=#{adultPrice},child_price=#{childPrice} " +
             "WHERE airline_id=#{id} AND flight_date in" +
-            "<foreach collection = \"dates\" item = \"item\" index = \"index\" pen=\"(\" separator=\",\" close=\")\"> " +
+            "<foreach collection = \"dates\" item = \"item\" index = \"index\" open=\"(\" separator=\",\" close=\")\"> " +
             "#{item}" +
             "</foreach></script>")
     Integer updatePrice(@Param("id") String airlineId, @Param("dates") List<Date> dates,
@@ -369,7 +386,7 @@ public interface AirlineMapper extends Mapper {
      * 获取最新的航线信息
      * @return
      */
-    @Select("SELECT mba.id lineId,mda.voyage voyage,mba.adult_price price,MIN(f.flightDate) departDate," +
+    @Select("SELECT mba.id lineId,mda.voyage voyage,mba.adult_price price,MIN(f.flightDate) departDate,mda.flight_type flightType" +
             "mba.seat_count-f.seat_count saled FROM mbs_airline mba JOIN msd_airline mda ON mba.airline_id=mda.id " +
             "JOIN (SELECT airline_id,MIN(flight_date) flightDate,seat_count FROM mbs_airline_flight " +
             "WHERE flight_date > CURDATE() GROUP BY airline_id) f ON f.airline_id=mba.id WHERE mda.flight_type !='3' " +
@@ -404,4 +421,28 @@ public interface AirlineMapper extends Mapper {
             "AND a.is_invalid = 0 GROUP BY a.id ORDER BY a.created_time DESC " +
             "LIMIT ${pageIndex} , ${pageSize}</script>")
     List<Line> queryLineList(Line line);
+
+    /**
+     * 航线是否分配
+     *
+     * @param airlineId
+     * @param accountId
+     * @return
+     */
+    @Select("SELECT COUNT(*) FROM mbs_airline_flight mf LEFT JOIN mbs_airline_flight_seat mfs ON mf.id = mfs.flight_id "
+            + "LEFT JOIN mbs_airline mba ON mf.airline_id = mba.id WHERE mf.airline_id = #{airlineId} "
+            + "AND mfs.account_id = #{accountId} AND mfs.account_id != mfs.owner_id AND mfs.seat_status > 0")
+    Integer isAllot(@Param("airlineId") String airlineId, @Param("accountId") String accountId);
+
+    /**
+     * 航线是否已售
+     *
+     * @param airlineId
+     * @param accountId
+     * @return
+     */
+    @Select("SELECT COUNT(*) FROM mbs_airline_flight mf LEFT JOIN mbs_airline_flight_seat mfs ON mf.id = mfs.flight_id "
+            + "LEFT JOIN mbs_airline mba ON mf.airline_id = mba.id WHERE mf.airline_id = #{airlineId} "
+            + "AND mfs.account_id = #{accountId} AND mfs.account_id = mfs.owner_id AND mfs.seat_status > 0")
+    Integer isSaled(@Param("airlineId") String airlineId, @Param("accountId") String accountId);
 }

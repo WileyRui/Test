@@ -4,10 +4,7 @@ import com.apin.airline.common.entity.Airport;
 import com.apin.airline.common.entity.Airway;
 import com.apin.airline.common.entity.City;
 import com.apin.airline.common.entity.Country;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -86,7 +83,7 @@ public interface BaseMapper extends Mapper {
             "AND (c.city_code like CONCAT('%',#{keyword},'%') " +
             "OR c.city_name like CONCAT('%',#{keyword},'%') " +
             "OR c.en_name like CONCAT('%',#{keyword},'%') " +
-            "OR p.iata_code like CONCAT('%',#{keyword},'%'))")
+            "OR p.iata_code like CONCAT('%',#{keyword},'%')) limit 10")
     List<String> getCityNames(String keyword);
 
     /**
@@ -123,6 +120,16 @@ public interface BaseMapper extends Mapper {
             "AND ('NULL'=#{pinyinFirst} OR c.pinyin_first=#{pinyinFirst}) ")
     Integer getTotalCities(City city);
 
+    /**
+     * 根据id获得城市名
+     * @param ids
+     * @return
+     */
+    @Select("<script>select city_name from msd_city where id in " +
+            "<foreach collection = \"ids\" item = \"item\" index = \"index\" open=\"(\" separator=\",\" close=\")\">  " +
+            "#{item} " +
+            "</foreach></script>")
+    List<String> getCityNamesByIds(@Param("ids") List<String> ids);
     /**
      * 新增城市基础数据
      *
@@ -264,4 +271,5 @@ public interface BaseMapper extends Mapper {
             "iata_code=#{iataCode},company_name=#{companyName},nation_code=#{nationCode},logo_ico=#{logoIco} " +
             "WHERE id=#{id};")
     Integer updateAirway(Airway airway);
+
 }

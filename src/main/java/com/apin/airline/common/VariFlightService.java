@@ -115,11 +115,11 @@ public class VariFlightService {
             info.setFlightDep(i.getFlightDep());
             info.setFlightArrAirport(i.getFlightArrAirport());
             info.setFlightArrcode(i.getFlightArrcode());
-            info.setFlightArrtimePlanDate(new Time(DateHelper.parseDate(i.getFlightArrtimePlanDate().substring(11)).getTime()));
+            info.setFlightArrtimePlanDate(i.getFlightDeptimePlanDate());
             info.setFlightCompany(i.getFlightCompany());
             info.setFlightDepAirport(i.getFlightDepAirport());
             info.setFlightDepcode(i.getFlightDepcode());
-            info.setFlightDeptimePlanDate(new Time(DateHelper.parseDate(i.getFlightArrtimePlanDate().substring(11)).getTime()));
+            info.setFlightDeptimePlanDate(i.getFlightArrtimePlanDate());
             info.setStopFlag(i.getStopFlag().equals(1));
             info.setFlights(flights);
             lineDetails.add(info);

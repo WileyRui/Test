@@ -158,10 +158,10 @@
             </activation>
         </profile>
         <profile>
-            <!-- 开发环境 -->
-            <id>dev</id>
+            <!-- 开发测试环境 -->
+            <id>devtest</id>
             <properties>
-                <profiles.active>dev</profiles.active>
+                <profiles.active>devtest</profiles.active>
             </properties>
         </profile>
         <profile>

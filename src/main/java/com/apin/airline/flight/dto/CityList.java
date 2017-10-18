@@ -14,6 +14,7 @@ public class CityList implements Serializable {
     private String depDate;
     private String arrDate;
     private Integer day;
+    private String month;
 
 
     public String getDepCity() {
@@ -62,5 +63,13 @@ public class CityList implements Serializable {
 
     public void setDay(Integer day) {
         this.day = day;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
     }
 }

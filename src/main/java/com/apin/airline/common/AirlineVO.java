@@ -35,36 +35,46 @@ public class AirlineVO {
      * @return 航线基础数据实体类
      */
     public Airline setAirline(Line line) {
-        com.apin.airline.common.entity.Airline airline = new Airline();
-
         List<LineDetail> details = line.getDetails();
+        Integer days = 0;
+        for (LineDetail i : details) {
+            days += i.getDays();
+        }
 
+        Airline airline = new Airline();
         airline.setId(Generator.uuid());
         airline.setHashKey(hashValue(details));
+        airline.setFlightType(line.getFlightType());
+        airline.setDepCity(line.getDepCity());
+        airline.setArrCity(line.getArrCity());
+        airline.setDays(days);
+        airline.setVoyage(appendVoyage(line.getFlightType(), details));
         airline.setFlightNumber(appendFlightNumber(details));
-        airline.setVoyage(appendVoyage(airline.getFlightType(), details));
-        airline.setInvalid(false);
+        airline.setFlightTime(details.get(0).getFlightDeptimePlanDate());
+        airline.setWeekFlights(line.getWeekFlights());
         airline.setCreatorUser(line.getCreatorUser());
         airline.setCreatorUserId(line.getCreatorUserId());
-        airline.setCreatedTime(new Date());
+
         return airline;
     }
 
     /**
      * 初始化航程数据
      *
-     * @param details
+     * @param line
      * @return
      */
-    public List<Voyage> setVoyage(List<LineDetail> details) {
+    public List<Voyage> setVoyage(Line line) {
         List<Voyage> voyages = new ArrayList<>();
-        details.forEach(i -> {
+        line.getDetails().forEach(i -> {
             Voyage voyage = new Voyage();
+
             voyage.setId(Generator.uuid());
-            voyage.setTripIndex(i.getTripIndex());
-            voyage.setAirlineId(i.getAirlineId());
-            voyage.setDays(i.getDays());
+            voyage.setAirlineId(line.getId());
             voyage.setFlightInfoId(i.getId());
+            voyage.setTripIndex(i.getTripIndex());
+            voyage.setDays(i.getDays());
+
             voyages.add(voyage);
         });
         return voyages;
@@ -78,42 +88,38 @@ public class AirlineVO {
      */
     public List<Flight> setFlight(Line line, List<Date> dates) {
         List<Flight> flights = new ArrayList<>();
-        for (Date date : dates) {
-            Flight airlineFlight = new Flight();
-            if (line.getAlertRate() != null) {
-                airlineFlight.setAlertThreshold((int) (line.getSeatCount() * line.getAlertRate() * 0.01));
-            }
+        dates.forEach(date -> {
+            Flight flight = new Flight();
 
-            airlineFlight.setAirlineId(line.getId());
-            airlineFlight.setSeatCount(line.getSeatCount());
+            flight.setId(Generator.uuid());
+            flight.setAirlineId(line.getId());
+            flight.setSellType(Byte.valueOf("0"));
+            flight.setFlightDate(date);
+            flight.setSeatCount(line.getSeatCount());
+            flight.setAdultPrice(line.getAdultPrice());
+            flight.setChildPrice(line.getChildPrice());
+            flight.setAlertThreshold((int) (line.getSeatCount() * line.getAlertRate() * 0.01));
+            flight.setAlertDate(new Date(date.getTime() - line.getAlertAdvance() * 24 * 60 * 60 * 1000));
+            flight.setRecoveryDate(new Date(date.getTime() - line.getRecoveryAdvance() * 24 * 60 * 60 * 1000));
+            flight.setTicketDate(new Date(date.getTime() - line.getTicketAdvance() * 24 * 60 * 60 * 1000));
 
-            airlineFlight.setId(Generator.uuid());
-            airlineFlight.setFlightDate(date);
-            airlineFlight.setAdultPrice(line.getAdultPrice());
-            airlineFlight.setChildPrice(line.getChildPrice());
-            if (line.getAlertAdvance() != null) {
-                airlineFlight.setAlertDate(new Date(date.getTime() - line.getAlertAdvance() * 24 * 60 * 60 * 1000));
-            }
-            airlineFlight.setTicketDate(new Date(date.getTime() - line.getTicketAdvance() * 24 * 60 * 60 * 1000));
-            airlineFlight.setRecoveryDate(new Date(date.getTime() - line.getRecoveryAdvance() * 24 * 60 * 60 * 1000));
-            flights.add(airlineFlight);
-        }
+            flights.add(flight);
+        });
         return flights;
     }
 
     /**
      * 增加日志
      *
-     * @param Line
-     * @param id
+     * @param line
      * @param flag
      * @return
      */
-    public Log setAirlineLog(Line line, String id, boolean flag) {
+    public Log setAirlineLog(Line line, boolean flag) {
         Log log = new Log();
         log.setId(Generator.uuid());
         log.setEventSource("CRM");
-        log.setAirlineId(id);
+        log.setAirlineId(line.getId());
         if (flag) {
             log.setEventName("新增航线");
             log.setMessage("新增航线成功");
@@ -141,39 +147,29 @@ public class AirlineVO {
     /**
      * 拼接航程
      *
-     * @param flightType    航线类型
-     * @param flightDetails 航班詳情
+     * @param flightType 航线类型
+     * @param details    航班詳情
      * @return string
      */
-    public String appendVoyage(int flightType, List<LineDetail> flightDetails) {
-        StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < flightDetails.size(); i++) {
-            LineDetail flightDetail = flightDetails.get(i);
-            String depAirportCode = flightDetail.getFlightDepcode();
-            String depCity = airlineMapper.findCityNameByIataCode(depAirportCode);
-            String arrAirportCode = flightDetail.getFlightArrcode();
-            String arrCity = airlineMapper.findCityNameByIataCode(arrAirportCode);
-            switch (flightType) {
-                case 1:
-                    buffer.append(depCity + "-").append(arrCity);
-                    break;
-                case 2:
-                    if (i == 0) {
-                        buffer.append(depCity + "<->").append(arrCity);
-                    }
-                    break;
-                case 3:
-                    if (i == flightDetails.size() - 1) {
-                        buffer.append(depCity + "-").append(arrCity);
-                    } else {
-                        buffer.append(depCity + "-").append(arrCity + ",");
-                    }
-                    break;
-                default:
-                    break;
-            }
+    public String appendVoyage(int flightType, List<LineDetail> details) {
+        switch (flightType) {
+            // 单程
+            case 1:
+                return details.get(0).getFlightDep() + "-" + details.get(0).getFlightArr();
+
+            // 往返
+            case 2:
+                return details.get(0).getFlightDep() + "<->" + details.get(0).getFlightArr();
+
+            // 多程
+            case 3:
+                StringBuffer buffer = new StringBuffer();
+                details.forEach(i -> buffer.append(i.getFlightDep() + "-" + i.getFlightArr() + ","));
+                return buffer.substring(0, buffer.length() - 1);
+
+            default:
+                return null;
         }
-        return buffer.toString();
     }
 
     /**
@@ -191,7 +187,7 @@ public class AirlineVO {
             Integer days = detail.getDays();
             hashValue.append(flightNo + depCity + arrCity + days);
         });
-        return hashValue.toString();
+        return Generator.md5(hashValue.toString());
     }
 
     /**
@@ -217,7 +213,7 @@ public class AirlineVO {
      */
     public Integer getWeekDay(String strDate) {
         Calendar cal = parseDateTime(strDate);
-        return cal.get(Calendar.DAY_OF_WEEK);
+        return cal.get(Calendar.DAY_OF_WEEK) - 1;
     }
 
     /**
@@ -241,11 +237,43 @@ public class AirlineVO {
 
         while (!date.after(end)) {
             String cur = DateHelper.formatDate(date);
-            if (!dayList.contains(getWeekDay(cur))) continue;
+            if (dayList.contains(getWeekDay(cur))) {
+                dates.add(date);
+            }
 
-            dates.add(date);
+            date = new Date(date.getTime() + 1000 * 60 * 60 * 24);
         }
 
         return dates;
+    }
+
+    /**
+     * 判断航线是否分配
+     *
+     * @param airlineId
+     * @param accountId
+     * @return
+     */
+    public boolean isAllot(String airlineId, String accountId) {
+        Integer count = airlineMapper.isAllot(airlineId, accountId);
+        if (count > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 判断航线是否已售
+     *
+     * @param airlineId
+     * @param accountId
+     * @return
+     */
+    public boolean isSaled(String airlineId, String accountId) {
+        Integer count = airlineMapper.isSaled(airlineId, accountId);
+        if (count > 0) {
+            return true;
+        }
+        return false;
     }
 }

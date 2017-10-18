@@ -34,6 +34,7 @@ public class LineServiceImpl implements LineService {
     @Override
     @Transactional
     public Reply addLine(String token, Line line) {
+        line.setId(Generator.uuid());
         Reply result = airlineVO.checkData(line);
         if (!result.getSuccess()) return result;
 
@@ -49,7 +50,7 @@ public class LineServiceImpl implements LineService {
             line.setAirlineId(Generator.uuid());
 
             Airline airline = airlineVO.setAirline(line);
-            List<Voyage> voyages = airlineVO.setVoyage(line.getDetails());
+            List<Voyage> voyages = airlineVO.setVoyage(line);
             Integer count = airlineMapper.addAirline(airline);
             count += airlineMapper.addVoyages(voyages);
             if (count <= 0) return ReplyHelper.error();
@@ -64,7 +65,6 @@ public class LineServiceImpl implements LineService {
         }
 
         // 处理航线资源数据
-        line.setId(Generator.uuid());
         line.setAirwayId(airlineMapper.getAirwayIdByFlightNo(line.getDetails().get(0).getFlightNo()));
 
         line.setAccountId(accessToken.getAccountId());
@@ -82,15 +82,42 @@ public class LineServiceImpl implements LineService {
         return ReplyHelper.success();
     }
 
+    @Transactional
     @Override
     public Reply editLine(String token, Line line) {
-        return null;
+        boolean flag = airlineVO.isAllot(line.getId(), line.getAccountId());
+        if (flag) {
+            return ReplyHelper.fail("航线已分配，无法编辑");
+        }
+        flag = airlineVO.isSaled(line.getId(), line.getAccountId());
+        if (flag) {
+            return ReplyHelper.fail("航线已售，无法编辑");
+        }
+        String airlineId = airlineMapper.getLine(line.getId()).getAirlineId();
+        int count = 0;
+        count += airlineMapper.deleteVoyage(airlineId);
+        count += airlineMapper.deleteAirline(airlineId);
+        count += airlineMapper.deleteFlight(line.getId());
+        count += airlineMapper.deleteLine(line.getId());
+        //日志
+        count += airlineMapper.addLog(airlineVO.setAirlineLog(line,false));
+        if (count <= 0){
+            return ReplyHelper.error();
+        }
+        return addLine(token,line);
     }
 
     @Override
     @Transactional
     public Reply delLine(String token, Line line) {
-
+        boolean flag = airlineVO.isAllot(line.getId(), line.getAccountId());
+        if (flag) {
+            return ReplyHelper.fail("航线已分配，无法删除");
+        }
+        flag = airlineVO.isSaled(line.getId(), line.getAccountId());
+        if (flag) {
+            return ReplyHelper.fail("航线已售，无法删除");
+        }
         Integer row = airlineMapper.deleteLine(line.getId());
         if (row <= 0) {
             return ReplyHelper.error();
@@ -102,6 +129,7 @@ public class LineServiceImpl implements LineService {
     public Reply lineList(Line line, String token) {
         AccessToken accessToken = JsonUtils.toAccessToken(token);
         line.setAccountId(accessToken.getAccountId());
+        line.setPageIndex((line.getPageIndex()-1)*line.getPageSize());
         List<Line> lines = airlineMapper.queryLineList(line);
         return ReplyHelper.success(lines);
     }
@@ -167,9 +195,9 @@ public class LineServiceImpl implements LineService {
     @Override
     public Reply newLineInfo(Line line) {
         Map<String, Object> resultMap = new HashMap<>();
-        System.out.println(line.getPageIndex());
+        line.setPageIndex(line.getPageIndex() * 25);
         List<NewLine> newLines = airlineMapper.newLineData(line);
-        if (newLines.size() <= 25) {
+        if (newLines.size() < 25) {
             resultMap.put("isLastPage", true);
         } else {
             resultMap.put("isLastPage", false);
