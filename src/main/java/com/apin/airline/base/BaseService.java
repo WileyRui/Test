@@ -66,7 +66,7 @@ public interface BaseService {
      * @param token 访问令牌
      * @return Reply
      */
-    Reply getCityNames(String token);
+    Reply getCitiesByKey(String token, String key);
 
     /**
      * 新增城市基础数据

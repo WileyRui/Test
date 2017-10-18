@@ -66,7 +66,7 @@ public class BaseController {
      * @return Reply
      */
     @PostMapping("/v1.0/countries/update")
-    public Reply updateCountry(@RequestHeader("Authorization") String token, @RequestBody Country country) throws Exception { 
+    public Reply updateCountry(@RequestHeader("Authorization") String token, @RequestBody Country country) throws Exception {
         return service.updateCountry(token, country);
     }
 
@@ -85,23 +85,23 @@ public class BaseController {
     /**
      * 查询城市基础数据(按拼音排序)
      *
-     * @param  访问令牌
-     * @param key  单索引词
+     * @param token 访问令牌
+     * @param city  城市基础数据
      * @return Reply
      */
     @PostMapping("/v1.0/cities/list/key")
-    public Reply getCitiesByKey( @RequestBody CityStr key) throws Exception {
-        return service.getCityNames( key.getStr());
+    public Reply getCitiesByKey(@RequestHeader("Authorization") String token, @RequestBody CityStr city) throws Exception {
+        return service.getCitiesByKey(token, city.getStr());
     }
+
     /**
      * 查询热门城市数据(按拼音排序)
      *
-
-     * @param ids  单索引词
+     * @param ids 单索引词
      * @return Reply
      */
     @PostMapping("/v1.0/cities/list/ids")
-    public Reply getCities( @RequestBody List<String> ids) throws Exception {
+    public Reply getCities(@RequestBody List<String> ids) throws Exception {
         return service.getCitiesByIds(ids);
     }
 
