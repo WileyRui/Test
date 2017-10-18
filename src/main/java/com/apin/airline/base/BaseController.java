@@ -90,8 +90,8 @@ public class BaseController {
      * @return Reply
      */
     @PostMapping("/v1.0/cities/list/key")
-    public Reply getCitiesByKey(@RequestHeader("Authorization") String token, @RequestBody CityStr city) throws Exception {
-        return service.getCitiesByKey(token, city.getStr());
+    public Reply getCitiesByKey(@RequestBody CityStr city) throws Exception {
+        return service.getCitiesByKey(null, city.getStr());
     }
 
     /**
