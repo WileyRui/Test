@@ -6,6 +6,8 @@ import com.apin.airline.common.entity.City;
 import com.apin.airline.common.entity.Country;
 import com.apin.util.pojo.Reply;
 
+import java.util.List;
+
 /**
  * @author 宣炳刚
  * @date 2017/10/15
@@ -62,10 +64,9 @@ public interface BaseService {
      * 查询城市基础数据(分页,按拼音排序)
      *
      * @param token 访问令牌
-     * @param key  单索引词
      * @return Reply
      */
-    Reply getCityNames(String token, String key);
+    Reply getCityNames(String token);
 
     /**
      * 新增城市基础数据
@@ -165,4 +166,12 @@ public interface BaseService {
      * @return Reply
      */
     Reply updateAirway(String token, Airway airway);
+
+    /**
+     * 查询热门城市数据
+     * @param token
+     * @param ids
+     * @return
+     */
+    Reply getCitiesByIds( List<String> ids);
 }

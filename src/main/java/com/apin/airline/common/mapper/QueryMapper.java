@@ -15,12 +15,12 @@ import java.util.List;
 @Mapper
 public interface QueryMapper extends Mapper {
 
-    @Select("select min(b.adult_price) basePrice,c.dep_city depCity,c.arr_city arrCity, sum(b.seat_count) remainCount,min(b.flight_date) startDate,max(b.flight_date) endDate  ,sum(a.seat_count) total from mbs_airline a join mbs_airline_flight b on a.id=b.airline_id" +
+    @Select("select min(b.adult_price) basePrice,c.dep_city depCity,c.arr_city arrCity, sum(b.seat_count) remainCount,min(b.flight_date) startDate,max(b.flight_date) endDate  ,sum(a.seat_count) total,c.flight_type flightType from mbs_airline a join mbs_airline_flight b on a.id=b.airline_id" +
         " join msd_airline c on a.airline_id=c.id where c.dep_city=#{depCity} and c.arr_city=#{arrCity} and (#{flightType} is null or c.flight_type=#{flightType}) group by c.voyage")
     FlightDetail selectFlight(CityList cityList);
     @Select("select img_url from msd_city where city_name=#{deatCity}")
     String selectCityImg(String destCity);
-    @Select("select b.flight_date retDate,min(b.adult_price) basePrice from mbs_airline a join mbs_airline_flight b on a.id=b.airline_id" +
+    @Select("select b.flight_date retDate,min(b.adult_price) basePrice,sum(b.seat_count) remainCount from mbs_airline a join mbs_airline_flight b on a.id=b.airline_id" +
             " join msd_airline c on a.airline_id=c.id where c.dep_city=#{depCity} and c.arr_city=#{arrCity}  and (#{flightType} is null or c.flight_type=#{flightType}) and SUBSTRING_INDEX(b.flight_date,'-',2)=#{month} group by b.flight_date order by b.flight_date")
     List<DayPrice> selectFlightDates(CityList cityList);
     @SelectProvider(type = AspectSql.class,method = "selectFlightList")
@@ -56,4 +56,12 @@ public interface QueryMapper extends Mapper {
             " GROUP BY SUBSTRING_INDEX(b.flight_date,'-',2)  " +
             " ORDER BY b.flight_date")
     List<String> selectMonthQuery(CityList cityList);
+    @Select(" select SUBSTRING_INDEX(a.retDate,'-',2) month from (SELECT e.days,DATE_ADD(b.flight_date,INTERVAL e.days DAY) retDate   " +
+            " FROM mbs_airline a   " +
+            " JOIN mbs_airline_flight b ON a.id = b.airline_id   " +
+            " JOIN msd_airline c ON a.airline_id = c.id   " +
+            " JOIN msd_airline_voyage e ON e.airline_id = c.id " +
+            "WHERE c.dep_city =#{depCity} AND c.arr_city =#{arrCity} and b.flight_date=#{depDate} and e.trip_index = 1 " +
+            "GROUP BY e.days) a GROUP BY SUBSTRING_INDEX(a.retDate,'-',2)")
+    List<String> selectFlightsMonth(CityList cityList);
 }
