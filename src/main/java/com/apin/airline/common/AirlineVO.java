@@ -61,16 +61,16 @@ public class AirlineVO {
     /**
      * 初始化航程数据
      *
-     * @param line
+     * @param details
      * @return
      */
-    public List<Voyage> setVoyage(Line line) {
+    public List<Voyage> setVoyage(List<LineDetail> details, String id) {
         List<Voyage> voyages = new ArrayList<>();
-        line.getDetails().forEach(i -> {
+        details.forEach(i -> {
             Voyage voyage = new Voyage();
 
             voyage.setId(Generator.uuid());
-            voyage.setAirlineId(line.getId());
+            voyage.setAirlineId(id);
             voyage.setFlightInfoId(i.getId());
             voyage.setTripIndex(i.getTripIndex());
             voyage.setDays(i.getDays());
