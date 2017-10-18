@@ -20,6 +20,7 @@ public class AirlineInfo {
     private String num;
     private String depDate;
     private String arrDate;
+    private String flightType;
 
     public String getCompName() {
         return compName;
@@ -105,5 +106,13 @@ return arrDate;
 
     public void setArrDate(String arrDate) {
         this.arrDate = arrDate;
+    }
+
+    public String getFlightType() {
+        return flightType;
+    }
+
+    public void setFlightType(String flightType) {
+        this.flightType = flightType;
     }
 }

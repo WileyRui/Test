@@ -95,7 +95,6 @@ public class BaseController {
     /**
      * 查询热门城市数据(按拼音排序)
      *
-
      * @param ids  单索引词
      * @return Reply
      */
