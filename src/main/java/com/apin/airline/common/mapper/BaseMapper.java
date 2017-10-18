@@ -269,7 +269,7 @@ public interface BaseMapper extends Mapper {
      */
     @Update("UPDATE msd_airway SET " +
             "iata_code=#{iataCode},company_name=#{companyName},nation_code=#{nationCode},logo_ico=#{logoIco} " +
-            "WHEREid=#{id};")
+            "WHERE id=#{id};")
     Integer updateAirway(Airway airway);
 
 }

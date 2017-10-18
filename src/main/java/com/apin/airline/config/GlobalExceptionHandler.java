@@ -23,6 +23,6 @@ public class GlobalExceptionHandler {
         e.printStackTrace();
         logger.error(e.getMessage());
 
-        return ReplyHelper.error();
+        return ReplyHelper.fail(e.getMessage());
     }
 }

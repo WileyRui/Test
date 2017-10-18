@@ -201,7 +201,7 @@ public class Line implements Serializable {
     /**
      * 每页条数
      */
-    private String pageSize;
+    private int pageSize;
 
     /**
      * 航班号（拼接）
@@ -532,11 +532,11 @@ public class Line implements Serializable {
         this.pageIndex = pageIndex;
     }
 
-    public String getPageSize() {
+    public int getPageSize() {
         return pageSize;
     }
 
-    public void setPageSize(String pageSize) {
+    public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
     }
 

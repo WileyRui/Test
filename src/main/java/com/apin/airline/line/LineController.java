@@ -26,7 +26,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/create")
-    public Reply addLine(@RequestHeader("accessToken") String token, @RequestBody Line line) {
+    public Reply addLine(@RequestHeader("Authorization") String token, @RequestBody Line line) {
         return service.addLine(token, line);
     }
 
@@ -37,7 +37,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/edit")
-    public Reply editLine(@RequestHeader("accessToken") String token, @RequestBody Line line) {
+    public Reply editLine(@RequestHeader("Authorization") String token, @RequestBody Line line) {
         return service.editLine(token, line);
     }
 
@@ -48,7 +48,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/delete")
-    public Reply delLine(@RequestHeader("accessToken") String token, @RequestBody Line line) {
+    public Reply delLine(@RequestHeader("Authorization") String token, @RequestBody Line line) {
         return service.delLine(token, line);
     }
 
@@ -59,7 +59,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/list")
-    public Reply lineList(@RequestBody Line line,@RequestHeader("accessToken") String token) {
+    public Reply lineList(@RequestBody Line line,@RequestHeader("Authorization") String token) {
         return service.lineList(line,token);
     }
 
@@ -70,7 +70,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/detail/query")
-    public Reply lineInfo(@RequestHeader("accessToken") String token,@RequestBody Line line) {
+    public Reply lineInfo(@RequestHeader("Authorization") String token,@RequestBody Line line) {
         return service.lineInfo(token,line);
     }
 
@@ -81,7 +81,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/status/update")
-    public Reply upOrDown(@RequestHeader("accessToken") String token,@RequestBody Line line) {
+    public Reply upOrDown(@RequestHeader("Authorization") String token,@RequestBody Line line) {
         return service.upOrDown(token,line);
     }
 
