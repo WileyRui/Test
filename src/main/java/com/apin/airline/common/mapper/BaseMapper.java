@@ -277,5 +277,4 @@ public interface BaseMapper extends Mapper {
             "iata_code=#{iataCode},company_name=#{companyName},nation_code=#{nationCode},logo_ico=#{logoIco},update_user=#{updateUser} " +
             "WHERE id=#{id};")
     Integer updateAirway(Airway airway);
-
 }

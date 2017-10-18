@@ -5,7 +5,9 @@ import com.apin.airline.common.entity.Airway;
 import com.apin.airline.common.entity.City;
 import com.apin.airline.common.entity.Country;
 import com.apin.airline.common.mapper.BaseMapper;
+import com.apin.util.JsonUtils;
 import com.apin.util.ReplyHelper;
+import com.apin.util.pojo.AccessToken;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -88,7 +90,10 @@ public class BaseServiceImpl implements BaseService {
      */
     @Override
     public Reply updateCountry(String token, Country country) {
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        country.setUpdateUser(accessToken.getUserName());
         Integer count = mapper.updateCountry(country);
+
         return count > 0 ? ReplyHelper.success() : ReplyHelper.error();
     }
 
@@ -164,6 +169,8 @@ public class BaseServiceImpl implements BaseService {
      */
     @Override
     public Reply updateCity(String token, City city) {
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        city.setUpdateUser(accessToken.getUserName());
         Integer count = mapper.updateCity(city);
         return count > 0 ? ReplyHelper.success() : ReplyHelper.error();
     }
@@ -224,6 +231,8 @@ public class BaseServiceImpl implements BaseService {
      */
     @Override
     public Reply updateAirport(String token, Airport airport) {
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        airport.setUpdateUser(accessToken.getUserName());
         Integer count = mapper.updateAirport(airport);
         return count > 0 ? ReplyHelper.success() : ReplyHelper.error();
     }
@@ -284,6 +293,8 @@ public class BaseServiceImpl implements BaseService {
      */
     @Override
     public Reply updateAirway(String token, Airway airway) {
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        airway.setUpdateUser(accessToken.getUserName());
         Integer count = mapper.updateAirway(airway);
         return count > 0 ? ReplyHelper.success() : ReplyHelper.error();
     }
