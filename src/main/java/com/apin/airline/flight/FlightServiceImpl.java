@@ -2,15 +2,19 @@ package com.apin.airline.flight;
 
 import com.apin.airline.common.Airline;
 import com.apin.airline.common.AopService;
+import com.apin.airline.common.entity.City;
 import com.apin.airline.common.entity.Flight;
 import com.apin.airline.common.entity.Log;
 import com.apin.airline.common.mapper.AirlineMapper;
+import com.apin.airline.common.mapper.BaseMapper;
 import com.apin.airline.common.mapper.QueryMapper;
 import com.apin.airline.flight.dto.*;
 import com.apin.airline.ticket.dto.CalendarInfo;
 import com.apin.airline.ticket.dto.Stock;
 import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +38,8 @@ public class FlightServiceImpl implements FlightService {
     private AopService aopService;
     @Autowired
     private QueryMapper queryMapper;
+    @Autowired
+    private BaseMapper baseMapper;
 
     @Override
     public Reply airlineInfo(CalendarInfo calendarInfo) {
@@ -67,6 +73,7 @@ public class FlightServiceImpl implements FlightService {
             String img = queryMapper.selectCityImg(cityList.getArrCity());
             FlightDetail flightDetail = queryMapper.selectFlight(cityList);
             if (flightDetail!=null) {
+                flightDetail.setSoldCount(flightDetail.getSoldCount()+flightDetail.getTotal()-flightDetail.getRemainCount());
                 flightDetail.setArrCityImgUrl(img);
                 flightDetails.add(flightDetail);
             }
@@ -90,6 +97,7 @@ public class FlightServiceImpl implements FlightService {
         List<ResponseAirlineDto> responseAirlineDtos = queryMapper.selectFlightDetail(cityList);
         for (ResponseAirlineDto responseAirlineDto : responseAirlineDtos) {
             List<AirlineInfo> airlineInfos = queryMapper.selectByFlightNum(responseAirlineDto.getAirlineId());
+            if (airlineInfos.size()==0) continue;
             if (airlineInfos.size() == 2) {
                 AirlineInfo airlineInfo = airlineInfos.get(1);
                 airlineInfo.setDepDate(responseAirlineDto.getRetDate());
@@ -105,8 +113,12 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public Reply searchFlightList(CityList cityList) {
+        PageHelper.startPage(cityList.getPageIndex(),cityList.getPageSize());
         List<ResponseAirlineDto> responseAirlineDto = queryMapper.selectFlightList(cityList);
-        return ReplyHelper.success(responseAirlineDto);
+        if (responseAirlineDto.size() == 0)
+            return ReplyHelper.success(new ArrayList<>(),0);
+        PageInfo pageInfo=new PageInfo(responseAirlineDto);
+        return ReplyHelper.success(responseAirlineDto,pageInfo.getTotal());
     }
 
     @Override
@@ -131,4 +143,5 @@ public class FlightServiceImpl implements FlightService {
         Date parse = formatter1.parse(depDate);
         return arr.getTime() > dep.getTime() ? depDate:formatter1.format(new Date(parse.getTime()+24*3600*1000));
     }
+
 }

@@ -62,7 +62,7 @@ public class FlightDetail {
 
     public Integer getSoldCount() {
 
-        return total==null?0:total-remainCount;
+        return soldCount;
     }
 
     public void setSoldCount(Integer soldCount) {

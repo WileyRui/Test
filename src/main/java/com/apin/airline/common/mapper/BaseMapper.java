@@ -131,7 +131,6 @@ public interface BaseMapper extends Mapper {
             "#{item} " +
             "</foreach></script>")
     List<String> getCityNamesByIds(@Param("ids") List<String> ids);
-
     /**
      * 新增城市基础数据
      *
