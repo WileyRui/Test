@@ -274,7 +274,7 @@ public interface BaseMapper extends Mapper {
      * @return 受影响行数
      */
     @Update("UPDATE msd_airway SET " +
-            "iata_code=#{iataCode},company_name=#{companyName},nation_code=#{nationCode},logo_ico=#{logoIco},update_user=#{updateUser} " +
+            "iata_code=#{iataCode},company_name=#{companyName},nation_code=#{nationCode},logo_ico=#{logoIco},update_user=#{updateUser},update_time = now() " +
             "WHERE id=#{id};")
     Integer updateAirway(Airway airway);
 }
