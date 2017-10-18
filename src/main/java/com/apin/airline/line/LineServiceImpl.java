@@ -117,11 +117,13 @@ public class LineServiceImpl implements LineService {
     @Override
     @Transactional
     public Reply delLine(String token, Line line) {
-        boolean flag = airlineVO.isAllot(line.getId(), line.getAccountId());
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        String accountId = accessToken.getAccountId();
+        boolean flag = airlineVO.isAllot(line.getId(), accountId);
         if (flag) {
             return ReplyHelper.fail("航线已分配，无法删除");
         }
-        flag = airlineVO.isSaled(line.getId(), line.getAccountId());
+        flag = airlineVO.isSaled(line.getId(), accountId);
         if (flag) {
             return ReplyHelper.fail("航线已售，无法删除");
         }

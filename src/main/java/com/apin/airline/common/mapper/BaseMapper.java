@@ -74,7 +74,6 @@ public interface BaseMapper extends Mapper {
     /**
      * 查询城市基础数据(分页,按拼音排序)
      *
-     * @param key  单索引词
      * @return 城市基础数据集合
      */
     @Select("SELECT DISTINCT c.city_name " +
