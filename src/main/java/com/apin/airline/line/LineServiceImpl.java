@@ -206,9 +206,6 @@ public class LineServiceImpl implements LineService {
         Map<String, Object> resultMap = new HashMap<>();
         line.setPageIndex(line.getPageIndex() * 25);
         List<NewLine> newLines = airlineMapper.newLineData(line);
-        for (NewLine newLine : newLines) {
-            newLine.setSaled((Integer.parseInt(newLine.getLineId().substring(0, 1), 16)) % 9 + 1 + newLine.getSaled());
-        }
         if (newLines.size() < 25) {
             resultMap.put("isLastPage", true);
         } else {
