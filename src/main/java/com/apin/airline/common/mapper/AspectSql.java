@@ -11,7 +11,7 @@ import org.apache.commons.lang.StringUtils;
 public class AspectSql {
     public String selectFlightList(CityList cityList){
         String sql="SELECT min(b.adult_price) basePrice,sum(a.seat_count) total,min(b.flight_date) startDate,max(b.flight_date) endDate," +
-                "c.dep_city depCity,c.arr_city arrCity,c.flight_type ,e.img_url arrCityImgUrl,sum(b.seat_count) remainCount FROM mbs_airline a" +
+                "c.dep_city depCity,c.arr_city arrCity,c.flight_type ,e.img_url arrCityImgUrl,sum(b.seat_count) remainCount,sum(CONV(left(b.id,1),16,10)%9+1 ) soldCount FROM mbs_airline a" +
                 " JOIN mbs_airline_flight b ON a.id = b.airline_id" +
                 " JOIN msd_airline c ON a.airline_id = c.id" +
                 " JOIN msd_city e on c.arr_city=e.city_name JOIN msd_city f on c.dep_city=f.city_name " +
