@@ -4,9 +4,12 @@ import com.apin.airline.common.entity.Airport;
 import com.apin.airline.common.entity.Airway;
 import com.apin.airline.common.entity.City;
 import com.apin.airline.common.entity.Country;
+import com.apin.airline.flight.dto.CityStr;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author 宣炳刚
@@ -82,13 +85,24 @@ public class BaseController {
     /**
      * 查询城市基础数据(按拼音排序)
      *
-     * @param token 访问令牌
+     * @param  访问令牌
      * @param key  单索引词
      * @return Reply
      */
     @PostMapping("/v1.0/cities/list/key")
-    public Reply getCitiesByKey(@RequestHeader("Authorization") String token, @RequestBody String key) throws Exception {
-        return service.getCityNames(token, key);
+    public Reply getCitiesByKey( @RequestBody CityStr key) throws Exception {
+        return service.getCityNames( key.getStr());
+    }
+    /**
+     * 查询热门城市数据(按拼音排序)
+     *
+
+     * @param ids  单索引词
+     * @return Reply
+     */
+    @PostMapping("/v1.0/cities/list/ids")
+    public Reply getCities( @RequestBody List<String> ids) throws Exception {
+        return service.getCitiesByIds(ids);
     }
 
     /**

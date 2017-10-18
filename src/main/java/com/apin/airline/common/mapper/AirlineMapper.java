@@ -250,7 +250,7 @@ public interface AirlineMapper extends Mapper {
      */
     @Update("<script>UPDATE mbs_airline_flight SET adult_price=#{adultPrice},child_price=#{childPrice} " +
             "WHERE airline_id=#{id} AND flight_date in" +
-            "<foreach collection = \"dates\" item = \"item\" index = \"index\" pen=\"(\" separator=\",\" close=\")\"> " +
+            "<foreach collection = \"dates\" item = \"item\" index = \"index\" open=\"(\" separator=\",\" close=\")\"> " +
             "#{item}" +
             "</foreach></script>")
     Integer updatePrice(@Param("id") String airlineId, @Param("dates") List<Date> dates,

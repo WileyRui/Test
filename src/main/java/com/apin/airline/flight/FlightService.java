@@ -92,4 +92,11 @@ public interface FlightService {
      * @return
      */
     Reply dayQuery(CityList cityList);
+
+    /**
+     * 返程航班月份查询
+     * @param cityList
+     * @return
+     */
+    Reply searchFlightMonth(CityList cityList);
 }

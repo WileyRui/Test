@@ -34,7 +34,7 @@ public class AspectSql {
                 if (cityList.getFlightType()==null){
                     sql+=" and c.flight_type="+cityList.getFlightType();
                 }
-                sql+=" AND b.flight_date = #{depDate} AND e.trip_index = 1 GROUP BY e.days";
+                sql+=" AND b.flight_date = '"+cityList.getDepDate()+"' AND e.trip_index = 1 and SUBSTRING_INDEX(DATE_ADD(b.flight_date,INTERVAL e.days DAY),'-',2)='"+cityList.getMonth()+"' GROUP BY e.days";
                 return sql;
     }
 }
