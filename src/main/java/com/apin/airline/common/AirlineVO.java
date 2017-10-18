@@ -10,10 +10,7 @@ import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static javax.xml.bind.DatatypeConverter.parseDateTime;
 
@@ -104,16 +101,16 @@ public class AirlineVO {
     /**
      * 增加日志
      *
-     * @param Line
+     * @param line
      * @param id
      * @param flag
      * @return
      */
-    public Log setAirlineLog(Line line, String id, boolean flag) {
+    public Log setAirlineLog(Line line,boolean flag) {
         Log log = new Log();
         log.setId(Generator.uuid());
         log.setEventSource("CRM");
-        log.setAirlineId(id);
+        log.setAirlineId(line.getId());
         if (flag) {
             log.setEventName("新增航线");
             log.setMessage("新增航线成功");
@@ -247,5 +244,35 @@ public class AirlineVO {
         }
 
         return dates;
+    }
+
+    /**
+     * 判断航线是否分配
+     *
+     * @param airlineId
+     * @param accountId
+     * @return
+     */
+    public boolean isAllot(String airlineId, String accountId) {
+        Integer count = airlineMapper.isAllot(airlineId, accountId);
+        if (count > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 判断航线是否已售
+     *
+     * @param airlineId
+     * @param accountId
+     * @return
+     */
+    public boolean isSaled(String airlineId, String accountId) {
+        Integer count = airlineMapper.isSaled(airlineId, accountId);
+        if (count > 0) {
+            return true;
+        }
+        return false;
     }
 }
