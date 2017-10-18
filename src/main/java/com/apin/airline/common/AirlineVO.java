@@ -10,7 +10,10 @@ import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import static javax.xml.bind.DatatypeConverter.parseDateTime;
 
@@ -58,18 +61,20 @@ public class AirlineVO {
     /**
      * 初始化航程数据
      *
-     * @param details
+     * @param line
      * @return
      */
-    public List<Voyage> setVoyage(List<LineDetail> details) {
+    public List<Voyage> setVoyage(Line line) {
         List<Voyage> voyages = new ArrayList<>();
-        details.forEach(i -> {
+        line.getDetails().forEach(i -> {
             Voyage voyage = new Voyage();
+
             voyage.setId(Generator.uuid());
-            voyage.setTripIndex(i.getTripIndex());
-            voyage.setAirlineId(i.getAirlineId());
-            voyage.setDays(i.getDays());
+            voyage.setAirlineId(line.getId());
             voyage.setFlightInfoId(i.getId());
+            voyage.setTripIndex(i.getTripIndex());
+            voyage.setDays(i.getDays());
+
             voyages.add(voyage);
         });
         return voyages;
@@ -83,26 +88,23 @@ public class AirlineVO {
      */
     public List<Flight> setFlight(Line line, List<Date> dates) {
         List<Flight> flights = new ArrayList<>();
-        for (Date date : dates) {
-            Flight airlineFlight = new Flight();
-            if (line.getAlertRate() != null) {
-                airlineFlight.setAlertThreshold((int) (line.getSeatCount() * line.getAlertRate() * 0.01));
-            }
+        dates.forEach(date -> {
+            Flight flight = new Flight();
 
-            airlineFlight.setAirlineId(line.getId());
-            airlineFlight.setSeatCount(line.getSeatCount());
+            flight.setId(Generator.uuid());
+            flight.setAirlineId(line.getId());
+            flight.setSellType(Byte.valueOf("0"));
+            flight.setFlightDate(date);
+            flight.setSeatCount(line.getSeatCount());
+            flight.setAdultPrice(line.getAdultPrice());
+            flight.setChildPrice(line.getChildPrice());
+            flight.setAlertThreshold((int) (line.getSeatCount() * line.getAlertRate() * 0.01));
+            flight.setAlertDate(new Date(date.getTime() - line.getAlertAdvance() * 24 * 60 * 60 * 1000));
+            flight.setRecoveryDate(new Date(date.getTime() - line.getRecoveryAdvance() * 24 * 60 * 60 * 1000));
+            flight.setTicketDate(new Date(date.getTime() - line.getTicketAdvance() * 24 * 60 * 60 * 1000));
 
-            airlineFlight.setId(Generator.uuid());
-            airlineFlight.setFlightDate(date);
-            airlineFlight.setAdultPrice(line.getAdultPrice());
-            airlineFlight.setChildPrice(line.getChildPrice());
-            if (line.getAlertAdvance() != null) {
-                airlineFlight.setAlertDate(new Date(date.getTime() - line.getAlertAdvance() * 24 * 60 * 60 * 1000));
-            }
-            airlineFlight.setTicketDate(new Date(date.getTime() - line.getTicketAdvance() * 24 * 60 * 60 * 1000));
-            airlineFlight.setRecoveryDate(new Date(date.getTime() - line.getRecoveryAdvance() * 24 * 60 * 60 * 1000));
-            flights.add(airlineFlight);
-        }
+            flights.add(flight);
+        });
         return flights;
     }
 
@@ -113,7 +115,7 @@ public class AirlineVO {
      * @param flag
      * @return
      */
-    public Log setAirlineLog(Line line,boolean flag) {
+    public Log setAirlineLog(Line line, boolean flag) {
         Log log = new Log();
         log.setId(Generator.uuid());
         log.setEventSource("CRM");

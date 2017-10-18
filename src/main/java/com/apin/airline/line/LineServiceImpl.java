@@ -34,6 +34,7 @@ public class LineServiceImpl implements LineService {
     @Override
     @Transactional
     public Reply addLine(String token, Line line) {
+        line.setId(Generator.uuid());
         Reply result = airlineVO.checkData(line);
         if (!result.getSuccess()) return result;
 
@@ -49,7 +50,7 @@ public class LineServiceImpl implements LineService {
             line.setAirlineId(Generator.uuid());
 
             Airline airline = airlineVO.setAirline(line);
-            List<Voyage> voyages = airlineVO.setVoyage(line.getDetails());
+            List<Voyage> voyages = airlineVO.setVoyage(line);
             Integer count = airlineMapper.addAirline(airline);
             count += airlineMapper.addVoyages(voyages);
             if (count <= 0) return ReplyHelper.error();
@@ -64,7 +65,6 @@ public class LineServiceImpl implements LineService {
         }
 
         // 处理航线资源数据
-        line.setId(Generator.uuid());
         line.setAirwayId(airlineMapper.getAirwayIdByFlightNo(line.getDetails().get(0).getFlightNo()));
 
         line.setAccountId(accessToken.getAccountId());
