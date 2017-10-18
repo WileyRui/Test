@@ -110,7 +110,6 @@ public class AirlineVO {
      * 增加日志
      *
      * @param line
-     * @param id
      * @param flag
      * @return
      */
@@ -163,9 +162,7 @@ public class AirlineVO {
             // 多程
             case 3:
                 StringBuffer buffer = new StringBuffer();
-                details.forEach(i -> {
-                    buffer.append(i.getFlightDep() + "-" + i.getFlightArr() + ",");
-                });
+                details.forEach(i -> buffer.append(i.getFlightDep() + "-" + i.getFlightArr() + ","));
                 return buffer.substring(0, buffer.length() - 1);
 
             default:
