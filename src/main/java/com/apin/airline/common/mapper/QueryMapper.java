@@ -15,7 +15,7 @@ import java.util.List;
 @Mapper
 public interface QueryMapper extends Mapper {
 
-    @Select("select min(b.adult_price) basePrice,c.dep_city depCity,c.arr_city arrCity, sum(b.seat_count) remainCount,min(b.flight_date) startDate,max(b.flight_date) endDate  ,sum(a.seat_count) total,c.flight_type flightType from mbs_airline a join mbs_airline_flight b on a.id=b.airline_id" +
+    @Select("select min(b.adult_price) basePrice,c.dep_city depCity,c.arr_city arrCity, sum(b.seat_count) remainCount,min(b.flight_date) startDate,max(b.flight_date) endDate  ,sum(a.seat_count) total,c.flight_type flightType,sum(CONV(left(b.id,1),16,10)%9+1 ) soldCount from mbs_airline a join mbs_airline_flight b on a.id=b.airline_id" +
         " join msd_airline c on a.airline_id=c.id where  c.dep_city=#{depCity} and c.arr_city=#{arrCity} and (#{flightType} is null or c.flight_type=#{flightType}) and (a.manager_id='' or a.manager_id is null) and a.airline_status=1 and a.is_invalid=0  group by c.voyage")
     FlightDetail selectFlight(CityList cityList);
     @Select("select img_url from msd_city where city_name=#{deatCity}")

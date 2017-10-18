@@ -5,7 +5,9 @@ import com.apin.airline.common.entity.Airway;
 import com.apin.airline.common.entity.City;
 import com.apin.airline.common.entity.Country;
 import com.apin.airline.common.mapper.BaseMapper;
+import com.apin.util.JsonUtils;
 import com.apin.util.ReplyHelper;
+import com.apin.util.pojo.AccessToken;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,7 +42,7 @@ public class BaseServiceImpl implements BaseService {
      */
     @Override
     public Reply getCountries(String token, Country country) {
-        
+
         // 处理空值
         country.setId(country.getId() == null ? "NULL" : country.getId());
         country.setZoneCode(country.getZoneCode() == null ? "NULL" : country.getZoneCode());
@@ -88,20 +90,24 @@ public class BaseServiceImpl implements BaseService {
      */
     @Override
     public Reply updateCountry(String token, Country country) {
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        country.setUpdateUser(accessToken.getUserName());
         Integer count = mapper.updateCountry(country);
+
         return count > 0 ? ReplyHelper.success() : ReplyHelper.error();
     }
 
     /**
-     * 查询城市基础数据(分页,按拼音排序)
+     * 按关键词查询10条城市基础数据(按拼音排序)
      *
-     * @param key 访问令牌
+     * @param token 访问令牌
+     * @param key   关键词
      * @return Reply
      */
     @Override
-    public Reply getCityNames(String key) {
+    public Reply getCitiesByKey(String token, String key) {
         // 查询数据
-        List<String> cityNames = mapper.getCityNames(key);
+        List<String> cityNames = mapper.getCitiesByKey(key);
         return ReplyHelper.success(cityNames);
     }
 
@@ -127,7 +133,6 @@ public class BaseServiceImpl implements BaseService {
         Integer total = mapper.getTotalCities(city);
         return ReplyHelper.success(cities, total);
     }
-
 
     /**
      * 新增城市基础数据
@@ -164,6 +169,8 @@ public class BaseServiceImpl implements BaseService {
      */
     @Override
     public Reply updateCity(String token, City city) {
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        city.setUpdateUser(accessToken.getUserName());
         Integer count = mapper.updateCity(city);
         return count > 0 ? ReplyHelper.success() : ReplyHelper.error();
     }
@@ -224,6 +231,8 @@ public class BaseServiceImpl implements BaseService {
      */
     @Override
     public Reply updateAirport(String token, Airport airport) {
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        airport.setUpdateUser(accessToken.getUserName());
         Integer count = mapper.updateAirport(airport);
         return count > 0 ? ReplyHelper.success() : ReplyHelper.error();
     }
@@ -284,13 +293,15 @@ public class BaseServiceImpl implements BaseService {
      */
     @Override
     public Reply updateAirway(String token, Airway airway) {
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        airway.setUpdateUser(accessToken.getUserName());
         Integer count = mapper.updateAirway(airway);
         return count > 0 ? ReplyHelper.success() : ReplyHelper.error();
     }
 
     @Override
-    public Reply getCitiesByIds( List<String> ids) {
-        List<String> citys=mapper.getCityNamesByIds(ids);
+    public Reply getCitiesByIds(List<String> ids) {
+        List<String> citys = mapper.getCityNamesByIds(ids);
         return ReplyHelper.success(citys);
     }
 }

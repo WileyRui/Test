@@ -50,7 +50,7 @@ public class LineServiceImpl implements LineService {
             line.setAirlineId(Generator.uuid());
 
             Airline airline = airlineVO.setAirline(line);
-            List<Voyage> voyages = airlineVO.setVoyage(line);
+            List<Voyage> voyages = airlineVO.setVoyage(line.getDetails(), airline.getId());
             Integer count = airlineMapper.addAirline(airline);
             count += airlineMapper.addVoyages(voyages);
             if (count <= 0) return ReplyHelper.error();
@@ -73,10 +73,17 @@ public class LineServiceImpl implements LineService {
 
         // 生成航班资源数据集合
         List<Flight> flights = airlineVO.setFlight(line, dates);
+        Log log = new Log();
+        log.setId(Generator.uuid());
+        log.setAirlineId(line.getId());
+        log.setMessage("新增航线资源");
+        log.setOperatorUser(accessToken.getUserName());
+        log.setOperatorId(accessToken.getUserId());
 
         // 持久化数据
         Integer count = airlineMapper.addLine(line);
         count += airlineMapper.addLineFlights(flights);
+        count += airlineMapper.addLog(log);
         if (count <= 0) return ReplyHelper.error();
 
         return ReplyHelper.success();
@@ -110,11 +117,13 @@ public class LineServiceImpl implements LineService {
     @Override
     @Transactional
     public Reply delLine(String token, Line line) {
-        boolean flag = airlineVO.isAllot(line.getId(), line.getAccountId());
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        String accountId = accessToken.getAccountId();
+        boolean flag = airlineVO.isAllot(line.getId(), accountId);
         if (flag) {
             return ReplyHelper.fail("航线已分配，无法删除");
         }
-        flag = airlineVO.isSaled(line.getId(), line.getAccountId());
+        flag = airlineVO.isSaled(line.getId(), accountId);
         if (flag) {
             return ReplyHelper.fail("航线已售，无法删除");
         }

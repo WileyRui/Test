@@ -102,6 +102,7 @@ public interface AirlineMapper extends Mapper {
 
     /**
      * 删除指定ID的航线班次数据
+     *
      * @param id 航线ID
      * @return 受影响行数
      */
@@ -110,6 +111,7 @@ public interface AirlineMapper extends Mapper {
 
     /**
      * 删除指定ID的航线航程数据
+     *
      * @param airlineId 航线基础数据ID
      * @return 受影响行数
      */
@@ -291,13 +293,16 @@ public interface AirlineMapper extends Mapper {
      * @param flightId  航班资源ID
      * @param owner     拥有者名称
      * @param count     舱位数量
+     * @param divider   分配人
+     * @param dividerId 分配人ID
      * @return 受影响行数
      */
-    @Insert("INSERT mbs_airline_flight_seat(id,account_id,flight_id,owner,owner_id) " +
-            "SELECT (REPLACE(UUID(),'-',''),#{accountId},#{flightId},#{owner},#{accountId} " +
+    @Insert("INSERT mbs_airline_flight_seat(id,account_id,flight_id,owner,owner_id,divider,divider_id) " +
+            "SELECT (REPLACE(UUID(),'-',''),#{accountId},#{flightId},#{owner},#{accountId},#{divider},#{dividerId} " +
             "FROM msd_airline_info LIMIT #{count};")
     Integer addSeats(@Param("accountId") String accountId, @Param("flightId") String flightId,
-                     @Param("owner") String owner, @Param("count") Integer count);
+                     @Param("owner") String owner, @Param("count") Integer count,
+                     @Param("divider") String divider, @Param("dividerId") String dividerId);
 
     /**
      * 分配舱位
@@ -384,6 +389,7 @@ public interface AirlineMapper extends Mapper {
 
     /**
      * 获取最新的航线信息
+     *
      * @return
      */
     @Select("SELECT mba.id lineId,mda.voyage voyage,mba.adult_price price,MIN(f.flightDate) departDate,mda.flight_type flightType," +
@@ -395,10 +401,11 @@ public interface AirlineMapper extends Mapper {
 
     /**
      * 航线列表查询
+     *
      * @return
      */
-    @Select("<script>SELECT a.adult_price AS adultPrice, a.child_price as childPrice, a.manager,"  +
-            "a.airline_status as airlineStatus, a.airline_no as airlineNo, a.supplier_name as supplierName,"  +
+    @Select("<script>SELECT a.adult_price AS adultPrice, a.child_price as childPrice, a.manager," +
+            "a.airline_status as airlineStatus, a.airline_no as airlineNo, a.supplier_name as supplierName," +
             "d.flight_type as flightType, a.departure_start as departureStart,a.departure_end departureEnd," +
             "f.airline_id as id, sum(f.seat_count) seatCount, v.days, d.voyage," +
             "d.flight_number as flightNumber, SUM(IFNULL(s.saled, 0)) AS saled," +
