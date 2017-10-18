@@ -393,7 +393,8 @@ public interface AirlineMapper extends Mapper {
      * @return
      */
     @Select("SELECT f.id lineId,mda.voyage voyage,mba.adult_price price,MIN(f.flightDate) departDate,mda.flight_type flightType," +
-            "mba.seat_count-f.seat_count saled FROM mbs_airline mba JOIN msd_airline mda ON mba.airline_id=mda.id " +
+            "sum(CONV(LEFT(f.id, 1), 16, 10) % 9 + 1 + mba.seat_count - f.seat_count ) saled " +
+            "FROM mbs_airline mba JOIN msd_airline mda ON mba.airline_id=mda.id " +
             "JOIN (SELECT airline_id,id,MIN(flight_date) flightDate,seat_count FROM mbs_airline_flight " +
             "WHERE flight_date > CURDATE() GROUP BY airline_id) f ON f.airline_id=mba.id WHERE mda.flight_type !='3' " +
             "GROUP BY mda.voyage ORDER BY mba.created_time DESC LIMIT ${pageIndex} , 25 ")
