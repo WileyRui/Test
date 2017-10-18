@@ -113,12 +113,8 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public Reply searchFlightList(CityList cityList) {
-        PageHelper.startPage(cityList.getPageIndex(),cityList.getPageSize());
         List<ResponseAirlineDto> responseAirlineDto = queryMapper.selectFlightList(cityList);
-        if (responseAirlineDto.size() == 0)
-            return ReplyHelper.success(new ArrayList<>(),0);
-        PageInfo pageInfo=new PageInfo(responseAirlineDto);
-        return ReplyHelper.success(responseAirlineDto,pageInfo.getTotal());
+        return ReplyHelper.success(responseAirlineDto);
     }
 
     @Override
