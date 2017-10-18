@@ -40,7 +40,7 @@ public class BaseServiceImpl implements BaseService {
      */
     @Override
     public Reply getCountries(String token, Country country) {
-        
+
         // 处理空值
         country.setId(country.getId() == null ? "NULL" : country.getId());
         country.setZoneCode(country.getZoneCode() == null ? "NULL" : country.getZoneCode());
@@ -90,6 +90,20 @@ public class BaseServiceImpl implements BaseService {
     public Reply updateCountry(String token, Country country) {
         Integer count = mapper.updateCountry(country);
         return count > 0 ? ReplyHelper.success() : ReplyHelper.error();
+    }
+
+    /**
+     * 按关键词查询10条城市基础数据(按拼音排序)
+     *
+     * @param token 访问令牌
+     * @param key   关键词
+     * @return Reply
+     */
+    @Override
+    public Reply getCitiesByKey(String token, String key) {
+        // 查询数据
+        List<String> cityNames = mapper.getCitiesByKey(key);
+        return ReplyHelper.success(cityNames);
     }
 
     /**
@@ -275,8 +289,8 @@ public class BaseServiceImpl implements BaseService {
     }
 
     @Override
-    public Reply getCitiesByIds( List<String> ids) {
-        List<String> citys=mapper.getCityNamesByIds(ids);
+    public Reply getCitiesByIds(List<String> ids) {
+        List<String> citys = mapper.getCityNamesByIds(ids);
         return ReplyHelper.success(citys);
     }
 }

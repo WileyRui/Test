@@ -68,8 +68,23 @@ public interface BaseMapper extends Mapper {
      * @param country 国家基础数据
      * @return 受影响行数
      */
-    @Update("UPDATE msd_country SET zone_code=#{zoneCode},country_code=#{countryCode},country_name=#{countryName} WHERE id=#{id};")
+    @Update("UPDATE msd_country SET " +
+            "zone_code=#{zoneCode},country_code=#{countryCode},country_name=#{countryName},update_user=#{updateUser} " +
+            "WHERE id=#{id};")
     Integer updateCountry(Country country);
+
+    /**
+     * 按关键词查询10条城市基础数据(按拼音排序)
+     *
+     * @param key 关键词
+     * @return 城市基础数据集合
+     */
+    @Select("SELECT c.city_name FROM msd_city c JOIN msd_airport p ON p.city_code=c.city_code " +
+            "WHERE c.is_invalid=0 AND " +
+            "(c.city_code=#{key} OR c.city_name like CONCAT('%',#{keyword},'%') " +
+            "OR c.en_name like CONCAT('%',#{key},'%') OR p.iata_code=#{keyword}) " +
+            "GROUP BY c.city_name ORDER BY c.en_name LIMIT 10")
+    List<String> getCitiesByKey(String key);
 
     /**
      * 查询城市基础数据(分页,按拼音排序)
@@ -107,6 +122,7 @@ public interface BaseMapper extends Mapper {
 
     /**
      * 根据id获得城市名
+     *
      * @param ids
      * @return
      */
@@ -115,6 +131,7 @@ public interface BaseMapper extends Mapper {
             "#{item} " +
             "</foreach></script>")
     List<String> getCityNamesByIds(@Param("ids") List<String> ids);
+
     /**
      * 新增城市基础数据
      *
@@ -140,8 +157,10 @@ public interface BaseMapper extends Mapper {
      * @param city 城市基础数据
      * @return 受影响行数
      */
-    @Update("UPDATE msd_city SET country_id=#{countryId},city_code=#{cityCode},city_name=#{cityName},en_name=#{enName},pinyin_first=#{pinyinFirst}," +
-            "img_url=#{imgUrl},description=#{description},longitude=#{longitude},latitude=#{latitude} WHERE id=#{id};")
+    @Update("UPDATE msd_city SET " +
+            "country_id=#{countryId},city_code=#{cityCode},city_name=#{cityName},en_name=#{enName},pinyin_first=#{pinyinFirst}," +
+            "img_url=#{imgUrl},description=#{description},longitude=#{longitude},latitude=#{latitude},update_user=#{updateUser} " +
+            "WHERE id=#{id};")
     Integer updateCity(City city);
 
     /**
@@ -196,8 +215,10 @@ public interface BaseMapper extends Mapper {
      * @param airport 机场基础数据
      * @return 受影响行数
      */
-    @Update("UPDATE msd_airport SET city_code=#{cityCode},iata_code=#{iataCode},icao_code=#{icaoCode},airport_name=#{airportName}," +
-            "longitude=#{longitude},latitude=#{latitude},time_zone=#{timeZone} WHEREid=#{id};")
+    @Update("UPDATE msd_airport SET " +
+            "city_code=#{cityCode},iata_code=#{iataCode},icao_code=#{icaoCode},airport_name=#{airportName}," +
+            "longitude=#{longitude},latitude=#{latitude},time_zone=#{timeZone},update_user=#{updateUser} " +
+            "WHEREid=#{id};")
     Integer updateAirport(Airport airport);
 
     /**
@@ -253,7 +274,7 @@ public interface BaseMapper extends Mapper {
      * @return 受影响行数
      */
     @Update("UPDATE msd_airway SET " +
-            "iata_code=#{iataCode},company_name=#{companyName},nation_code=#{nationCode},logo_ico=#{logoIco} " +
+            "iata_code=#{iataCode},company_name=#{companyName},nation_code=#{nationCode},logo_ico=#{logoIco},update_user=#{updateUser} " +
             "WHERE id=#{id};")
     Integer updateAirway(Airway airway);
 
