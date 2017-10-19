@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author wiley
@@ -159,39 +160,24 @@ public class LineServiceImpl implements LineService {
     @Transactional
     public Reply upOrDown(String token, Line line) {
         String airlineId = line.getId();
+        Byte status = line.getAirlineStatus();
         line = airlineMapper.getLine(airlineId);
-        Integer row = airlineMapper.updateAirLineStatus(line.getId(), line.getAirlineStatus());
+        Integer row = airlineMapper.updateAirLineStatus(airlineId, status);
         if (row <= 0) {
             return ReplyHelper.error();
         }
         String accountId = line.getAccountId();
         String accountName = line.getSupplierName();
-        Timestamp assignedTime = new Timestamp(System.currentTimeMillis());
         String userId = JsonUtils.toAccessToken(token).getUserId();
         String userName = JsonUtils.toAccessToken(token).getUserName();
-       /* List<MbsAirlineFlightSeat> seatList = new ArrayList<>();
-        mbsAirlineFlightOpMapper.findByAirlineIdAndFlightDateSection(airlineId,airline.getDepartureStart(),airline.getDepartureEnd()).stream().forEach(flightId->{
-            for(int i=0;i<mbsAirlineFlightOpMapper.selectById(flightId).getSeatCount();i++) {
-                MbsAirlineFlightSeat flightSeat = new MbsAirlineFlightSeat();
-                flightSeat.setId(Generator.uuid());
-                flightSeat.setAccountId(accountId);
-                flightSeat.setFlightId(flightId);
-                flightSeat.setOwner(accountName);
-                flightSeat.setOwnerId(accountId);
-                flightSeat.setSeatStatus(ApinUtil.OFFSALE);
-                flightSeat.setDivider(userId);
-                flightSeat.setDividerId(userName);
-                flightSeat.setAssignedTime(assignedTime);
-                seatList.add(flightSeat);
-            }
-        });
-        Integer size = seatList.size();
-        for (int i = 0; i < size; i++) {
-            List<MbsAirlineFlightSeat> subList = seatList.subList(i * 5000, ((i + 1) * 5000 > size ? size : 5000 * (i + 1)));
-            aspectFunction.batchInsert(subList);
-            if(i*5000+5000>=size)
-                break;
-        }*/
+        List<Flight> flightList = airlineMapper.getFlights(airlineId);
+        if(1==status&&airlineMapper.ifOnSale(airlineId)==null){
+            flightList.stream().forEach(f->{
+                airlineVO.addSeats(accountId,f.getId(),accountName,f.getSeatCount(),userName,userId);
+            });
+        }else if(2==status){
+            airlineMapper.deleteSeats(airlineId);
+        }
         return ReplyHelper.success();
     }
 
