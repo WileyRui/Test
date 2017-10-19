@@ -101,11 +101,11 @@ public class FlightServiceImpl implements FlightService {
             if (airlineInfos.size() == 2) {
                 AirlineInfo airlineInfo = airlineInfos.get(1);
                 airlineInfo.setDepDate(responseAirlineDto.getRetDate());
-                airlineInfo.setArrDate(getArrDate(airlineInfo.getArrTime(), airlineInfo.getDepTime(), airlineInfo.getDepDate()));
+                airlineInfo.setArrDate(getArrDate(airlineInfo));
             }
             AirlineInfo airlineInfo = airlineInfos.get(0);
             airlineInfo.setDepDate(cityList.getDepDate());
-            airlineInfo.setArrDate(getArrDate(airlineInfo.getArrTime(), airlineInfo.getDepTime(), airlineInfo.getDepDate()));
+            airlineInfo.setArrDate(getArrDate(airlineInfo));
             responseAirlineDto.setAirlineInfo(airlineInfos);
         }
         return ReplyHelper.success(responseAirlineDtos);
@@ -131,13 +131,16 @@ public class FlightServiceImpl implements FlightService {
 
 
 
-    private String getArrDate(String arrTime,String depTime,String depDate) throws ParseException {
+    private String getArrDate(AirlineInfo airlineInfo) throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
-        Date arr = formatter.parse(arrTime);
-        Date dep = formatter.parse(depTime);
+        Date arr = formatter.parse(airlineInfo.getArrTime());
+        Date dep = formatter.parse(airlineInfo.getDepTime());
         SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
-        Date parse = formatter1.parse(depDate);
-        return arr.getTime() > dep.getTime() ? depDate:formatter1.format(new Date(parse.getTime()+24*3600*1000));
+        Date parse = formatter1.parse(airlineInfo.getDepDate());
+        if (arr.getTime() > dep.getTime())
+            return airlineInfo.getDepDate();
+        airlineInfo.setTag(1);
+        return formatter1.format(new Date(parse.getTime()+24*3600*1000));
     }
 
 }
