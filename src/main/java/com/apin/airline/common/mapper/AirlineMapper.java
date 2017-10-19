@@ -397,7 +397,8 @@ public interface AirlineMapper extends Mapper {
             "FROM mbs_airline mba JOIN msd_airline mda ON mba.airline_id=mda.id " +
             "JOIN (SELECT airline_id,id,MIN(flight_date) flightDate,seat_count FROM mbs_airline_flight " +
             "WHERE flight_date > CURDATE() GROUP BY airline_id) f ON f.airline_id=mba.id WHERE mda.flight_type !='3' " +
-            "GROUP BY mda.voyage ORDER BY mba.created_time DESC LIMIT ${pageIndex} , 25 ")
+            "AND mba.airline_status = 1 AND mba.res_type = 0 AND mba.is_invalid = 0 GROUP BY mda.voyage " +
+            "ORDER BY mba.created_time DESC LIMIT ${pageIndex} , 25 ")
     List<NewLine> newLineData(Line line);
 
     /**
