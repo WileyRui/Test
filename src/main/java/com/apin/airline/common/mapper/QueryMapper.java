@@ -28,7 +28,7 @@ public interface QueryMapper extends Mapper {
     @SelectProvider(type = AspectSql.class,method = "selectFlights")
     List<FlightDetail> selectFlights(CityList cityList);
     @Select("select c.id airlineId,sum(a.seat_count) AS total," +
-            "sum(b.seat_count) remainCount, min(b.adult_price) basePrice,e.days+1 days,DATE_ADD(b.flight_date,INTERVAL e.days DAY) retDate,c.flight_type flightType,sum(a.seat_count-b.seat_count) soldCount FROM mbs_airline a  " +
+            "sum(b.seat_count) remainCount, min(b.adult_price) basePrice,e.days+1 days,DATE_ADD(b.flight_date,INTERVAL e.days DAY) retDate,c.flight_type flightType,sum(case when a.seat_count>b.seat_count then a.seat_count-b.seat_count else 0 end) soldCount FROM mbs_airline a  " +
             "JOIN mbs_airline_flight b ON a.id = b.airline_id  " +
             "JOIN msd_airline c ON a.airline_id = c.id  " +
             "JOIN msd_airline_voyage e ON e.airline_id = c.id  " +
