@@ -3,6 +3,7 @@ package com.apin.airline.common.mapper;
 import com.apin.airline.common.entity.*;
 import com.apin.airline.line.dto.NewLine;
 import org.apache.ibatis.annotations.*;
+import org.springframework.scheduling.annotation.Async;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -298,7 +299,7 @@ public interface AirlineMapper extends Mapper {
      * @return 受影响行数
      */
     @Insert("INSERT mbs_airline_flight_seat(id,account_id,flight_id,owner,owner_id,divider,divider_id) " +
-            "SELECT (REPLACE(UUID(),'-',''),#{accountId},#{flightId},#{owner},#{accountId},#{divider},#{dividerId} " +
+            "SELECT REPLACE(UUID(),'-',''),#{accountId},#{flightId},#{owner},#{accountId},#{divider},#{dividerId} " +
             "FROM msd_airline_info LIMIT #{count};")
     Integer addSeats(@Param("accountId") String accountId, @Param("flightId") String flightId,
                      @Param("owner") String owner, @Param("count") Integer count,
@@ -397,7 +398,8 @@ public interface AirlineMapper extends Mapper {
             "FROM mbs_airline mba JOIN msd_airline mda ON mba.airline_id=mda.id " +
             "JOIN (SELECT airline_id,id,MIN(flight_date) flightDate,seat_count FROM mbs_airline_flight " +
             "WHERE flight_date > CURDATE() GROUP BY airline_id) f ON f.airline_id=mba.id WHERE mda.flight_type !='3' " +
-            "GROUP BY mda.voyage ORDER BY mba.created_time DESC LIMIT ${pageIndex} , 25 ")
+            "AND mba.airline_status = 1 AND mba.res_type = 0 AND mba.is_invalid = 0 GROUP BY mda.voyage " +
+            "ORDER BY mba.created_time DESC LIMIT ${pageIndex} , 25 ")
     List<NewLine> newLineData(Line line);
 
     /**
@@ -453,4 +455,35 @@ public interface AirlineMapper extends Mapper {
             + "LEFT JOIN mbs_airline mba ON mf.airline_id = mba.id WHERE mf.airline_id = #{airlineId} "
             + "AND mfs.account_id = #{accountId} AND mfs.account_id = mfs.owner_id AND mfs.seat_status > 0")
     Integer isSaled(@Param("airlineId") String airlineId, @Param("accountId") String accountId);
+
+    /**
+     * 获取航线航线Flight
+     *
+     * @param airlineId
+     * @return
+     */
+    @Select("SELECT * FROM mbs_airline_flight WHERE airline_id=#{airlineId}")
+    List<Flight> getFlights(@Param("airlineId") String airlineId);
+
+    /**
+     * 上架判断seat库中是否已存在
+     *
+     * @param flightIdList
+     * @return
+     */
+    @Select("SELECT 1 FROM mbs_airline_flight_seat " +
+            "WHERE flight_id in " +
+            "(SELECT id FROM mbs_airline_flight WHERE airline_id=#{airlineId}) LIMIT 1")
+    Integer ifOnSale(@Param("airlineId") String airlineId);
+
+    /**
+     * 下架删除seat库中记录
+     *
+     * @param flightIdList
+     * @return
+     */
+    @Delete("DELETE FROM mbs_airline_flight_seat " +
+            "WHERE flight_id in " +
+            "(SELECT id FROM mbs_airline_flight WHERE airline_id=#{airlineId})")
+    Integer deleteSeats(@Param("airlineId") String airlineId);
 }

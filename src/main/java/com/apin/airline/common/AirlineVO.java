@@ -8,6 +8,7 @@ import com.apin.util.Generator;
 import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -275,5 +276,21 @@ public class AirlineVO {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 上架seat插入记录
+     *
+     * @param accountId
+     * @param flightId
+     * @param accountName
+     * @param seatCount
+     * @param userName
+     * @param userId
+     * @return
+     */
+    @Async
+    public Integer addSeats(String accountId,String flightId,String accountName,Integer seatCount,String userName,String userId) {
+        return airlineMapper.addSeats(accountId,flightId,accountName,seatCount,userName,userId);
     }
 }

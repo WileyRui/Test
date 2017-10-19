@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author wiley
@@ -159,10 +161,24 @@ public class LineServiceImpl implements LineService {
     @Override
     @Transactional
     public Reply upOrDown(String token, Line line) {
-
-        Integer row = airlineMapper.updateAirLineStatus(line.getId(), line.getAirlineStatus());
+        String airlineId = line.getId();
+        Byte status = line.getAirlineStatus();
+        line = airlineMapper.getLine(airlineId);
+        Integer row = airlineMapper.updateAirLineStatus(airlineId, status);
         if (row <= 0) {
             return ReplyHelper.error();
+        }
+        String accountId = line.getAccountId();
+        String accountName = line.getSupplierName();
+        String userId = JsonUtils.toAccessToken(token).getUserId();
+        String userName = JsonUtils.toAccessToken(token).getUserName();
+        List<Flight> flightList = airlineMapper.getFlights(airlineId);
+        if(1==status&&airlineMapper.ifOnSale(airlineId)==null){
+            flightList.stream().forEach(f->{
+                airlineVO.addSeats(accountId,f.getId(),accountName,f.getSeatCount(),userName,userId);
+            });
+        }else if(2==status){
+            airlineMapper.deleteSeats(airlineId);
         }
         return ReplyHelper.success();
     }
