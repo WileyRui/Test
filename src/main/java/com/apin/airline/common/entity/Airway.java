@@ -37,6 +37,11 @@ public class Airway implements Serializable {
     private Boolean invalid;
 
     /**
+     * 更新用户
+     */
+    private String updateUser;
+
+    /**
      * 更新时间
      */
     private Date updateTime;
@@ -102,6 +107,14 @@ public class Airway implements Serializable {
 
     public void setInvalid(Boolean invalid) {
         this.invalid = invalid;
+    }
+
+    public String getUpdateUser() {
+        return updateUser;
+    }
+
+    public void setUpdateUser(String updateUser) {
+        this.updateUser = updateUser;
     }
 
     public Date getUpdateTime() {

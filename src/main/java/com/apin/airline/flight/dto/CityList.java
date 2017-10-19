@@ -15,6 +15,8 @@ public class CityList implements Serializable {
     private String arrDate;
     private Integer day;
     private String month;
+    private Integer pageIndex;
+    private Integer pageSize;
 
 
     public String getDepCity() {
@@ -67,6 +69,22 @@ public class CityList implements Serializable {
 
     public String getMonth() {
         return month;
+    }
+
+    public Integer getPageIndex() {
+        return pageIndex;
+    }
+
+    public void setPageIndex(Integer pageIndex) {
+        this.pageIndex = pageIndex;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
     }
 
     public void setMonth(String month) {

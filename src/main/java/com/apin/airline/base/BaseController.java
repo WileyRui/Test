@@ -5,6 +5,7 @@ import com.apin.airline.common.entity.Airway;
 import com.apin.airline.common.entity.City;
 import com.apin.airline.common.entity.Country;
 import com.apin.airline.flight.dto.CityStr;
+import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -66,7 +67,7 @@ public class BaseController {
      * @return Reply
      */
     @PostMapping("/v1.0/countries/update")
-    public Reply updateCountry(@RequestHeader("Authorization") String token, @RequestBody Country country) throws Exception { 
+    public Reply updateCountry(@RequestHeader("Authorization") String token, @RequestBody Country country) throws Exception {
         return service.updateCountry(token, country);
     }
 
@@ -85,23 +86,23 @@ public class BaseController {
     /**
      * 查询城市基础数据(按拼音排序)
      *
-     * @param  访问令牌
-     * @param key  单索引词
+     * @param city  城市基础数据
      * @return Reply
      */
     @PostMapping("/v1.0/cities/list/key")
-    public Reply getCitiesByKey( @RequestBody CityStr key) throws Exception {
-        return service.getCityNames( key.getStr());
+    public Reply getCitiesByKey(@RequestBody CityStr city) throws Exception {
+        return service.getCitiesByKey(null, city.getStr());
     }
+
     /**
      * 查询热门城市数据(按拼音排序)
      *
-
      * @param ids  单索引词
+     * @param ids 单索引词
      * @return Reply
      */
     @PostMapping("/v1.0/cities/list/ids")
-    public Reply getCities( @RequestBody List<String> ids) throws Exception {
+    public Reply getCities(@RequestBody List<String> ids) throws Exception {
         return service.getCitiesByIds(ids);
     }
 
@@ -236,4 +237,13 @@ public class BaseController {
     public Reply updateAirway(@RequestHeader("Authorization") String token, @RequestBody Airway airway) throws Exception {
         return service.updateAirway(token, airway);
     }
+
+
+
+    @PostMapping("/v1.0/test")
+    public Reply test() throws Exception {
+        String name = java.nio.charset.Charset.defaultCharset().name();
+        return ReplyHelper.success(name);
+    }
+
 }
