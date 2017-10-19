@@ -78,6 +78,9 @@ public class FlightServiceImpl implements FlightService {
                 flightDetails.add(flightDetail);
             }
         }
+        if (flightDetails.size()>8){
+            flightDetails = flightDetails.subList(0, 8);
+        }
         return ReplyHelper.success(flightDetails);
     }
 

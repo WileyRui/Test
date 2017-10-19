@@ -79,11 +79,11 @@ public interface BaseMapper extends Mapper {
      * @param key 关键词
      * @return 城市基础数据集合
      */
-    @Select("select * from (SELECT c.city_name FROM msd_city c JOIN msd_airport p ON p.city_code=c.city_code " +
+    @Select("select distinct a.city_name from (SELECT c.city_name,1 as sn FROM msd_city c JOIN msd_airport p ON p.city_code=c.city_code " +
             "WHERE c.is_invalid=0 AND " +
             "(c.city_code=#{key} OR c.city_name like CONCAT('%',#{keyword},'%') " +
-            "OR  p.iata_code=#{keyword}) union select city_name FROM msd_city  where en_name like concat(#{keyword},'%')) a " +
-            "GROUP BY a.city_name ORDER BY a.city_name LIMIT 10")
+            "OR  p.iata_code=#{keyword}) union select city_name,2 as sn FROM msd_city  where en_name like concat(#{keyword},'%')) a " +
+            " ORDER BY a.sn, a.city_name LIMIT 10")
     List<String> getCitiesByKey(String key);
 
     /**
