@@ -393,13 +393,22 @@ public interface AirlineMapper extends Mapper {
      *
      * @return
      */
-    @Select("SELECT f.id lineId,mda.voyage voyage,mba.adult_price price,MIN(f.flightDate) departDate,mda.flight_type flightType," +
-            "sum(CONV(LEFT(f.id, 1), 16, 10) % 9 + 1 + mba.seat_count - f.seat_count ) saled " +
-            "FROM mbs_airline mba JOIN msd_airline mda ON mba.airline_id=mda.id " +
-            "JOIN (SELECT airline_id,id,MIN(flight_date) flightDate,seat_count FROM mbs_airline_flight " +
-            "WHERE flight_date > CURDATE() GROUP BY airline_id) f ON f.airline_id=mba.id WHERE mda.flight_type !='3' " +
-            "AND mba.airline_status = 1 AND mba.res_type = 0 AND mba.is_invalid = 0 GROUP BY mda.voyage " +
-            "ORDER BY mba.created_time DESC LIMIT ${pageIndex} , 25 ")
+    @Select("select d.dep_city,d.arr_city, d.flight_type, a.* " +
+            "from mbs_airline b " +
+            "join msd_airline d on d.id = b.airline_id " +
+            "join ( " +
+            "select a.id lineId, MIN(f.adult_price) price, min(f.flight_date) as departDate, " +
+            "sum( CONV(LEFT(f.id, 1), 16, 10) % 9 + 1 + a.seat_count - f.seat_count) saled " +
+            "from mbs_airline a " +
+            "join mbs_airline_flight f on f.airline_id = a.id " +
+            "where a.airline_status = 1 " +
+            "  AND a.res_type = 0  " +
+            "  AND a.is_invalid = 0  " +
+            "  and f.flight_date > CURDATE() " +
+            "  GROUP BY a.airline_id " +
+            ") a on a.lineId = b.id " +
+            "ORDER BY b.created_time DESC " +
+            "LIMIT #{pageIndex}, #{pageSize}")
     List<NewLine> newLineData(Line line);
 
     /**

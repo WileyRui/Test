@@ -59,7 +59,7 @@ public class LineServiceImpl implements LineService {
 
         } else {
             // 校验数据是否重复
-            List<Date> existedDates = airlineMapper.getExistedflightDate(accessToken.getAccountId(), airLineId);
+            List<Date> existedDates = airlineMapper.getExistedflightDate(line.getAccountId(), airLineId);
             existedDates.retainAll(dates);
             if (existedDates.size() > 0) return ReplyHelper.invalidParam("重复的航班");
 
@@ -220,7 +220,7 @@ public class LineServiceImpl implements LineService {
     @Override
     public Reply newLineInfo(Line line) {
         Map<String, Object> resultMap = new HashMap<>();
-        line.setPageIndex(line.getPageIndex() * 25);
+        line.setPageIndex(line.getPageIndex() * line.getPageSize());
         List<NewLine> newLines = airlineMapper.newLineData(line);
         if (newLines.size() < 25) {
             resultMap.put("isLastPage", true);
