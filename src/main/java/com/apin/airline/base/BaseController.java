@@ -5,6 +5,7 @@ import com.apin.airline.common.entity.Airway;
 import com.apin.airline.common.entity.City;
 import com.apin.airline.common.entity.Country;
 import com.apin.airline.flight.dto.CityStr;
+import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -90,8 +91,8 @@ public class BaseController {
      * @return Reply
      */
     @PostMapping("/v1.0/cities/list/key")
-    public Reply getCitiesByKey(@RequestHeader("Authorization") String token, @RequestBody CityStr city) throws Exception {
-        return service.getCitiesByKey(token, city.getStr());
+    public Reply getCitiesByKey(@RequestBody CityStr city) throws Exception {
+        return service.getCitiesByKey(null, city.getStr());
     }
 
     /**
@@ -237,4 +238,13 @@ public class BaseController {
     public Reply updateAirway(@RequestHeader("Authorization") String token, @RequestBody Airway airway) throws Exception {
         return service.updateAirway(token, airway);
     }
+
+
+
+    @PostMapping("/v1.0/test")
+    public Reply test() throws Exception {
+        String name = java.nio.charset.Charset.defaultCharset().name();
+        return ReplyHelper.success(name);
+    }
+
 }
