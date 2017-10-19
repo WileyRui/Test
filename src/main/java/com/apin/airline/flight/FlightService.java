@@ -59,7 +59,7 @@ public interface FlightService {
     /**
      * 根据城市对与出发日期查询航班
      *
-     * @param searchDto
+     * @param cityList
      * @return
      */
     Reply searchFlights(CityList cityList);

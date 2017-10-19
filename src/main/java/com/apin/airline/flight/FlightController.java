@@ -74,9 +74,8 @@ public class FlightController {
     }
 
     /**
-     * 根据城市对查询信息
-     *
-     * @param searchDto
+     * 条件查询航班信息
+     * @param searchDto 城市对 航班类型集合
      * @return Reply
      * 正常：返回接口调用成功,返回数据
      */

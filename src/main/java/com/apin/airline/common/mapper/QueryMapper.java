@@ -45,7 +45,7 @@ public interface QueryMapper extends Mapper {
             " JOIN msd_airway b ON a.flight_company = b.company_name  " +
             " join msd_airline_voyage c on  c.flight_info_id=a.id  " +
             " join msd_airline e on e.id=c.airline_id  " +
-            " WHERE c.airline_id=#{flightNum}")
+            " WHERE c.airline_id=#{flightNum} order by c.trip_index")
     List<AirlineInfo> selectByFlightNum(String flightNum);
     @Select("SELECT  " +
             "   SUBSTRING_INDEX(b.flight_date,'-',2) retDate FROM  " +
