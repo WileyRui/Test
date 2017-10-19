@@ -393,11 +393,12 @@ public interface AirlineMapper extends Mapper {
      *
      * @return
      */
-    @Select("select d.voyage, d.flight_type flightType, a.*" +
+    @Select("select d.dep_city,d.arr_city, d.flight_type, a.* " +
             "from mbs_airline b " +
             "join msd_airline d on d.id = b.airline_id " +
             "join ( " +
-            "select a.id, MIN(f.adult_price) price, min(f.flight_date) as flightDate " +
+            "select a.id lineId, MIN(f.adult_price) price, min(f.flight_date) as departDate, " +
+            "sum( CONV(LEFT(f.id, 1), 16, 10) % 9 + 1 + a.seat_count - f.seat_count) saled " +
             "from mbs_airline a " +
             "join mbs_airline_flight f on f.airline_id = a.id " +
             "where a.airline_status = 1 " +
@@ -405,9 +406,9 @@ public interface AirlineMapper extends Mapper {
             "  AND a.is_invalid = 0  " +
             "  and f.flight_date > CURDATE() " +
             "  GROUP BY a.airline_id " +
-            ") a on a.id = b.id " +
+            ") a on a.lineId = b.id " +
             "ORDER BY b.created_time DESC " +
-            "LIMIT #{pageIndex}, 25")
+            "LIMIT #{pageIndex}, #{pageSize}")
     List<NewLine> newLineData(Line line);
 
     /**

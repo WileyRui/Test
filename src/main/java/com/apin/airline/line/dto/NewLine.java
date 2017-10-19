@@ -9,11 +9,12 @@ import java.math.BigDecimal;
  */
 public class NewLine {
     private String lineId;
-    private String voyage;
     private BigDecimal price;
     private Integer saled;
     private String departDate;
     private Byte flightType;
+    private String depCity;
+    private String arrCity;
 
     public String getLineId() {
         return lineId;
@@ -21,14 +22,6 @@ public class NewLine {
 
     public void setLineId(String lineId) {
         this.lineId = lineId;
-    }
-
-    public String getVoyage() {
-        return voyage;
-    }
-
-    public void setVoyage(String voyage) {
-        this.voyage = voyage;
     }
 
     public String getDepartDate() {
@@ -61,5 +54,21 @@ public class NewLine {
 
     public void setFlightType(Byte flightType) {
         this.flightType = flightType;
+    }
+
+    public String getDepCity() {
+        return depCity;
+    }
+
+    public void setDepCity(String depCity) {
+        this.depCity = depCity;
+    }
+
+    public String getArrCity() {
+        return arrCity;
+    }
+
+    public void setArrCity(String arrCity) {
+        this.arrCity = arrCity;
     }
 }
