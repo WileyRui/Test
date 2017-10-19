@@ -21,6 +21,7 @@ public class AirlineInfo {
     private String depDate;
     private String arrDate;
     private String flightType;
+    private int tag;
 
     public String getCompName() {
         return compName;
@@ -101,7 +102,7 @@ public class AirlineInfo {
     }
 
     public String getArrDate() throws ParseException {
-return arrDate;
+        return arrDate;
     }
 
     public void setArrDate(String arrDate) {
@@ -114,5 +115,13 @@ return arrDate;
 
     public void setFlightType(String flightType) {
         this.flightType = flightType;
+    }
+
+    public int getTag() {
+        return tag;
+    }
+
+    public void setTag(int tag) {
+        this.tag = tag;
     }
 }
