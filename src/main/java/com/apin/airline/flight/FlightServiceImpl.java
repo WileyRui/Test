@@ -73,7 +73,6 @@ public class FlightServiceImpl implements FlightService {
             String img = queryMapper.selectCityImg(cityList.getArrCity());
             FlightDetail flightDetail = queryMapper.selectFlight(cityList);
             if (flightDetail!=null) {
-                flightDetail.setSoldCount(flightDetail.getSoldCount()+flightDetail.getTotal()-flightDetail.getRemainCount());
                 flightDetail.setArrCityImgUrl(img);
                 flightDetails.add(flightDetail);
             }
