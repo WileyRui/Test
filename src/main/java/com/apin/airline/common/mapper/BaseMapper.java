@@ -79,11 +79,11 @@ public interface BaseMapper extends Mapper {
      * @param key 关键词
      * @return 城市基础数据集合
      */
-    @Select("select distinct a.city_name from (SELECT c.city_name,1 as sn FROM msd_city c JOIN msd_airport p ON p.city_code=c.city_code " +
-            "WHERE c.is_invalid=0 AND " +
-            "(c.city_code=#{key} OR c.city_name like CONCAT('%',#{keyword},'%') " +
-            "OR  p.iata_code=#{keyword}) union select city_name,2 as sn FROM msd_city  where en_name like concat(#{keyword},'%')) a " +
-            " ORDER BY a.sn, a.city_name LIMIT 10")
+    @Select("select distinct a.city_name from (" +
+            "SELECT c.city_name,1 as sn FROM msd_city c JOIN msd_airport p ON p.city_code=c.city_code WHERE c.is_invalid=0 " +
+            "AND (c.city_code=#{key} OR c.city_name like CONCAT('%',#{keyword},'%') " +
+            "OR p.iata_code=#{keyword}) union select city_name,2 as sn FROM msd_city where en_name like concat(#{keyword},'%')) a " +
+            "ORDER BY a.sn, a.city_name LIMIT 10")
     List<String> getCitiesByKey(String key);
 
     /**
@@ -96,9 +96,9 @@ public interface BaseMapper extends Mapper {
             "FROM msd_city c LEFT JOIN msd_country g ON g.id=c.country_id JOIN msd_airport p ON p.city_code=c.city_code " +
             "WHERE c.is_invalid=0 " +
             "AND ('NULL'=#{id} OR c.id=#{id}) " +
-            "AND ('NULL'=#{countryName} OR g.country_name=#{countryName}) " +
+            "AND ('NULL'=#{countryName} OR g.country_name LIKE CONCAT(#{countryName},'%')) " +
             "AND ('NULL'=#{cityCode} OR c.city_code=#{cityCode}) " +
-            "AND ('NULL'=#{cityName} OR c.city_name LIKE CONCAT('%',#{cityName},'%')) " +
+            "AND ('NULL'=#{cityName} OR c.city_name LIKE CONCAT(#{cityName},'%')) " +
             "AND ('NULL'=#{enName} OR c.en_name=#{enName}) " +
             "AND ('NULL'=#{pinyinFirst} OR c.pinyin_first=#{pinyinFirst}) " +
             "GROUP BY c.id ORDER BY c.en_name LIMIT #{offset},#{count};")
@@ -172,7 +172,7 @@ public interface BaseMapper extends Mapper {
             "AND ('NULL'=#{id} OR id=#{id}) " +
             "AND ('NULL'=#{cityCode} OR city_code=#{cityCode}) " +
             "AND ('NULL'=#{iataCode} OR iata_code=#{iataCode}) " +
-            "AND ('NULL'=#{airportName} OR airport_name=#{airportName}) " +
+            "AND ('NULL'=#{airportName} OR airport_name LIKE CONCAT('%',#{airportName},'%')) " +
             "ORDER BY iata_code LIMIT #{offset},#{count};")
     List<Airport> getAirports(Airport airport);
 
