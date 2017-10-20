@@ -125,7 +125,7 @@ public class ResponseAirlineDto implements Serializable {
     }
 
     public Integer getSoldCount() {
-        return soldCount;
+        return soldCount!=null&&soldCount>0?soldCount:0;
     }
 
     public void setSoldCount(Integer soldCount) {
