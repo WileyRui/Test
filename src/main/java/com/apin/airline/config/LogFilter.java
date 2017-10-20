@@ -63,18 +63,18 @@ public class LogFilter implements Filter {
         }
 
         // 打印请求参数
+        logger.debug("<-- Request Parameters -->");
         Map<String, String[]> map = request.getParameterMap();
         if (!map.isEmpty()) {
-            logger.debug("<-- Request Parameters -->");
             map.forEach((k, v) -> logger.debug(k + ":" + v[0]));
         }
 
-        if (!"POST,PUT".contains(method)) {
+        if ("GET".equals(method)) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
 
-        // POST或PUT请求,打印请求体
+        // 非GET请求,打印BODY
         BodyReaderRequestWrapper requestWrapper = new BodyReaderRequestWrapper(request);
         BufferedReader reader = requestWrapper.getReader();
 
@@ -85,8 +85,6 @@ public class LogFilter implements Filter {
         }
 
         reader.close();
-        if (map.isEmpty()) logger.debug("<-- Request Parameters -->");
-
         logger.debug("BODY:" + body);
 
         filterChain.doFilter(requestWrapper, servletResponse);
