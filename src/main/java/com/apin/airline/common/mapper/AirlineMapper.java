@@ -397,7 +397,7 @@ public interface AirlineMapper extends Mapper {
             "sum(CONV(LEFT (f.id,1),16,10) % 9+1+a.seat_count-f.seat_count) saled " +
             "FROM mbs_airline a JOIN msd_airline d ON d.id=a.airline_id JOIN mbs_airline_flight f ON f.airline_id=a.id " +
             "WHERE a.airline_status=1 AND a.res_type=0 AND a.is_invalid=0 AND f.flight_date> CURDATE() " +
-            "GROUP BY d.dep_city,d.arr_city ORDER BY b.created_time DESC LIMIT #{pageIndex}, #{pageSize}")
+            "GROUP BY d.dep_city,d.arr_city ORDER BY a.created_time DESC LIMIT #{pageIndex}, #{pageSize}")
     List<NewLine> newLineData(Line line);
 
     /**
