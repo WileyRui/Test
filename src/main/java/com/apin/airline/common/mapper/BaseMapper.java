@@ -98,7 +98,7 @@ public interface BaseMapper extends Mapper {
             "AND ('NULL'=#{id} OR c.id=#{id}) " +
             "AND ('NULL'=#{countryName} OR g.country_name=#{countryName}) " +
             "AND ('NULL'=#{cityCode} OR c.city_code=#{cityCode}) " +
-            "AND ('NULL'=#{cityName} OR c.city_name=#{cityName}) " +
+            "AND ('NULL'=#{cityName} OR c.city_name LIKE CONCAT('%',#{cityName},'%')) " +
             "AND ('NULL'=#{enName} OR c.en_name=#{enName}) " +
             "AND ('NULL'=#{pinyinFirst} OR c.pinyin_first=#{pinyinFirst}) " +
             "GROUP BY c.id ORDER BY c.en_name LIMIT #{offset},#{count};")
@@ -231,7 +231,7 @@ public interface BaseMapper extends Mapper {
             "AND ('NULL'=#{nationCode} OR nation_code=#{nationCode}) " +
             "AND ('NULL'=#{iataCode} OR iata_code=#{iataCode}) " +
             "AND ('NULL'=#{companyName} OR company_name LIKE CONCAT('%',#{companyName},'%')) " +
-            "ORDER BY iata_code LIMIT #{offset},#{count};")
+            "ORDER BY update_time DESC, iata_code LIMIT #{offset},#{count};")
     List<Airway> getAirwaies(Airway airway);
 
     /**
