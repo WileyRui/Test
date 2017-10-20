@@ -390,11 +390,11 @@ public interface AirlineMapper extends Mapper {
 
     /**
      * 获取最新的航线信息
-     *
+     * @param line  页码，每页条数
      * @return
      */
-    @Select("SELECT a.id,d.dep_city,d.arr_city,d.flight_type,f.adult_price,min(f.flight_date) AS flight_date," +
-            "sum(CONV(LEFT (f.id,1),16,10) % 9+1+a.seat_count-f.seat_count) saled " +
+    @Select("SELECT a.id lineId,d.dep_city,d.arr_city,d.flight_type,f.adult_price price,MIN(f.flight_date) AS departDate," +
+            "SUM(CONV(LEFT (f.id,1),16,10) % 9+1+a.seat_count-f.seat_count) saled " +
             "FROM mbs_airline a JOIN msd_airline d ON d.id=a.airline_id JOIN mbs_airline_flight f ON f.airline_id=a.id " +
             "WHERE a.airline_status=1 AND a.res_type=0 AND a.is_invalid=0 AND f.flight_date> CURDATE() " +
             "GROUP BY d.dep_city,d.arr_city ORDER BY a.created_time DESC LIMIT #{pageIndex}, #{pageSize}")
