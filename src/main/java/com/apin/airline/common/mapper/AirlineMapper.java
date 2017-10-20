@@ -438,7 +438,7 @@ public interface AirlineMapper extends Mapper {
      * @return
      */
     @Select("SELECT COUNT(*) FROM mbs_airline_flight mf LEFT JOIN mbs_airline_flight_seat mfs ON mf.id = mfs.flight_id "
-            + "LEFT JOIN mbs_airline mba ON mf.airline_id = mba.id WHERE mf.airline_id = #{airlineId} "
+            + "LEFT JOIN mbs_airline mba ON mf.airline_id = mba.id  AND mba.airline_status = 1 WHERE mf.airline_id = #{airlineId} "
             + "AND mfs.account_id = #{accountId} AND mfs.account_id != mfs.owner_id AND mfs.seat_status > 0")
     Integer isAllot(@Param("airlineId") String airlineId, @Param("accountId") String accountId);
 
@@ -450,7 +450,7 @@ public interface AirlineMapper extends Mapper {
      * @return
      */
     @Select("SELECT COUNT(*) FROM mbs_airline_flight mf LEFT JOIN mbs_airline_flight_seat mfs ON mf.id = mfs.flight_id "
-            + "LEFT JOIN mbs_airline mba ON mf.airline_id = mba.id WHERE mf.airline_id = #{airlineId} "
+            + "LEFT JOIN mbs_airline mba ON mf.airline_id = mba.id AND mba.airline_status = 1 WHERE mf.airline_id = #{airlineId} "
             + "AND mfs.account_id = #{accountId} AND mfs.account_id = mfs.owner_id AND mfs.seat_status > 0")
     Integer isSaled(@Param("airlineId") String airlineId, @Param("accountId") String accountId);
 
