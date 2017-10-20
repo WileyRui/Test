@@ -59,7 +59,7 @@ public class LineServiceImpl implements LineService {
 
         } else {
             // 校验数据是否重复
-            List<Date> existedDates = airlineMapper.getExistedflightDate(line.getAccountId(), airLineId);
+            List<Date> existedDates = airlineMapper.getExistedflightDate(accessToken.getAccountId(), airLineId);
             existedDates.retainAll(dates);
             if (existedDates.size() > 0) return ReplyHelper.invalidParam("重复的航班");
 
@@ -102,18 +102,16 @@ public class LineServiceImpl implements LineService {
         if (flag) {
             return ReplyHelper.fail("航线已售，无法编辑");
         }
-        String airlineId = airlineMapper.getLine(line.getId()).getAirlineId();
         int count = 0;
-        count += airlineMapper.deleteVoyage(airlineId);
-        count += airlineMapper.deleteAirline(airlineId);
         count += airlineMapper.deleteFlight(line.getId());
-        count += airlineMapper.deleteLine(line.getId());
         //日志
         count += airlineMapper.addLog(airlineVO.setAirlineLog(line, false));
+        count += airlineMapper.updateLine(line);
+//        airlineMapper.addLineFlights()
         if (count <= 0) {
             return ReplyHelper.error();
         }
-        return addLine(token, line);
+        return ReplyHelper.success();
     }
 
     @Override

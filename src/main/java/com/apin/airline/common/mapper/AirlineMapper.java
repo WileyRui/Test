@@ -393,11 +393,11 @@ public interface AirlineMapper extends Mapper {
      *
      * @return
      */
-    @Select("SELECT a.id AS lineId,d.dep_city,d.arr_city,d.flight_type,f.adult_price,min(f.flight_date) AS departDate," +
+    @Select("SELECT a.id AS lineId,d.dep_city,d.arr_city,d.flight_type,f.adult_price price,min(f.flight_date) AS departDate," +
             "sum(CONV(LEFT (f.id,1),16,10) % 9+1+a.seat_count-f.seat_count) saled " +
             "FROM mbs_airline a JOIN msd_airline d ON d.id=a.airline_id JOIN mbs_airline_flight f ON f.airline_id=a.id " +
             "WHERE a.airline_status=1 AND a.res_type=0 AND a.is_invalid=0 AND f.flight_date> CURDATE() " +
-            "GROUP BY d.dep_city,d.arr_city ORDER BY a.created_time DESC LIMIT #{pageIndex}, #{pageSize}")
+            "GROUP BY d.dep_city,d.arr_city,d.flight_type ORDER BY a.created_time DESC LIMIT #{pageIndex}, #{pageSize}")
     List<NewLine> newLineData(Line line);
 
     /**
@@ -438,7 +438,7 @@ public interface AirlineMapper extends Mapper {
      * @return
      */
     @Select("SELECT COUNT(*) FROM mbs_airline_flight mf LEFT JOIN mbs_airline_flight_seat mfs ON mf.id = mfs.flight_id "
-            + "LEFT JOIN mbs_airline mba ON mf.airline_id = mba.id WHERE mf.airline_id = #{airlineId} "
+            + "LEFT JOIN mbs_airline mba ON mf.airline_id = mba.id  AND mba.airline_status = 1 WHERE mf.airline_id = #{airlineId} "
             + "AND mfs.account_id = #{accountId} AND mfs.account_id != mfs.owner_id AND mfs.seat_status > 0")
     Integer isAllot(@Param("airlineId") String airlineId, @Param("accountId") String accountId);
 
@@ -450,7 +450,7 @@ public interface AirlineMapper extends Mapper {
      * @return
      */
     @Select("SELECT COUNT(*) FROM mbs_airline_flight mf LEFT JOIN mbs_airline_flight_seat mfs ON mf.id = mfs.flight_id "
-            + "LEFT JOIN mbs_airline mba ON mf.airline_id = mba.id WHERE mf.airline_id = #{airlineId} "
+            + "LEFT JOIN mbs_airline mba ON mf.airline_id = mba.id AND mba.airline_status = 1 WHERE mf.airline_id = #{airlineId} "
             + "AND mfs.account_id = #{accountId} AND mfs.account_id = mfs.owner_id AND mfs.seat_status > 0")
     Integer isSaled(@Param("airlineId") String airlineId, @Param("accountId") String accountId);
 

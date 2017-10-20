@@ -15,7 +15,7 @@ import java.util.List;
 @Mapper
 public interface QueryMapper extends Mapper {
 
-    @Select("select min(b.adult_price) basePrice,c.dep_city depCity,c.arr_city arrCity, sum(b.seat_count) remainCount,min(b.flight_date) startDate,max(b.flight_date) endDate  ,sum(a.seat_count) total,c.flight_type flightType,sum(CONV(left(b.id,1),16,10)%9+1 ) soldCount from mbs_airline a join mbs_airline_flight b on a.id=b.airline_id" +
+    @Select("select min(b.adult_price) basePrice,c.dep_city depCity,c.arr_city arrCity, sum(b.seat_count) remainCount,min(b.flight_date) startDate,max(b.flight_date) endDate  ,sum(a.seat_count) total,c.flight_type flightType,sum(CONV(left(b.id,1),16,10)%9+1+a.seat_count-b.seat_count ) soldCount from mbs_airline a join mbs_airline_flight b on a.id=b.airline_id" +
         " join msd_airline c on a.airline_id=c.id where  c.dep_city=#{depCity} and c.arr_city=#{arrCity} and (#{flightType} is null or c.flight_type=#{flightType}) and   a.res_type=0 and a.airline_status=1 and a.is_invalid=0  group by c.voyage")
     FlightDetail selectFlight(CityList cityList);
     @Select("select img_url from msd_city where city_name=#{deatCity}")
@@ -28,7 +28,7 @@ public interface QueryMapper extends Mapper {
     @SelectProvider(type = AspectSql.class,method = "selectFlights")
     List<FlightDetail> selectFlights(CityList cityList);
     @Select("select c.id airlineId,sum(a.seat_count) AS total," +
-            "sum(b.seat_count) remainCount, min(b.adult_price) basePrice,e.days+1 days,DATE_ADD(b.flight_date,INTERVAL e.days DAY) retDate,c.flight_type flightType,sum(case when a.seat_count>b.seat_count then a.seat_count-b.seat_count else 0 end) soldCount FROM mbs_airline a  " +
+            "sum(b.seat_count) remainCount, min(b.adult_price) basePrice,e.days+1 days,DATE_ADD(b.flight_date,INTERVAL e.days DAY) retDate,c.flight_type flightType,sum(CONV(left(b.id,1),16,10)%9+1+a.seat_count-b.seat_count ) soldCount FROM mbs_airline a  " +
             "JOIN mbs_airline_flight b ON a.id = b.airline_id  " +
             "JOIN msd_airline c ON a.airline_id = c.id  " +
             "JOIN msd_airline_voyage e ON e.airline_id = c.id " +
@@ -54,7 +54,7 @@ public interface QueryMapper extends Mapper {
             "JOIN mbs_airline_flight b ON a.id = b.airline_id  " +
             "JOIN msd_airline c ON a.airline_id = c.id  " +
             "WHERE c.dep_city =#{depCity} AND c.arr_city =#{arrCity} AND  (#{flightType} is null or c.flight_type=#{flightType}) " +
-            "  and   a.res_type=0 and a.airline_status=1 and a.is_invalid=0 " +
+            "  and   a.res_type=0 and a.airline_status=1 and a.is_invalid=0  and b.flight_date>=NOW() " +
             " GROUP BY SUBSTRING_INDEX(b.flight_date,'-',2)  " +
             " ORDER BY b.flight_date")
     List<String> selectMonthQuery(CityList cityList);
