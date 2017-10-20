@@ -41,7 +41,7 @@ public class NewLine {
     }
 
     public Integer getSaled() {
-        return saled;
+        return saled < 0 ? 0 : saled;
     }
 
     public void setSaled(Integer saled) {
