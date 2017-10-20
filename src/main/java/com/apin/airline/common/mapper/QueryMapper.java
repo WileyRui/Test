@@ -31,14 +31,15 @@ public interface QueryMapper extends Mapper {
             "sum(b.seat_count) remainCount, min(b.adult_price) basePrice,e.days+1 days,DATE_ADD(b.flight_date,INTERVAL e.days DAY) retDate,c.flight_type flightType,sum(case when a.seat_count>b.seat_count then a.seat_count-b.seat_count else 0 end) soldCount FROM mbs_airline a  " +
             "JOIN mbs_airline_flight b ON a.id = b.airline_id  " +
             "JOIN msd_airline c ON a.airline_id = c.id  " +
-            "JOIN msd_airline_voyage e ON e.airline_id = c.id  " +
+            "JOIN msd_airline_voyage e ON e.airline_id = c.id " +
+            "join msd_airline_info i on i.id=e.flight_info_id  " +
             "WHERE  " +
             "  c.dep_city=#{depCity} and c.arr_city=#{arrCity}  " +
             "AND b.flight_date = #{depDate}  " +
             "AND e.days = #{day} and c.flight_type=#{flightType} " +
             " and   a.res_type=0 and a.airline_status=1 and a.is_invalid=0 " +
             "GROUP BY c.flight_number  " +
-            "ORDER BY b.adult_price;")
+            "ORDER BY i.flight_deptime_plan_date")
     List<ResponseAirlineDto> selectFlightDetail(CityList cityList);
     @Select("select a.flight_company compName,b.logo_ico logo,a.flight_arrtime_plan_date arrTime,a.flight_deptime_plan_date depTime,a.flight_dep_airport depAirport,e.flight_type flightType," +
             "a.flight_arr_airport arrAirport,a.flight_no num from msd_airline_info a  " +
