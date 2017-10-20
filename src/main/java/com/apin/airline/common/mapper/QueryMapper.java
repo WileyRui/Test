@@ -54,7 +54,7 @@ public interface QueryMapper extends Mapper {
             "JOIN mbs_airline_flight b ON a.id = b.airline_id  " +
             "JOIN msd_airline c ON a.airline_id = c.id  " +
             "WHERE c.dep_city =#{depCity} AND c.arr_city =#{arrCity} AND  (#{flightType} is null or c.flight_type=#{flightType}) " +
-            "  and   a.res_type=0 and a.airline_status=1 and a.is_invalid=0 " +
+            "  and   a.res_type=0 and a.airline_status=1 and a.is_invalid=0  and b.flight_date>=NOW() " +
             " GROUP BY SUBSTRING_INDEX(b.flight_date,'-',2)  " +
             " ORDER BY b.flight_date")
     List<String> selectMonthQuery(CityList cityList);
