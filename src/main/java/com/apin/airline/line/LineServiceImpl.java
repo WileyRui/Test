@@ -104,13 +104,14 @@ public class LineServiceImpl implements LineService {
         }
         int count = 0;
         count += airlineMapper.deleteFlight(line.getId());
-        count += airlineMapper.deleteLine(line.getId());
         //日志
         count += airlineMapper.addLog(airlineVO.setAirlineLog(line, false));
+        count += airlineMapper.updateLine(line);
+//        airlineMapper.addLineFlights()
         if (count <= 0) {
             return ReplyHelper.error();
         }
-        return addLine(token, line);
+        return ReplyHelper.success();
     }
 
     @Override
