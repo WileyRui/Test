@@ -393,7 +393,7 @@ public interface AirlineMapper extends Mapper {
      *
      * @return
      */
-    @Select("SELECT a.id AS lineId,d.dep_city,d.arr_city,d.flight_type,f.adult_price,min(f.flight_date) AS departDate," +
+    @Select("SELECT a.id AS lineId,d.dep_city,d.arr_city,d.flight_type,f.adult_price price,min(f.flight_date) AS departDate," +
             "sum(CONV(LEFT (f.id,1),16,10) % 9+1+a.seat_count-f.seat_count) saled " +
             "FROM mbs_airline a JOIN msd_airline d ON d.id=a.airline_id JOIN mbs_airline_flight f ON f.airline_id=a.id " +
             "WHERE a.airline_status=1 AND a.res_type=0 AND a.is_invalid=0 AND f.flight_date> CURDATE() " +
