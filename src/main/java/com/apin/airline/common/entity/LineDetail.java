@@ -95,7 +95,7 @@ public class LineDetail implements Serializable {
     /**
      * 飞行班次 周日开始 0,1,0,1,0,1,0代表每周135有航班飞行
      */
-    private String flights;
+    private String weekFlights;
 
     /**
      * 更新时间
@@ -240,12 +240,12 @@ public class LineDetail implements Serializable {
         this.stopFlag = stopFlag;
     }
 
-    public String getFlights() {
-        return flights;
+    public String getWeekFlights() {
+        return weekFlights;
     }
 
-    public void setFlights(String flights) {
-        this.flights = flights;
+    public void setWeekFlights(String weekFlights) {
+        this.weekFlights = weekFlights;
     }
 
     public Date getUpdateTime() {

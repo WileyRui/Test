@@ -211,9 +211,10 @@ public interface AirlineMapper extends Mapper {
      */
     @Update("UPDATE mbs_airline SET " +
             "res_type=#{resType},seat_type=#{seatType},seat_count=#{seatCount},deposit_amount=#{depositAmount}," +
+            "airline_id=#{airlineId},departure_start=#{departureStart},departure_end=#{departureEnd},supplier_name=#{supplierName},"+
             "adult_price=#{adultPrice},child_price=#{childPrice},free_bag=#{freeBag},weight_limit=#{weightLimit}," +
             "alert_advance=#{alertAdvance},alert_rate=#{alertRate},can_return=#{canReturn},can_change=#{canChange}," +
-            "can_sign=#{canSign},manager=#{manager},manager_id=#{managerId} WHEREid=#{id};")
+            "can_sign=#{canSign},manager=#{manager},manager_id=#{managerId} WHERE id=#{id};")
     Integer updateLine(Line line);
 
     /**
@@ -286,6 +287,18 @@ public interface AirlineMapper extends Mapper {
     @Select("SELECT f.flight_date FROM mbs_airline a JOIN mbs_airline_flight f ON f.airline_id=a.id " +
             "WHERE a.is_invalid=0 AND a.account_id=#{accountId} AND a.airline_id=#{airLineId} ORDER BY f.flight_date")
     List<Date> getExistedflightDate(@Param("accountId") String accountId, @Param("airLineId") String airLineId);
+
+    /**
+     * 编辑时查询指定账户ID及航线基础数据ID的全部航班资源的执飞日期
+     *
+     * @param accountId 供应商账户ID
+     * @param airLineId 航线基础数据ID
+     *  @param id 航线ID
+     * @return 执飞日期集合
+     */
+    @Select("SELECT f.flight_date FROM mbs_airline a JOIN mbs_airline_flight f ON f.airline_id=a.id " +
+            "WHERE a.is_invalid=0 AND a.account_id=#{accountId} AND a.airline_id=#{airLineId} AND a.id != #{id} ORDER BY f.flight_date")
+    List<Date> getExistedflightDateByUpdate(@Param("accountId") String accountId, @Param("airLineId") String airLineId, @Param("id") String id);
 
     /**
      * 新增舱位资源

@@ -74,21 +74,6 @@ public class Line implements Serializable {
     private Date departureEnd;
 
     /**
-     * 出发城市
-     */
-    private String depCity;
-
-    /**
-     * 到达城市
-     */
-    private String arrCity;
-
-    /**
-     * 每周飞行班次 周日开始 0,1,0,1,0,1,0代表每周135有航班飞行
-     */
-    private String weekFlights;
-
-    /**
      * 舱位数量
      */
     private Integer seatCount;
@@ -322,30 +307,6 @@ public class Line implements Serializable {
 
     public void setDepartureEnd(Date departureEnd) {
         this.departureEnd = departureEnd;
-    }
-
-    public String getDepCity() {
-        return depCity;
-    }
-
-    public void setDepCity(String depCity) {
-        this.depCity = depCity;
-    }
-
-    public String getArrCity() {
-        return arrCity;
-    }
-
-    public void setArrCity(String arrCity) {
-        this.arrCity = arrCity;
-    }
-
-    public String getWeekFlights() {
-        return weekFlights;
-    }
-
-    public void setWeekFlights(String weekFlights) {
-        this.weekFlights = weekFlights;
     }
 
     public Integer getSeatCount() {

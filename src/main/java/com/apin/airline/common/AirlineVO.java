@@ -46,13 +46,13 @@ public class AirlineVO {
         airline.setId(Generator.uuid());
         airline.setHashKey(hashValue(details));
         airline.setFlightType(line.getFlightType());
-        airline.setDepCity(line.getDepCity());
-        airline.setArrCity(line.getArrCity());
+        airline.setDepCity(details.get(0).getFlightDep());
+        airline.setArrCity(details.get(0).getFlightArr());
         airline.setDays(days);
         airline.setVoyage(appendVoyage(line.getFlightType(), details));
         airline.setFlightNumber(appendFlightNumber(details));
         airline.setFlightTime(details.get(0).getFlightDeptimePlanDate());
-        airline.setWeekFlights(line.getWeekFlights());
+        airline.setWeekFlights(details.get(0).getWeekFlights());
         airline.setCreatorUser(line.getCreatorUser());
         airline.setCreatorUserId(line.getCreatorUserId());
 
