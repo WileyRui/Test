@@ -125,8 +125,8 @@ public class AirlineVO {
             log.setEventName("新增航线");
             log.setMessage("新增航线成功");
         } else {
-//            log.setEventName("编辑航线");
-//            log.setMessage("编辑航线成功");
+            log.setEventName("编辑航线");
+            log.setMessage("编辑航线成功");
         }
         log.setOperatorId(line.getCreatorUserId());
         log.setOperatorUser(line.getCreatorUser());
