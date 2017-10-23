@@ -124,6 +124,7 @@ public class LineServiceImpl implements LineService {
         count = airlineMapper.updateLine(line);
         List<Flight> flights = airlineVO.setFlight(line, dates);
         count += airlineMapper.addLineFlights(flights);
+        count += airlineMapper.addLog(airlineVO.setAirlineLog(line,false));
         if (count <= 0) {
             return ReplyHelper.error();
         }
