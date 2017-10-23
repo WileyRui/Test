@@ -16,9 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Timestamp;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author wiley
@@ -39,7 +37,9 @@ public class LineServiceImpl implements LineService {
     public Reply addLine(String token, Line line) {
         line.setId(Generator.uuid());
         Reply result = airlineVO.checkData(line);
-        if (!result.getSuccess()) return result;
+        if (!result.getSuccess()) {
+            return result;
+        }
 
         AccessToken accessToken = JsonUtils.toAccessToken(token);
         List<Date> dates = airlineVO.getDates(line.getDepartureStart(), line.getDepartureEnd(), line.getDetails().get(0).getWeekFlights());
@@ -56,14 +56,16 @@ public class LineServiceImpl implements LineService {
             List<Voyage> voyages = airlineVO.setVoyage(line.getDetails(), airline.getId());
             Integer count = airlineMapper.addAirline(airline);
             count += airlineMapper.addVoyages(voyages);
-            if (count <= 0) return ReplyHelper.error();
-
+            if (count <= 0) {
+                return ReplyHelper.error();
+            }
         } else {
             // 校验数据是否重复
             List<Date> existedDates = airlineMapper.getExistedflightDate(accessToken.getAccountId(), airLineId);
             existedDates.retainAll(dates);
-            if (existedDates.size() > 0) return ReplyHelper.invalidParam("重复的航班");
-
+            if (existedDates.size() > 0) {
+                return ReplyHelper.invalidParam("重复的航班");
+            }
             line.setAirlineId(airLineId);
         }
 
@@ -76,19 +78,14 @@ public class LineServiceImpl implements LineService {
 
         // 生成航班资源数据集合
         List<Flight> flights = airlineVO.setFlight(line, dates);
-        Log log = new Log();
-        log.setId(Generator.uuid());
-        log.setAirlineId(line.getId());
-        log.setMessage("新增航线资源");
-        log.setOperatorUser(accessToken.getUserName());
-        log.setOperatorId(accessToken.getUserId());
 
         // 持久化数据
         Integer count = airlineMapper.addLine(line);
         count += airlineMapper.addLineFlights(flights);
-        count += airlineMapper.addLog(log);
-        if (count <= 0) return ReplyHelper.error();
-
+        count += airlineMapper.addLog(airlineVO.setAirlineLog(line, true));
+        if (count <= 0) {
+            return ReplyHelper.error();
+        }
         return ReplyHelper.success();
     }
 
@@ -104,27 +101,33 @@ public class LineServiceImpl implements LineService {
             return ReplyHelper.fail("航线已售，无法编辑");
         }
         AccessToken accessToken = JsonUtils.toAccessToken(token);
-        List<Date> dates = airlineVO.getDates(line.getDepartureStart(), line.getDepartureEnd(), line.getDetails().get(0).getWeekFlights());
         // 根据城市、航班号和行程天数计算摘要并查询航线基础数据ID
-        String airLineId = airlineMapper.getLine(line.getId()).getAirlineId();
+        String key = airlineVO.hashValue(line.getDetails());
+        String airLineId = airlineMapper.getExistedAirline(key);
         // 校验数据是否重复
+        List<Date> dates = airlineVO.getDates(line.getDepartureStart(), line.getDepartureEnd(), line.getDetails().get(0).getWeekFlights());
         List<Date> existedDates = airlineMapper.getExistedflightDateByUpdate(accessToken.getAccountId(), airLineId, line.getId());
         existedDates.retainAll(dates);
         if (existedDates.size() > 0) {
             return ReplyHelper.invalidParam("航线已存在");
         }
+        Integer count = 0;
+        if (StringUtils.isNotBlank(airLineId)) {
+            line.setAirlineId(airLineId);
+        } else {
+            Airline airline = airlineVO.setAirline(line);
+            List<Voyage> voyages = airlineVO.setVoyage(line.getDetails(), airline.getId());
+            line.setAirlineId(airline.getId());
+            count += airlineMapper.addAirline(airline);
+            count += airlineMapper.addVoyages(voyages);
+        }
         // 如航线基础数据不存在,则生成相应的航线基础数据并持久化到数据库
         airlineMapper.deleteFlight(line.getId());
         // 持久化数据
-        Airline airline = airlineVO.setAirline(line);
-        List<Voyage> voyages = airlineVO.setVoyage(line.getDetails(), airline.getId());
-        Integer count = airlineMapper.addAirline(airline);
-        count += airlineMapper.addVoyages(voyages);
-        line.setAirlineId(airline.getId());
         count += airlineMapper.updateLine(line);
         List<Flight> flights = airlineVO.setFlight(line, dates);
         count += airlineMapper.addLineFlights(flights);
-        count += airlineMapper.addLog(airlineVO.setAirlineLog(line,false));
+        count += airlineMapper.addLog(airlineVO.setAirlineLog(line, false));
         if (count <= 0) {
             return ReplyHelper.error();
         }
@@ -162,11 +165,10 @@ public class LineServiceImpl implements LineService {
 
     @Override
     public Reply lineInfo(String token, Line line) {
-
         Line line1 = airlineMapper.getLine(line.getId());
         Airline airline = airlineMapper.getAirlineById(line1.getAirlineId());
         List<LineDetail> voyages = airlineMapper.getVoyages(airline.getId());
-        Map<String, Object> resultMap = new HashMap<>();
+        Map<String, Object> resultMap = new HashMap<>(16);
         resultMap.put("line", line);
         resultMap.put("airline", airline);
         resultMap.put("voyages", voyages);
@@ -189,9 +191,7 @@ public class LineServiceImpl implements LineService {
         String userName = JsonUtils.toAccessToken(token).getUserName();
         List<Flight> flightList = airlineMapper.getFlights(airlineId);
         if (1 == status && airlineMapper.ifOnSale(airlineId) == null) {
-            flightList.stream().forEach(f -> {
-                airlineVO.addSeats(accountId, f.getId(), accountName, f.getSeatCount(), userName, userId);
-            });
+            flightList.stream().forEach(f -> airlineVO.addSeats(accountId, f.getId(), accountName, f.getSeatCount(), userName, userId));
         } else if (2 == status) {
             airlineMapper.deleteSeats(airlineId);
         }
@@ -199,6 +199,7 @@ public class LineServiceImpl implements LineService {
     }
 
     @Override
+    @Transactional
     public Reply queryFlightInfo(LineDetail info) throws InvocationTargetException, IllegalAccessException {
         List<LineDetail> airlineList = airlineMapper.getFlightInfos(info.getFlightNo());
         if (airlineList.size() > 0) {
@@ -234,10 +235,10 @@ public class LineServiceImpl implements LineService {
 
     @Override
     public Reply newLineInfo(Line line) {
-        Map<String, Object> resultMap = new HashMap<>();
+        Map<String, Object> resultMap = new HashMap<>(16);
         line.setPageIndex(line.getPageIndex() * line.getPageSize());
         List<NewLine> newLines = airlineMapper.newLineData(line);
-        if (newLines.size() < 25) {
+        if (newLines.size() < line.getPageSize()) {
             resultMap.put("isLastPage", true);
         } else {
             resultMap.put("isLastPage", false);

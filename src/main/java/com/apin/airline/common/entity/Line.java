@@ -209,6 +209,16 @@ public class Line implements Serializable {
     private String voyage;
 
     /**
+     * 出发城市
+     */
+    private String depCity;
+
+    /**
+     * 到达城市
+     */
+    private String arrCity;
+
+    /**
      * 航程明细
      */
     private List<LineDetail> details;
@@ -531,5 +541,21 @@ public class Line implements Serializable {
 
     public void setVoyage(String voyage) {
         this.voyage = voyage;
+    }
+
+    public String getDepCity() {
+        return depCity;
+    }
+
+    public void setDepCity(String depCity) {
+        this.depCity = depCity;
+    }
+
+    public String getArrCity() {
+        return arrCity;
+    }
+
+    public void setArrCity(String arrCity) {
+        this.arrCity = arrCity;
     }
 }
