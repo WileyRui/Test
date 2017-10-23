@@ -43,7 +43,7 @@ public interface QueryMapper extends Mapper {
     List<ResponseAirlineDto> selectFlightDetail(CityList cityList);
     @Select("select a.flight_company compName,b.logo_ico logo,a.flight_arrtime_plan_date arrTime,a.flight_deptime_plan_date depTime,a.flight_dep_airport depAirport,e.flight_type flightType," +
             "a.flight_arr_airport arrAirport,a.flight_no num from msd_airline_info a  " +
-            " JOIN msd_airway b ON a.flight_company = b.company_name  " +
+            " LEFT JOIN msd_airway b ON a.flight_company = b.company_name  " +
             " join msd_airline_voyage c on  c.flight_info_id=a.id  " +
             " join msd_airline e on e.id=c.airline_id  " +
             " WHERE c.airline_id=#{flightNum} order by c.trip_index")
