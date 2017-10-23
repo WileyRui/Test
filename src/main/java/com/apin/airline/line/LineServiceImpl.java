@@ -121,9 +121,10 @@ public class LineServiceImpl implements LineService {
         Integer count = airlineMapper.addAirline(airline);
         count += airlineMapper.addVoyages(voyages);
         line.setAirlineId(airline.getId());
-        count = airlineMapper.updateLine(line);
+        count += airlineMapper.updateLine(line);
         List<Flight> flights = airlineVO.setFlight(line, dates);
         count += airlineMapper.addLineFlights(flights);
+        count += airlineMapper.addLog(airlineVO.setAirlineLog(line,false));
         if (count <= 0) {
             return ReplyHelper.error();
         }
@@ -228,7 +229,7 @@ public class LineServiceImpl implements LineService {
             return ReplyHelper.error();
         }
         List<LineDetail> lineDetails = variFlight.initVariFlightData(info.getFlightNo(), info.getBeginDate());
-        return ReplyHelper.success(lineDetails, "航班信息更新成功");
+        return ReplyHelper.success(lineDetails);
     }
 
     @Override

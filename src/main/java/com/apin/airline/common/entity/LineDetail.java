@@ -217,7 +217,7 @@ public class LineDetail implements Serializable {
     }
 
     public String getFlightDeptimePlanDate() {
-        return flightDeptimePlanDate;
+        return flightDeptimePlanDate.length() > 11 ? flightDeptimePlanDate.substring(11) : flightDeptimePlanDate;
     }
 
     public void setFlightDeptimePlanDate(String flightDeptimePlanDate) {
@@ -225,7 +225,7 @@ public class LineDetail implements Serializable {
     }
 
     public String getFlightArrtimePlanDate() {
-        return flightArrtimePlanDate;
+        return flightArrtimePlanDate.length() > 11 ? flightDeptimePlanDate.substring(11) : flightArrtimePlanDate;
     }
 
     public void setFlightArrtimePlanDate(String flightArrtimePlanDate) {
