@@ -228,7 +228,7 @@ public class LineServiceImpl implements LineService {
             return ReplyHelper.error();
         }
         List<LineDetail> lineDetails = variFlight.initVariFlightData(info.getFlightNo(), info.getBeginDate());
-        return ReplyHelper.success(lineDetails, "航班信息更新成功");
+        return ReplyHelper.success(lineDetails);
     }
 
     @Override

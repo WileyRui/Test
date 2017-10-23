@@ -81,16 +81,15 @@ public class VariFlightService {
      */
     @Transactional
     public List<LineDetail> initVariFlightData(String flightNo, String departDate) throws InvocationTargetException, IllegalAccessException {
-        List<VariFlight> variFlights = new ArrayList<>();
-        List<List<VariFlight>> variFlights1 = new ArrayList<>();
-//        Map<String, Object> resultMap = new HashMap<>();
+        List<VariFlight> variFlights;
+        List<VariFlight> variFlights1 = new ArrayList<>();
         int[] days = new int[7];
         for (int i = 0; i < 7; i++) {
             variFlights = getFlightInfo(flightNo, departDate);
             Date dateS = DateHelper.parseDate(departDate);
             int week = DateHelper.getWeek(departDate);
             if (variFlights != null && variFlights.size() > 0) {
-                variFlights1.add(variFlights);
+                variFlights1 = new ArrayList<>(variFlights);
                 if (week == 7) {
                     days[0] = 1;
                 } else {
@@ -105,8 +104,7 @@ public class VariFlightService {
         }
         String flights = Arrays.toString(days).replace("[", "").replace("]", "").replace(" ", "");
         List<LineDetail> lineDetails = new ArrayList<>();
-//        List<VariFlight> variFlightList = variFlights1.get(0);
-        variFlights.forEach(i -> {
+        variFlights1.forEach(i -> {
             LineDetail info = new LineDetail();
             info.setId(Generator.uuid());
             info.setFcategory(Byte.valueOf(i.getFcategory()));
