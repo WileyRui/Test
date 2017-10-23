@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -39,14 +38,14 @@ public class VariFlightService {
     /**
      * 根据航班号和日期获取航线信息
      *
-     * @param flightNo
-     * @param departDate
-     * @return
+     * @param flightNo 航班号
+     * @param departDate 出发日期 "yyyy-MM-dd"
+     * @return List<VariFlight>
      */
-    public List<VariFlight> getFlightInfo(String flightNo, String departDate) {
-        StringBuffer content = new StringBuffer();
+    private List<VariFlight> getFlightInfo(String flightNo, String departDate) {
+        StringBuilder content = new StringBuilder();
         List<VariFlight> variFlights;
-        Map<String, String> paramMap = new HashMap<String, String>();
+        Map<String, String> paramMap = new HashMap<>(16);
         paramMap.put("fnum", flightNo);
         paramMap.put("appid", appId);
         paramMap.put("date", departDate);
@@ -55,7 +54,7 @@ public class VariFlightService {
         for (int i = 0; i < keyList.size(); ++i) {
             String key = keyList.get(i);
             String value = String.valueOf(paramMap.get(key));
-            content.append((i == 0 ? "" : "&") + key + "=" + value);
+            content.append(i == 0 ? "" : "&").append(key).append("=").append(value);
         }
         content.append(appSecurity);
         String token = DigestUtils.md5Hex(DigestUtils.md5Hex(content.toString()));
@@ -73,8 +72,8 @@ public class VariFlightService {
     /**
      * 初始化飞常准数据
      *
-     * @param flightNo
-     * @param departDate
+     * @param flightNo 航班号
+     * @param departDate 出发日期
      * @return
      * @throws InvocationTargetException
      * @throws IllegalAccessException
@@ -84,22 +83,22 @@ public class VariFlightService {
         List<VariFlight> variFlights;
         List<VariFlight> variFlights1 = new ArrayList<>();
         int[] days = new int[7];
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < days.length; i++) {
             variFlights = getFlightInfo(flightNo, departDate);
             Date dateS = DateHelper.parseDate(departDate);
             int week = DateHelper.getWeek(departDate);
             if (variFlights != null && variFlights.size() > 0) {
                 variFlights1 = new ArrayList<>(variFlights);
-                if (week == 7) {
+                if (week == days.length) {
                     days[0] = 1;
                 } else {
                     days[week] = 1;
                 }
             }
-            Date dateAdd = new Date(dateS.getTime() + 1 * 24 * 60 * 60 * 1000);
+            Date dateAdd = new Date(dateS.getTime() + 24 * 60 * 60 * 1000);
             departDate = new SimpleDateFormat("yyyy-MM-dd").format(dateAdd);
         }
-        if (variFlights1 == null || variFlights1.size() == 0) {
+        if (variFlights1.size() == 0) {
             return null;
         }
         String flights = Arrays.toString(days).replace("[", "").replace("]", "").replace(" ", "");
