@@ -2,6 +2,7 @@ package com.apin.airline.flight;
 
 import com.apin.airline.flight.dto.CityList;
 import com.apin.airline.flight.dto.PriceTemplateBean;
+import com.apin.airline.flight.dto.SearchDayAirlinesDto;
 import com.apin.airline.flight.dto.SearchDto;
 import com.apin.airline.ticket.dto.CalendarInfo;
 import com.apin.airline.ticket.dto.Stock;
@@ -152,6 +153,14 @@ public class FlightController {
     public Reply searchFlightList(@RequestBody CityList cityList) throws Exception {
         return flightService.searchFlightList(cityList);
     }
-
+    /**
+     * 每日航线查询
+     * @param searchAirlineDto
+     * @return
+     */
+    @PostMapping(value = "/v1.0/searchDayAirlines")
+    public Reply searchDayAirlines(@RequestBody SearchDayAirlinesDto searchDayAirlinesDto){
+        return flightService.searchDayAirlines(searchDayAirlinesDto);
+    }
 
 }

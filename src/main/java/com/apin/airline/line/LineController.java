@@ -2,6 +2,7 @@ package com.apin.airline.line;
 
 import com.apin.airline.common.entity.Line;
 import com.apin.airline.common.entity.LineDetail;
+import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -126,5 +127,15 @@ public class LineController {
     @PostMapping("/v1.0/lines/new")
     public Reply newLineInfo(@RequestBody Line line){
         return service.newLineInfo(line);
+    }
+
+    /**
+     * 查询航线操作日志
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/v1.0/logs")
+    public Reply getAirlinesLogs(@RequestBody String id){
+        return service.listLogs(id);
     }
 }

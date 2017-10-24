@@ -2,6 +2,7 @@ package com.apin.airline.flight;
 
 import com.apin.airline.flight.dto.CityList;
 import com.apin.airline.flight.dto.PriceTemplateBean;
+import com.apin.airline.flight.dto.SearchDayAirlinesDto;
 import com.apin.airline.flight.dto.SearchDto;
 import com.apin.airline.ticket.dto.CalendarInfo;
 import com.apin.airline.ticket.dto.Stock;
@@ -99,4 +100,11 @@ public interface FlightService {
      * @return
      */
     Reply searchFlightMonth(CityList cityList);
+
+    /**
+     * 查询每日航线资源
+     * @param searchAirlineDto
+     * @return
+     */
+    public Reply searchDayAirlines(SearchDayAirlinesDto searchAirlineDto);
 }

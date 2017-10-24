@@ -67,4 +67,11 @@ public interface QueryMapper extends Mapper {
             " and   a.res_type=0 and a.airline_status=1 and a.is_invalid=0 " +
             "GROUP BY e.days) a GROUP BY SUBSTRING_INDEX(a.retDate,'-',2)")
     List<String> selectFlightsMonth(CityList cityList);
+    /**
+     * 查询航线每日库存情况
+     * @param searchAirlineDto 查询条件Dto
+     * @return
+     */
+    @SelectProvider(type=AspectSql.class,method = "searchDayAirlines")
+    public List<AirlineInfo> searchDayAirlines(SearchDayAirlinesDto searchDayAirlinesDto);
 }

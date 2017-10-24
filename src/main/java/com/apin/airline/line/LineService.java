@@ -93,4 +93,11 @@ public interface LineService {
      * @return
      */
     Reply newLineInfo(Line line);
+
+    /**
+     * 查询航线操作日志
+     * @param airlineId
+     * @return
+     */
+    Reply listLogs(String airlineId);
 }

@@ -10,15 +10,15 @@ import com.apin.airline.ticket.dto.CalendarInfo;
 import com.apin.airline.ticket.dto.Stock;
 import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Author:huanglei
@@ -147,6 +147,17 @@ public class FlightServiceImpl implements FlightService {
         }
         airlineInfo.setTag(1);
         return formatter1.format(new Date(parse.getTime()+24*3600*1000));
+    }
+
+    @Override
+    public Reply searchDayAirlines(SearchDayAirlinesDto searchAirlineDto) {
+        PageHelper.startPage(searchAirlineDto.getPage(), searchAirlineDto.getSize());
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        List<AirlineInfo> list = queryMapper.searchDayAirlines(searchAirlineDto);
+        PageInfo pageInfo = new PageInfo(list);
+        map.put("totalRows", (int) pageInfo.getTotal());
+        map.put("currentPage", pageInfo.getPageNum());
+        return ReplyHelper.success(pageInfo.getList(),map);
     }
 
 }

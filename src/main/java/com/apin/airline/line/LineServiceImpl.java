@@ -4,6 +4,7 @@ import com.apin.airline.common.AirlineVO;
 import com.apin.airline.common.VariFlightClient;
 import com.apin.airline.common.entity.*;
 import com.apin.airline.common.mapper.AirlineMapper;
+import com.apin.airline.common.mapper.LogMapper;
 import com.apin.airline.line.dto.NewLine;
 import com.apin.util.Generator;
 import com.apin.util.JsonUtils;
@@ -30,6 +31,8 @@ public class LineServiceImpl implements LineService {
     VariFlightClient variFlight;
     @Autowired
     AirlineMapper airlineMapper;
+    @Autowired
+    LogMapper logMapper;
     @Autowired
     AirlineVO airlineVO;
 
@@ -246,5 +249,10 @@ public class LineServiceImpl implements LineService {
         }
         resultMap.put("lines", newLines);
         return ReplyHelper.success(resultMap);
+    }
+
+    @Override
+    public Reply listLogs(String airlineId) {
+        return ReplyHelper.success(logMapper.searchLogs(airlineId));
     }
 }
