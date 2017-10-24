@@ -13,32 +13,15 @@ public class VariFlight implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**
-     *错误码
+     * 错误码
      */
     @JsonProperty("error_code")
     private String errorCode;
 
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
     /**
-     *错误信息
+     * 错误信息
      */
     @JsonProperty("error")
-
     private String errorMessage;
 
     /**
@@ -166,6 +149,22 @@ public class VariFlight implements Serializable {
      */
     @JsonProperty("FlightArrAirport")
     private String flightArrAirport;
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
     public String getFcategory() {
         return fcategory;

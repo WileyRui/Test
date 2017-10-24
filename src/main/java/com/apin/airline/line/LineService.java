@@ -4,6 +4,7 @@ import com.apin.airline.common.entity.Line;
 import com.apin.airline.common.entity.LineDetail;
 import com.apin.util.pojo.Reply;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -68,7 +69,7 @@ public interface LineService {
      * @param info
      * @return
      */
-    Reply queryFlightInfo(LineDetail info) throws InvocationTargetException, IllegalAccessException;
+    Reply queryFlightInfo(LineDetail info) throws InvocationTargetException, IllegalAccessException, IOException;
 
 
     /**
@@ -85,7 +86,7 @@ public interface LineService {
      * @param info
      * @return
      */
-    Reply updateFlightInfo(LineDetail info) throws InvocationTargetException, IllegalAccessException;
+    Reply updateFlightInfo(LineDetail info) throws InvocationTargetException, IllegalAccessException, IOException;
 
     /**
      * 获取最新的航线信息

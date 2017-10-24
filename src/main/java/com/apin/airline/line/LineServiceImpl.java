@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -200,13 +201,13 @@ public class LineServiceImpl implements LineService {
 
     @Override
     @Transactional
-    public Reply queryFlightInfo(LineDetail info) throws InvocationTargetException, IllegalAccessException {
+    public Reply queryFlightInfo(LineDetail info) throws InvocationTargetException, IllegalAccessException, IOException {
         List<LineDetail> airlineList = airlineMapper.getFlightInfos(info.getFlightNo());
         if (airlineList.size() > 0) {
             return ReplyHelper.success(airlineList);
         }
         List<LineDetail> lineDetails = variFlight.initVariFlightData(info.getFlightNo(), info.getBeginDate());
-        if (lineDetails.size() == 0) {
+        if (lineDetails == null || lineDetails.size() == 0) {
             return ReplyHelper.fail("航班信息不存在，手工录入");
         }
         return ReplyHelper.success(lineDetails);
@@ -224,7 +225,7 @@ public class LineServiceImpl implements LineService {
 
     @Transactional
     @Override
-    public Reply updateFlightInfo(LineDetail info) throws InvocationTargetException, IllegalAccessException { //需求待确认
+    public Reply updateFlightInfo(LineDetail info) throws InvocationTargetException, IllegalAccessException, IOException { //需求待确认
         Integer row = airlineMapper.deleteFlightInfo(info.getFlightNo());
         if (row <= 0) {
             return ReplyHelper.error();

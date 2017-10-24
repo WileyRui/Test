@@ -6,6 +6,7 @@ import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -92,7 +93,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/flightInfo/query")
-    public Reply queryFlightInfo(@RequestBody LineDetail info) throws InvocationTargetException, IllegalAccessException {
+    public Reply queryFlightInfo(@RequestBody LineDetail info) throws InvocationTargetException, IllegalAccessException, IOException {
         return service.queryFlightInfo(info);
     }
 
@@ -114,7 +115,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/flightInfo/update")
-    public Reply updateFlightInfo(@RequestBody LineDetail info) throws InvocationTargetException, IllegalAccessException {
+    public Reply updateFlightInfo(@RequestBody LineDetail info) throws InvocationTargetException, IllegalAccessException, IOException {
         return service.updateFlightInfo(info);
     }
 

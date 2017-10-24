@@ -48,7 +48,7 @@ public class VariFlightClient {
      * @param departDate 出发日期 "yyyy-MM-dd"
      * @return List<VariFlight>
      */
-    private List<VariFlight> getFlightInfo(String flightNo, String departDate) {
+    private List<VariFlight> getFlightInfo(String flightNo, String departDate) throws IOException {
         StringBuilder content = new StringBuilder();
         List<VariFlight> variFlights;
         Map<String, String> paramMap = new HashMap<>(16);
@@ -65,14 +65,12 @@ public class VariFlightClient {
         content.append(appSecurity);
         String token = DigestUtils.md5Hex(DigestUtils.md5Hex(content.toString()));
         paramMap.put("token", token);
-        try {
-            String result = sendHttpGet(url, paramMap);
-            variFlights = JsonUtils.toBean(result, JsonUtils.getJavaType(List.class, VariFlight.class));
-            return variFlights;
-        } catch (Exception e) {
-            e.printStackTrace();
+        String result = sendHttpGet(url, paramMap);
+        if (result.contains("error")) {
             return null;
         }
+        variFlights = JsonUtils.toBean(result, JsonUtils.getJavaType(List.class, VariFlight.class));
+        return variFlights;
     }
 
     /**
@@ -85,7 +83,7 @@ public class VariFlightClient {
      * @throws IllegalAccessException
      */
     @Transactional
-    public List<LineDetail> initVariFlightData(String flightNo, String departDate) throws InvocationTargetException, IllegalAccessException {
+    public List<LineDetail> initVariFlightData(String flightNo, String departDate) throws InvocationTargetException, IllegalAccessException, IOException {
         List<VariFlight> variFlights;
         List<VariFlight> variFlights1 = new ArrayList<>();
         int[] days = new int[7];
@@ -146,7 +144,6 @@ public class VariFlightClient {
         method.setPath(strUrl);
         client.executeMethod(method);
         String response = new String(method.getResponseBodyAsString().getBytes("UTF-8"));
-        System.out.println(response);
         return response;
     }
 
