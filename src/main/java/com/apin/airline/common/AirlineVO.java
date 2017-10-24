@@ -198,10 +198,14 @@ public class AirlineVO {
      * @return Reply
      */
     public Reply checkData(Line line) {
-        if (line.getTicketAdvance() >= line.getRecoveryAdvance()) return ReplyHelper.invalidParam("余票回收天数必须大于开票提前天数");
+        if (line.getTicketAdvance() >= line.getRecoveryAdvance()) {
+            return ReplyHelper.invalidParam("余票回收天数必须大于开票提前天数");
+        }
 
         List<LineDetail> details = line.getDetails();
-        if (details == null || details.size() == 0) return ReplyHelper.invalidParam("缺少航班信息");
+        if (details == null || details.size() == 0) {
+            return ReplyHelper.invalidParam("缺少航班信息");
+        }
 
         return ReplyHelper.success();
     }
@@ -231,7 +235,9 @@ public class AirlineVO {
         List<Date> dates = new ArrayList<>();
         String[] dayOfWeek = weeks.split(",");
         for (int i = 0; i < 7; i++) {
-            if (dayOfWeek[i].equals("0")) continue;
+            if ("0".equals(dayOfWeek[i])) {
+                continue;
+            }
 
             dayList.add(i);
         }

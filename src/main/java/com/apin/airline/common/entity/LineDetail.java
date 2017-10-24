@@ -1,7 +1,6 @@
 package com.apin.airline.common.entity;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.Date;
 
 /**

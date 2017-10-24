@@ -1,7 +1,7 @@
 package com.apin.airline.line;
 
-import com.apin.airline.common.entity.LineDetail;
 import com.apin.airline.common.entity.Line;
+import com.apin.airline.common.entity.LineDetail;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

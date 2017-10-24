@@ -32,7 +32,9 @@ public class LogFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         this.filterConfig = filterConfig;
-        if (this.filterConfig == null) logger.debug("FilterConfig is NULL!");
+        if (this.filterConfig == null) {
+            logger.debug("FilterConfig is NULL!");
+        }
     }
 
     /**

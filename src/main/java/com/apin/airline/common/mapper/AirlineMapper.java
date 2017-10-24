@@ -3,7 +3,6 @@ package com.apin.airline.common.mapper;
 import com.apin.airline.common.entity.*;
 import com.apin.airline.line.dto.NewLine;
 import org.apache.ibatis.annotations.*;
-import org.springframework.scheduling.annotation.Async;
 
 import java.math.BigDecimal;
 import java.util.Date;

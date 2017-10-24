@@ -1,7 +1,7 @@
 package com.apin.airline.line;
 
-import com.apin.airline.common.entity.LineDetail;
 import com.apin.airline.common.entity.Line;
+import com.apin.airline.common.entity.LineDetail;
 import com.apin.util.pojo.Reply;
 
 import java.lang.reflect.InvocationTargetException;

@@ -1,9 +1,6 @@
 package com.apin.airline.flight;
 
-import com.apin.airline.common.Airline;
 import com.apin.airline.common.AopService;
-import com.apin.airline.common.entity.City;
-import com.apin.airline.common.entity.Flight;
 import com.apin.airline.common.entity.Log;
 import com.apin.airline.common.mapper.AirlineMapper;
 import com.apin.airline.common.mapper.BaseMapper;
@@ -13,8 +10,6 @@ import com.apin.airline.ticket.dto.CalendarInfo;
 import com.apin.airline.ticket.dto.Stock;
 import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -83,12 +78,18 @@ public class FlightServiceImpl implements FlightService {
         return ReplyHelper.success(flightDetails);
     }
 
+    /**
+     * 根据城市对与出发日期查询航班
+     *
+     * @param cityList
+     * @return
+     */
     @Override
     public Reply searchFlights(CityList cityList) {
-        //cityList.setArrDate(cityList.);
         List<FlightDetail> flightDetails = queryMapper.selectFlights(cityList);
         return ReplyHelper.success(flightDetails);
     }
+
     @Override
     public Reply searchFlightMonth(CityList cityList) {
         return ReplyHelper.success(queryMapper.selectFlightsMonth(cityList));
@@ -99,7 +100,9 @@ public class FlightServiceImpl implements FlightService {
         List<ResponseAirlineDto> responseAirlineDtos = queryMapper.selectFlightDetail(cityList);
         for (ResponseAirlineDto responseAirlineDto : responseAirlineDtos) {
             List<AirlineInfo> airlineInfos = queryMapper.selectByFlightNum(responseAirlineDto.getAirlineId());
-            if (airlineInfos.size()==0) continue;
+            if (airlineInfos.size()==0) {
+                continue;
+            }
             if (airlineInfos.size() == 2) {
                 AirlineInfo airlineInfo = airlineInfos.get(1);
                 airlineInfo.setDepDate(responseAirlineDto.getRetDate());
@@ -139,8 +142,9 @@ public class FlightServiceImpl implements FlightService {
         Date dep = formatter.parse(airlineInfo.getDepTime());
         SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
         Date parse = formatter1.parse(airlineInfo.getDepDate());
-        if (arr.getTime() > dep.getTime())
+        if (arr.getTime() > dep.getTime()) {
             return airlineInfo.getDepDate();
+        }
         airlineInfo.setTag(1);
         return formatter1.format(new Date(parse.getTime()+24*3600*1000));
     }

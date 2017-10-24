@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RecvoerSchedule {
 
-    private Logger LOG = LoggerFactory.getLogger(RecvoerSchedule.class);
+    private Logger logger = LoggerFactory.getLogger(RecvoerSchedule.class);
 
     /**
      * 每天0点触发一次

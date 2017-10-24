@@ -3,7 +3,6 @@ package com.apin.airline.flight.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Random;
 
 /**
  * @author songjia

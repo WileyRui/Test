@@ -28,7 +28,9 @@ public class BodyReaderRequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public ServletInputStream getInputStream() throws IOException {
-        if (cachedBytes == null) cacheInputStream();
+        if (cachedBytes == null) {
+            cacheInputStream();
+        }
 
         return new CachedServletInputStream();
     }

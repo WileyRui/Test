@@ -1,7 +1,6 @@
 package com.apin.airline.common;
 
 import com.apin.airline.flight.dto.CityList;
-import com.apin.airline.flight.dto.SearchDto;
 import com.apin.airline.ticket.dto.CalendarInfo;
 import com.apin.airline.ticket.dto.Deal;
 import com.apin.airline.ticket.dto.Stock;
@@ -27,8 +26,9 @@ public class Airline {
                 flag = false;
             }
         }
-        if (flag)
+        if (flag) {
             return ReplyHelper.success();
+        }
         reply.setMessage(out + "为空");
         return reply;
     }

@@ -34,17 +34,19 @@ public class HttpFlightUtils {
      * @throws Exception
      */
     public static String net(String strUrl, Map params, String method) throws Exception {
+
+
         HttpURLConnection conn = null;
         BufferedReader reader = null;
         String rs = null;
         try {
             StringBuffer sb = new StringBuffer();
-            if (method == null || method.equals("GET")) {
+            if (method == null || "GET".equals(method)) {
                 strUrl = strUrl + "?" + urlencode(params);
             }
             URL url = new URL(strUrl);
             conn = (HttpURLConnection) url.openConnection();
-            if (method == null || method.equals("GET")) {
+            if (method == null || "GET".equals(method)) {
                 conn.setRequestMethod("GET");
             } else {
                 conn.setRequestMethod("POST");
@@ -56,14 +58,11 @@ public class HttpFlightUtils {
             conn.setReadTimeout(DEF_READ_TIMEOUT);
             conn.setInstanceFollowRedirects(false);
             conn.connect();
-            if (params != null && method.equals("POST")) {
-                try {
-                    DataOutputStream out = new DataOutputStream(conn.getOutputStream());
-                    out.writeBytes(urlencode(params));
-                } catch (Exception e) {
-                    logger.info("======DataOutputStream something wrong ==============");
-                }
+            if ("POST".equals(method)) {
+                DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+                out.writeBytes(urlencode(params));
             }
+
             InputStream is = conn.getInputStream();
             reader = new BufferedReader(new InputStreamReader(is, DEF_CHATSET));
             String strRead = null;
@@ -71,9 +70,6 @@ public class HttpFlightUtils {
                 sb.append(strRead);
             }
             rs = sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            logger.info("======juhe interface get something wrong ==============");
         } finally {
             if (reader != null) {
                 reader.close();
@@ -84,60 +80,6 @@ public class HttpFlightUtils {
         }
         return rs;
     }
-
-
-    public static String net1(String strUrl, Map params, String method) throws Exception {
-        HttpURLConnection conn = null;
-        BufferedReader reader = null;
-        String rs = null;
-        try {
-            StringBuffer sb = new StringBuffer();
-            if (method == null || method.equals("GET")) {
-                strUrl = strUrl + urlencode(params);
-            }
-            URL url = new URL(strUrl);
-            conn = (HttpURLConnection) url.openConnection();
-            if (method == null || method.equals("GET")) {
-                conn.setRequestMethod("GET");
-            } else {
-                conn.setRequestMethod("POST");
-                conn.setDoOutput(true);
-            }
-            conn.setRequestProperty("User-agent", userAgent);
-            conn.setUseCaches(false);
-            conn.setConnectTimeout(DEF_CONN_TIMEOUT);
-            conn.setReadTimeout(DEF_READ_TIMEOUT);
-            conn.setInstanceFollowRedirects(false);
-            conn.connect();
-            if (params != null && method.equals("POST")) {
-                try {
-                    DataOutputStream out = new DataOutputStream(conn.getOutputStream());
-                    out.writeBytes(urlencode(params));
-                } catch (Exception e) {
-                    logger.info("======DataOutputStream something wrong ==============");
-                }
-            }
-            InputStream is = conn.getInputStream();
-            reader = new BufferedReader(new InputStreamReader(is, DEF_CHATSET));
-            String strRead = null;
-            while ((strRead = reader.readLine()) != null) {
-                sb.append(strRead);
-            }
-            rs = sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            logger.info("======juhe interface get something wrong ==============");
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
-        return rs;
-    }
-
 
     // 将map型转为请求参数型
     public static String urlencode(Map<String, Object> data) {
