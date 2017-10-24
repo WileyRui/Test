@@ -224,7 +224,7 @@ public class LineDetail implements Serializable {
     }
 
     public String getFlightArrtimePlanDate() {
-        return flightArrtimePlanDate.length() > 11 ? flightDeptimePlanDate.substring(11) : flightArrtimePlanDate;
+        return flightArrtimePlanDate.length() > 11 ? flightArrtimePlanDate.substring(11) : flightArrtimePlanDate;
     }
 
     public void setFlightArrtimePlanDate(String flightArrtimePlanDate) {

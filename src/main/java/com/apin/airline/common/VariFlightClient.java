@@ -118,11 +118,11 @@ public class VariFlightClient {
             info.setFlightDep(i.getFlightDep());
             info.setFlightArrAirport(i.getFlightArrAirport());
             info.setFlightArrcode(i.getFlightArrcode());
-            info.setFlightArrtimePlanDate(i.getFlightDeptimePlanDate());
+            info.setFlightArrtimePlanDate(i.getFlightArrtimePlanDate());
             info.setFlightCompany(i.getFlightCompany());
             info.setFlightDepAirport(i.getFlightDepAirport());
             info.setFlightDepcode(i.getFlightDepcode());
-            info.setFlightDeptimePlanDate(i.getFlightArrtimePlanDate());
+            info.setFlightDeptimePlanDate(i.getFlightDeptimePlanDate());
             info.setStopFlag(i.getStopFlag().equals(1));
             info.setWeekFlights(flights);
             lineDetails.add(info);
