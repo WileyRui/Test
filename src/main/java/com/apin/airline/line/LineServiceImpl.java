@@ -1,7 +1,7 @@
 package com.apin.airline.line;
 
 import com.apin.airline.common.AirlineVO;
-import com.apin.airline.common.VariFlightService;
+import com.apin.airline.common.VariFlightClient;
 import com.apin.airline.common.entity.*;
 import com.apin.airline.common.mapper.AirlineMapper;
 import com.apin.airline.line.dto.NewLine;
@@ -26,7 +26,7 @@ import java.util.*;
 @Service
 public class LineServiceImpl implements LineService {
     @Autowired
-    VariFlightService variFlight;
+    VariFlightClient variFlight;
     @Autowired
     AirlineMapper airlineMapper;
     @Autowired
