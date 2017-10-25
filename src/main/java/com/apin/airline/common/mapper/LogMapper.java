@@ -15,7 +15,8 @@ import java.util.List;
  */
 @Mapper
 public interface LogMapper  {
-    @Insert("")
+    @Insert("insert into mbs_airline_log (id,airline_id,event_source,event_code,event_name,message,operator_user,operator_id,created_time)" +
+            " values (#{id},#{airlineId},#{eventSource},#{eventCode},#{eventName},#{message},#{operatorUser},#{operatorId},now())")
     Integer  insert(Log log);
     @Select("select * from mbs_airline_log where airline_id = #{airlineId} order by created_time desc")
     public List<Log> searchLogs(String airlineId);

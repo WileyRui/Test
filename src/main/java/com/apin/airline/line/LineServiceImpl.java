@@ -86,7 +86,7 @@ public class LineServiceImpl implements LineService {
         // 持久化数据
         Integer count = airlineMapper.addLine(line);
         count += airlineMapper.addLineFlights(flights);
-        count += airlineMapper.addLog(airlineVO.setAirlineLog(line, true));
+        count += logMapper.insert(airlineVO.setAirlineLog(line, true));
         if (count <= 0) {
             return ReplyHelper.error();
         }
@@ -131,7 +131,7 @@ public class LineServiceImpl implements LineService {
         count += airlineMapper.updateLine(line);
         List<Flight> flights = airlineVO.setFlight(line, dates);
         count += airlineMapper.addLineFlights(flights);
-        count += airlineMapper.addLog(airlineVO.setAirlineLog(line, false));
+        count += logMapper.insert(airlineVO.setAirlineLog(line, false));
         if (count <= 0) {
             return ReplyHelper.error();
         }
