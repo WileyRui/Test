@@ -43,13 +43,6 @@ public interface FlightService {
     Reply modifyPrice(Stock stock);
 
     /**
-     * 价格批量导入
-     *
-     * @param priceTemplateBeanList
-     */
-    Reply priceImport(List<PriceTemplateBean> priceTemplateBeanList);
-
-    /**
      * 根据城市对查询航班信息
      *
      * @param searchDto
@@ -107,4 +100,18 @@ public interface FlightService {
      * @return
      */
     public Reply searchDayAirlines(SearchDayAirlinesDto searchAirlineDto);
+
+    public Reply priceImport(List<PriceTemplateBean> priceTemplateBeans);
+    /**
+     * 更新每日航线资源
+     * @param priceTemplateBean
+     */
+    public Reply priceUpdate(PriceTemplateBean priceTemplateBean);
+
+    /**
+     * 获取航线下的所有日期
+     * @param airlineId
+     * @return
+     */
+    public Reply getAirlineDates(String airlineId);
 }

@@ -6,6 +6,7 @@ import com.apin.airline.flight.dto.SearchDayAirlinesDto;
 import com.apin.airline.flight.dto.SearchDto;
 import com.apin.airline.ticket.dto.CalendarInfo;
 import com.apin.airline.ticket.dto.Stock;
+import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -155,12 +156,39 @@ public class FlightController {
     }
     /**
      * 每日航线查询
-     * @param searchAirlineDto
+     * @param searchDayAirlinesDto
      * @return
      */
     @PostMapping(value = "/v1.0/searchDayAirlines")
     public Reply searchDayAirlines(@RequestBody SearchDayAirlinesDto searchDayAirlinesDto){
         return flightService.searchDayAirlines(searchDayAirlinesDto);
     }
+    /**
+     * 批量更新每日航线资源
+     * @param priceTemplateBean
+     * @return
+     */
+    @PostMapping(value = "/v1.0/priceUpdate")
+    public Reply priceUpdate(@RequestBody PriceTemplateBean priceTemplateBean){
+        return flightService.priceUpdate(priceTemplateBean);
+    }
+    /**
+     * 价格批量导入更新
+     * @param priceTemplateBeanList
+     * @return
+     */
+    @PostMapping(value = "/v1.0/priceimport")
+    public Reply priceimport(@RequestBody List<PriceTemplateBean> priceTemplateBeanList){
+       return flightService.priceImport(priceTemplateBeanList);
+    }
 
+    /**
+     *
+     * @param priceTemplateBean
+     * @return
+     */
+    @PostMapping(value="/v1.0/airlineDates")
+    public Reply airlineDates(@RequestBody PriceTemplateBean priceTemplateBean){
+        return flightService.getAirlineDates(priceTemplateBean.getAirlineId());
+    }
 }

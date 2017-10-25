@@ -1,6 +1,7 @@
 package com.apin.airline.common.mapper;
 
 import com.apin.airline.flight.dto.CityList;
+import com.apin.airline.flight.dto.PriceTemplateBean;
 import com.apin.airline.flight.dto.SearchDayAirlinesDto;
 import org.apache.commons.lang.StringUtils;
 
@@ -118,7 +119,7 @@ public class AspectSql {
             sqlBuffer.append(" and mbsa.supplier_name like '%"+searchAirlineDto.getSupplierName()+"%'");
         }
         if(StringUtils.isNotBlank(searchAirlineDto.getSourceId())){
-            if(searchAirlineDto.getSourceId().equals("1")) {
+            if("1".equals(searchAirlineDto.getSourceId())) {
                 sqlBuffer.append(" and mbsa.res_type = 0 ");
             } else {
                 sqlBuffer.append(" and mbsa.res_type <>0 ");
@@ -134,5 +135,27 @@ public class AspectSql {
         }
         sqlBuffer.append(" mbsa.created_time desc,mbsa.airline_no,mbsaf.flight_date");
         return sqlBuffer.toString();
+    }
+    //更新每日航线资源
+    public String updatePrice(PriceTemplateBean priceTemplateBean) {
+        StringBuffer updateSqlBuf = new StringBuffer("update mbs_airline_flight set ");
+        if(priceTemplateBean.getAdultPrice()!=null) {
+            updateSqlBuf.append(" adult_price = " + priceTemplateBean.getAdultPrice() + ",");
+        }
+        if(priceTemplateBean.getChildPrice()!=null) {
+            updateSqlBuf.append("child_price=" + priceTemplateBean.getChildPrice() + ",");
+        }
+        if(priceTemplateBean.getRecycleDay()!=null) {
+            updateSqlBuf.append("recovery_date= DATE_ADD(flight_date,INTERVAL " + -priceTemplateBean.getRecycleDay() + " DAY),");
+        }
+        if(priceTemplateBean.getStoreType()!=null) {
+            updateSqlBuf.append("sell_type=" + priceTemplateBean.getStoreType() + ",");
+        }
+        if(priceTemplateBean.getStoreCount()!=null) {
+            updateSqlBuf.append("seat_count=" + priceTemplateBean.getStoreCount() + ",");
+        }
+        updateSqlBuf = new StringBuffer(updateSqlBuf.substring(0,updateSqlBuf.length()-1));
+        updateSqlBuf.append(" where airline_id ='" + priceTemplateBean.getAirlineId() + "' and flight_date='" + priceTemplateBean.getFlightDate() + "'");
+        return updateSqlBuf.toString();
     }
 }

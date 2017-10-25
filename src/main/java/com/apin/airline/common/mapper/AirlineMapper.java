@@ -1,6 +1,7 @@
 package com.apin.airline.common.mapper;
 
 import com.apin.airline.common.entity.*;
+import com.apin.airline.flight.dto.PriceTemplateBean;
 import com.apin.airline.line.dto.NewLine;
 import org.apache.ibatis.annotations.*;
 
@@ -15,16 +16,6 @@ import java.util.List;
  */
 @Mapper
 public interface AirlineMapper extends Mapper {
-
-    /**
-     * 新增操作日志
-     *
-     * @param log 操作日志数据实体
-     * @return 受影响行数
-     */
-    @Insert("INSERT mbs_airline_log(id,airline_id,event_source,event_code,event_name,message,operator_user,operator_id) " +
-            "VALUES (#{id},#{airlineId},#{eventSource},#{eventCode},#{eventName},#{message},#{operatorUser},#{operatorId});")
-    Integer addLog(Log log);
 
     /**
      * 新增航班信息数据
@@ -276,6 +267,7 @@ public interface AirlineMapper extends Mapper {
     Integer updatePrice(@Param("id") String airlineId, @Param("dates") List<Date> dates,
                         @Param("adultPrice") BigDecimal adultPrice, @Param("childPrice") BigDecimal childPrice);
 
+    Integer updateAirlineFlight();
     /**
      * 查询指定账户ID及航线基础数据ID的全部航班资源的执飞日期
      *
@@ -496,4 +488,11 @@ public interface AirlineMapper extends Mapper {
             "WHERE flight_id in " +
             "(SELECT id FROM mbs_airline_flight WHERE airline_id=#{airlineId})")
     Integer deleteSeats(@Param("airlineId") String airlineId);
+
+    /**
+     * 更新每日航线资源
+     * @param priceTemplateBean
+     */
+    @UpdateProvider(type = AspectSql.class, method = "updatePrice")
+    public void updatePrice(PriceTemplateBean priceTemplateBean);
 }
