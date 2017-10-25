@@ -169,7 +169,7 @@ public class FlightServiceImpl implements FlightService {
     public Reply priceImport(List<PriceTemplateBean> priceTemplateBeans) {
         if(priceTemplateBeans!=null){
             for (int i = 0; i < priceTemplateBeans.size(); i++) {
-                airlineMapper.updatePrice(priceTemplateBeans.get(i));
+                airlineMapper.updateDayPrice(priceTemplateBeans.get(i));
             }
             Log log = new Log();
             log.setId(Generator.uuid());
@@ -194,7 +194,7 @@ public class FlightServiceImpl implements FlightService {
         if(flightDates!=null){
             for (int i = 0; i < flightDates.size(); i++) {
                 priceTemplateBean.setFlightDate(flightDates.get(i));
-                airlineMapper.updatePrice(priceTemplateBean);
+                airlineMapper.updateDayPrice(priceTemplateBean);
             }
             String message = "";
             if(priceTemplateBean.getAdultPrice()!=null){

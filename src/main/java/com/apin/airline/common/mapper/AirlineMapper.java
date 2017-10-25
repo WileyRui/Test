@@ -494,5 +494,5 @@ public interface AirlineMapper extends Mapper {
      * @param priceTemplateBean
      */
     @UpdateProvider(type = AspectSql.class, method = "updatePrice")
-    public void updatePrice(PriceTemplateBean priceTemplateBean);
+    public void updateDayPrice(PriceTemplateBean priceTemplateBean);
 }
