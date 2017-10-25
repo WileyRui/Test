@@ -154,7 +154,7 @@ public class FlightServiceImpl implements FlightService {
     public Reply searchDayAirlines(SearchDayAirlinesDto searchAirlineDto) {
         PageHelper.startPage(searchAirlineDto.getPage(), searchAirlineDto.getSize());
         Map<String, Integer> map = new HashMap<String, Integer>();
-        List<AirlineInfo> list = queryMapper.searchDayAirlines(searchAirlineDto);
+        List<AirlineInfoDTO> list = queryMapper.searchDayAirlines(searchAirlineDto);
         PageInfo pageInfo = new PageInfo(list);
         map.put("totalRows", (int) pageInfo.getTotal());
         map.put("currentPage", pageInfo.getPageNum());
