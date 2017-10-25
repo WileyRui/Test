@@ -160,6 +160,8 @@ public class LineServiceImpl implements LineService {
 
     @Override
     public Reply lineList(Line line, String token) {
+        // 更新航线状态：过期
+        airlineMapper.updateAirLineStatus("", (byte) 3);
         AccessToken accessToken = JsonUtils.toAccessToken(token);
         line.setAccountId(accessToken.getAccountId());
         line.setPageIndex((line.getPageIndex() - 1) * line.getPageSize());
