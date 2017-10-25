@@ -171,8 +171,8 @@ public class LineServiceImpl implements LineService {
 
     @Override
     public Reply lineInfo(String token, Line line) {
-        Line line1 = airlineMapper.getLine(line.getId());
-        Airline airline = airlineMapper.getAirlineById(line1.getAirlineId());
+        line = airlineMapper.getLine(line.getId());
+        Airline airline = airlineMapper.getAirlineById(line.getAirlineId());
         List<LineDetail> voyages = airlineMapper.getVoyages(airline.getId());
         Map<String, Object> resultMap = new HashMap<>(16);
         resultMap.put("line", line);

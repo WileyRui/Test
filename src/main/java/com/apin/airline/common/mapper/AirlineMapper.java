@@ -223,7 +223,7 @@ public interface AirlineMapper extends Mapper {
      * @param id 航线资源ID
      * @return 航线资源数据
      */
-    @Select("SELECT * FROM mbs_airline WHERE id=#{id};")
+    @Select("SELECT * FROM mbs_airline WHERE id = #{id}")
     Line getLine(String id);
 
     /**
