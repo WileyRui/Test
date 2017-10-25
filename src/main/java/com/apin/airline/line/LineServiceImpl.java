@@ -189,7 +189,7 @@ public class LineServiceImpl implements LineService {
         if (row <= 0) {
             return ReplyHelper.error();
         }
-        String accountId = line.getAccountId();
+        String accountId = JsonUtils.toAccessToken(token).getAccountId();
         String accountName = line.getSupplierName();
         String userId = JsonUtils.toAccessToken(token).getUserId();
         String userName = JsonUtils.toAccessToken(token).getUserName();
