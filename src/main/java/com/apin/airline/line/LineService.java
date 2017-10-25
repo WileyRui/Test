@@ -45,7 +45,7 @@ public interface LineService {
      * @param token
      * @return
      */
-    Reply lineList(Line line,String token);
+    Reply lineList(Line line, String token);
 
     /**
      * 航线详情
@@ -53,7 +53,7 @@ public interface LineService {
      * @param line
      * @return
      */
-    Reply lineInfo(String token,Line line);
+    Reply lineInfo(String token, Line line);
 
     /**
      * 航线上下架
@@ -61,7 +61,7 @@ public interface LineService {
      * @param line
      * @return
      */
-    Reply upOrDown(String token,Line line);
+    Reply upOrDown(String token, Line line);
 
     /**
      * 航班查询
@@ -90,21 +90,24 @@ public interface LineService {
 
     /**
      * 获取最新的航线信息
+     *
      * @return
      */
     Reply newLineInfo(Line line);
 
     /**
      * 查询航线操作日志
+     *
      * @param airlineId
      * @return
      */
     Reply listLogs(String airlineId);
 
     /**
-     * 查询航线信息
+     * 查询航线航班信息
+     *
      * @param line
      * @return
      */
-    public Reply getAirlineInfo(Line line);
+    Reply getAirlineInfo(Line line);
 }

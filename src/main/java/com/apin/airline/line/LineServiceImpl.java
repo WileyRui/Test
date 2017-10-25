@@ -262,6 +262,6 @@ public class LineServiceImpl implements LineService {
     public Reply getAirlineInfo(Line line) {
         line = airlineMapper.getLine(line.getId());
         Airline airline = airlineMapper.getAirlineById(line.getAirlineId());
-        return ReplyHelper.success(line,airline);
+        return ReplyHelper.success(line, airline);
     }
 }

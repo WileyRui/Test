@@ -61,8 +61,8 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/list")
-    public Reply lineList(@RequestBody Line line,@RequestHeader("Authorization") String token) {
-        return service.lineList(line,token);
+    public Reply lineList(@RequestBody Line line, @RequestHeader("Authorization") String token) {
+        return service.lineList(line, token);
     }
 
     /**
@@ -72,8 +72,8 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/detail/query")
-    public Reply lineInfo(@RequestHeader("Authorization") String token,@RequestBody Line line) {
-        return service.lineInfo(token,line);
+    public Reply lineInfo(@RequestHeader("Authorization") String token, @RequestBody Line line) {
+        return service.lineInfo(token, line);
     }
 
     /**
@@ -83,8 +83,8 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/status/update")
-    public Reply upOrDown(@RequestHeader("Authorization") String token,@RequestBody Line line) {
-        return service.upOrDown(token,line);
+    public Reply upOrDown(@RequestHeader("Authorization") String token, @RequestBody Line line) {
+        return service.upOrDown(token, line);
     }
 
     /**
@@ -121,31 +121,34 @@ public class LineController {
     }
 
     /**
-     *获取最新的航线信息
+     * 获取最新的航线信息
+     *
      * @return
      */
     @PostMapping("/v1.0/lines/new")
-    public Reply newLineInfo(@RequestBody Line line){
+    public Reply newLineInfo(@RequestBody Line line) {
         return service.newLineInfo(line);
     }
 
     /**
      * 查询航线操作日志
+     *
      * @param id
      * @return
      */
-    @PostMapping(value = "/v1.0/logs")
-    public Reply getAirlinesLogs(@RequestBody String id){
+    @PostMapping("/v1.0/logs")
+    public Reply getAirlinesLogs(@RequestBody String id) {
         return service.listLogs(id);
     }
 
     /**
-     * 查询航线信息
+     * 查询航线航班信息
+     *
      * @param line
      * @return
      */
-    @PostMapping(value = "/v1.0/lines/info/query")
-    public Reply getAirlineInfo(@RequestBody Line line){
+    @PostMapping("/v1.0/lines/info/query")
+    public Reply getAirlineInfo(@RequestBody Line line) {
         return service.getAirlineInfo(line);
     }
 
