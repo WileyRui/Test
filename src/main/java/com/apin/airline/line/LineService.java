@@ -100,4 +100,11 @@ public interface LineService {
      * @return
      */
     Reply listLogs(String airlineId);
+
+    /**
+     * 查询航线信息
+     * @param line
+     * @return
+     */
+    public Reply getAirlineInfo(Line line);
 }

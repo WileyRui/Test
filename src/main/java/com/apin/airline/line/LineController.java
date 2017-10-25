@@ -138,4 +138,15 @@ public class LineController {
     public Reply getAirlinesLogs(@RequestBody String id){
         return service.listLogs(id);
     }
+
+    /**
+     * 查询航线信息
+     * @param line
+     * @return
+     */
+    @PostMapping(value = "/v1.0/lines/info/query")
+    public Reply getAirlineInfo(@RequestBody Line line){
+        return service.getAirlineInfo(line);
+    }
+
 }

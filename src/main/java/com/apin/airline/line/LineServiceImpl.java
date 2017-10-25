@@ -257,4 +257,11 @@ public class LineServiceImpl implements LineService {
     public Reply listLogs(String airlineId) {
         return ReplyHelper.success(logMapper.searchLogs(airlineId));
     }
+
+    @Override
+    public Reply getAirlineInfo(Line line) {
+        line = airlineMapper.getLine(line.getId());
+        Airline airline = airlineMapper.getAirlineById(line.getAirlineId());
+        return ReplyHelper.success(line,airline);
+    }
 }
