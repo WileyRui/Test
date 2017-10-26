@@ -29,11 +29,11 @@ public interface AirlineMapper extends Mapper {
             "<foreach collection = \"list\" item = \"item\" index = \"index\" separator = \",\"> " +
             "(#{item.id},#{item.flightNo},#{item.flightCompany},#{item.fcategory},#{item.flightDep},#{item.flightArr}," +
             "#{item.flightDepAirport},#{item.flightArrAirport},#{item.flightDepcode},#{item.flightArrcode}," +
-            "#{item.flightDeptimePlanDate},#{item.flightArrtimePlanDate},#{item.stopFlag},#{item.weekFlights}) " +
+            "#{item.flightDeptimePlanDate},#{item.flightArrtimePlanDate},#{item.stopFlag},#{item.flights}) " +
             "</foreach></script>")
     Integer addFlightInfo(List<LineDetail> lineDetails);
 
-    /**
+    /**f
      * 删除指定航班号的航班信息数据
      *
      * @param flightNo 航班号
