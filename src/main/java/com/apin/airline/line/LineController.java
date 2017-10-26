@@ -3,6 +3,7 @@ package com.apin.airline.line;
 import com.apin.airline.common.entity.Flight;
 import com.apin.airline.common.entity.Line;
 import com.apin.airline.common.entity.LineDetail;
+import com.apin.airline.line.dto.NewLine;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -133,12 +134,12 @@ public class LineController {
     /**
      * 查询航线操作日志
      *
-     * @param id
+     * @param newLine
      * @return
      */
     @PostMapping("/v1.0/logs")
-    public Reply getAirlinesLogs(@RequestBody String id) {
-        return service.listLogs(id);
+    public Reply getAirlinesLogs(@RequestBody NewLine newLine) {
+        return service.listLogs(newLine.getLineId());
     }
 
     /**

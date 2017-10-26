@@ -73,5 +73,5 @@ public interface QueryMapper extends Mapper {
      * @return
      */
     @SelectProvider(type=AspectSql.class,method = "searchDayAirlines")
-    public List<AirlineInfo> searchDayAirlines(SearchDayAirlinesDto searchDayAirlinesDto);
+    public List<AirlineInfoDTO> searchDayAirlines(SearchDayAirlinesDto searchDayAirlinesDto);
 }
