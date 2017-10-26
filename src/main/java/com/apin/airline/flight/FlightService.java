@@ -1,6 +1,10 @@
 package com.apin.airline.flight;
 
 import com.apin.airline.flight.dto.*;
+import com.apin.airline.flight.dto.CityList;
+import com.apin.airline.flight.dto.PriceTemplateBean;
+import com.apin.airline.flight.dto.SearchDayAirlinesDto;
+import com.apin.airline.flight.dto.SearchDto;
 import com.apin.airline.ticket.dto.CalendarInfo;
 import com.apin.airline.ticket.dto.Stock;
 import com.apin.util.pojo.Reply;
@@ -54,12 +58,6 @@ public interface FlightService {
      */
     Reply modifyPrice(Stock stock);
 
-    /**
-     * 价格批量导入
-     *
-     * @param priceTemplateBeanList
-     */
-    Reply priceImport(List<PriceTemplateBean> priceTemplateBeanList);
 
     /**
      * arm航班列表查询
@@ -102,7 +100,7 @@ public interface FlightService {
     /**
      * 根据城市对与出发日期结束日期查询航班详情
      *
-     * @param searchDto
+     * @param cityList
      * @return
      */
     Reply searchFlightDetail(CityList cityList) throws Exception;
@@ -147,4 +145,23 @@ public interface FlightService {
      * @return
      */
     Reply compName();
+    /** 查询每日航线资源
+     * @param searchAirlineDto
+     * @return
+     */
+    public Reply searchDayAirlines(SearchDayAirlinesDto searchAirlineDto);
+
+    public Reply priceImport(List<PriceTemplateBean> priceTemplateBeans);
+    /**
+     * 更新每日航线资源
+     * @param priceTemplateBean
+     */
+    public Reply priceUpdate(PriceTemplateBean priceTemplateBean);
+
+    /**
+     * 获取航线下的所有日期
+     * @param airlineId
+     * @return
+     */
+    public Reply getAirlineDates(String airlineId);
 }

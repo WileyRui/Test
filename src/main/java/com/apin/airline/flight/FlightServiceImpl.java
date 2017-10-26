@@ -7,6 +7,7 @@ import com.apin.airline.common.entity.Log;
 import com.apin.airline.common.entity.Seat;
 import com.apin.airline.common.mapper.AirlineMapper;
 import com.apin.airline.common.mapper.BaseMapper;
+import com.apin.airline.common.mapper.LogMapper;
 import com.apin.airline.common.mapper.QueryMapper;
 import com.apin.airline.flight.dto.*;
 import com.apin.airline.ticket.dto.CalendarInfo;
@@ -20,6 +21,7 @@ import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -30,6 +32,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.*;
 
 /**
  * @Author:huanglei
@@ -46,6 +49,10 @@ public class FlightServiceImpl implements FlightService {
     private QueryMapper queryMapper;
 
 
+    @Autowired
+    private BaseMapper baseMapper;
+    @Autowired
+    private LogMapper logMapper;
     @Override
     public Reply homeCalendarInfo(HomeCalendarInfoQueryRequest request) {
         if(StringUtils.isEmpty(request.getAccountId())) {
@@ -168,18 +175,6 @@ public class FlightServiceImpl implements FlightService {
         return ReplyHelper.success();
     }
 
-    @Override
-    public Reply priceImport(List<PriceTemplateBean> priceTemplateBeanList) {
-        if (priceTemplateBeanList != null) {
-            for (int i = 0; i < priceTemplateBeanList.size(); i++) {
-                queryMapper.priceImport(priceTemplateBeanList.get(i));
-            }
-        }
-        PriceTemplateBean bean = priceTemplateBeanList.get(0);
-        Log Log = new Log(bean.getAirlineId(), "", "批量导入更新", bean.getUserName(), bean.getUserId(), "crm");
-        aopService.insertLog(Log);
-        return ReplyHelper.success();
-    }
 
     @Override
     public Reply flightList(DealerListDto listDto) {
@@ -351,4 +346,84 @@ public class FlightServiceImpl implements FlightService {
         return formatter1.format(new Date(parse.getTime()+24*3600*1000));
     }
 
+    @Override
+    public Reply searchDayAirlines(SearchDayAirlinesDto searchAirlineDto) {
+        PageHelper.startPage(searchAirlineDto.getPage(), searchAirlineDto.getSize());
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        List<AirlineInfoDTO> list = queryMapper.searchDayAirlines(searchAirlineDto);
+        PageInfo pageInfo = new PageInfo(list);
+        map.put("totalRows", (int) pageInfo.getTotal());
+        map.put("currentPage", pageInfo.getPageNum());
+        return ReplyHelper.success(pageInfo.getList(),map);
+    }
+    /**
+     * 价格批量导入
+     * @param priceTemplateBeans
+     */
+    @Override
+    @Transactional
+    public Reply priceImport(List<PriceTemplateBean> priceTemplateBeans) {
+        if(priceTemplateBeans!=null){
+            for (int i = 0; i < priceTemplateBeans.size(); i++) {
+                airlineMapper.updateDayPrice(priceTemplateBeans.get(i));
+            }
+            Log log = new Log();
+            log.setId(Generator.uuid());
+            log.setAirlineId(priceTemplateBeans.get(0).getAirlineId());
+            log.setEventSource("CRM");
+            log.setOperatorId(priceTemplateBeans.get(0).getAccountId());
+            log.setOperatorUser(priceTemplateBeans.get(0).getUserName());
+            log.setMessage("批量导入更新");
+            logMapper.insert(log);
+
+        }
+        return ReplyHelper.success();
+    }
+    /**
+     * 更新每日价格
+     * @param priceTemplateBean
+     */
+    @Override
+    @Transactional
+    public Reply priceUpdate(PriceTemplateBean priceTemplateBean) {
+        List<String> flightDates = priceTemplateBean.getFlightDates();
+        if(flightDates!=null){
+            for (int i = 0; i < flightDates.size(); i++) {
+                priceTemplateBean.setFlightDate(flightDates.get(i));
+                airlineMapper.updateDayPrice(priceTemplateBean);
+            }
+            String message = "";
+            if(priceTemplateBean.getAdultPrice()!=null){
+                message = "批量修改价格";
+            }
+            else if(priceTemplateBean.getStoreCount()!=null){
+                message = "批量修改库存";
+            }
+            else if(priceTemplateBean.getRecycleDay()!=null){
+                message = "批量修改清位时间";
+            }
+            Log log = new Log();
+            log.setId(Generator.uuid());
+            log.setAirlineId(priceTemplateBean.getAirlineId());
+            log.setEventSource("CRM");
+            log.setOperatorId(priceTemplateBean.getUserId());
+            log.setOperatorUser(priceTemplateBean.getUserName());
+            log.setMessage(message);
+            logMapper.insert(log);
+        }
+        return ReplyHelper.success();
+    }
+
+    @Override
+    public Reply getAirlineDates(String airlineId) {
+        List<Flight> flights = airlineMapper.getFlights(airlineId);
+        List<String> dates = new ArrayList<String>();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        if(flights!=null&&flights.size()>0){
+            for (int i = 0; i < flights.size(); i++) {
+         dates.add(formatter.format(flights.get(i).getFlightDate()));
+            }
+        }
+        return ReplyHelper.success(dates);
+    }
 }

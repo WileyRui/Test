@@ -5,6 +5,8 @@ import com.apin.airline.flight.dto.DealerListDto;
 import com.apin.airline.flight.dto.HomeCalendarInfoQueryRequest;
 import com.apin.airline.flight.dto.PriceTemplateBean;
 import com.apin.airline.ticket.dto.*;
+import com.apin.airline.flight.dto.PriceTemplateBean;
+import com.apin.airline.flight.dto.SearchDayAirlinesDto;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
@@ -309,5 +311,103 @@ public class AspectSql {
             sqlBuilder.append("and seat.owner_id like '%" + passengerParam.getOwner() + "%' ");
         }
         return sqlBuilder.toString();
+    }
+
+    public String searchDayAirlines(SearchDayAirlinesDto searchAirlineDto){
+        StringBuffer sqlBuffer = new StringBuffer(
+                "SELECT                                                                                                                                                                                              "
+                        +"  mbsa.account_id, "
+                        +"  mbsa.id,                                                                                                                                                                                          "
+                        +"  mbsa.res_type,"
+                        +"  mbsa.airline_status, "
+                        +"	mbsa.airline_no,                                                                                                                                                                                  "
+                        +"	mbsa.supplier_name,                                                                                                                                                                               "
+                        +"	msda.voyage,                                                                                                                                                                                      "
+                        +"  msda.flight_number,                                                                                                                                                                               "
+                        +"  mbsa.manager,                                                                                                                                                                                     "
+                        +"  mbsa.manager_id,                                                                                                                                                                                  "
+                        +"	mbsaf.flight_date,                                                                                                                                                                                "
+                        +"  DATE_ADD(mbsaf.flight_date,INTERVAL msdav.days DAY) as return_date,                                                                                                                               "
+                        +"  (msdav.days+1) as days,"
+                        +"  mbsaf.adult_price,                                                                                                                                                                                "
+                        +"  mbsaf.child_price,                                                                                                                                                                                "
+                        +" (case   "
+                        +" when mbsa.airline_status =1 then  mbsaf.seat_count-IFNULL(seatMain.saldCount,0) "
+                        +" when  mbsa.airline_status <> 1 then null  "
+                        +" end) as unsaldCount, "
+                        +"  msda.flight_type,                                                                                                                                                                                 "
+                        +"  mbsa.created_time                                                                                                                                                                                 "
+                        +"FROM                                                                                                                                                                                                "
+                        +"	mbs_airline mbsa,                                                                                                                                                                                 "
+                        +"	msd_airline msda                                                                                                                                                                                 "
+                        +"  left join msd_airline_voyage msdav on msda.id = msdav.airline_id and msdav.trip_index = 1,                                                                                                                                                                        "
+                        +"	mbs_airline_flight mbsaf left join                                                                                                                                                                       "
+                        +"  (select mbsafs.flight_id,COUNT(*) as saldCount from mbs_airline_flight_seat mbsafs where mbsafs.account_id = mbsafs.owner_id and mbsafs.seat_status = 1  group by mbsafs.flight_id) seatMain on mbsaf.id = seatMain.flight_id   "
+                        +"WHERE                                                                                                                                                                                               "
+                        +"	mbsaf.airline_id = mbsa.id                                                                                                                                                                        "
+                        +"AND mbsa.airline_id = msda.id                                                                                                                                                                       "
+                        +"and mbsa.is_invalid = 0 "
+                        +"and if(mbsa.res_type <> 0,mbsa.airline_status = 1,'1=1' ) "
+        );
+        if(StringUtils.isNotBlank(searchAirlineDto.getAirlineNo())){
+            sqlBuffer.append(" and mbsa.airline_no like '%"+searchAirlineDto.getAirlineNo()+"%'");
+        }
+        if(searchAirlineDto.getAirlineStatus()!=null){
+            sqlBuffer.append(" and mbsa.airline_status ="+searchAirlineDto.getAirlineStatus());
+        }
+        if(StringUtils.isNotBlank(searchAirlineDto.getDepartureCity())){
+            sqlBuffer.append(" and msda.voyage like '"+searchAirlineDto.getDepartureCity()+"%'");
+        }
+        if(StringUtils.isNotBlank(searchAirlineDto.getArriveCity())){
+            sqlBuffer.append(" and msda.voyage like '%"+searchAirlineDto.getArriveCity()+"'");
+        }
+        if(StringUtils.isNotBlank(searchAirlineDto.getDepartureFlightNo())){
+            sqlBuffer.append(" and msda.flight_number like '"+searchAirlineDto.getDepartureFlightNo()+"%'");
+        }
+        if(StringUtils.isNotBlank(searchAirlineDto.getReturnFlightNo())){
+            sqlBuffer.append(" and msda.flight_type <> 1 ");
+            sqlBuffer.append(" and msda.flight_number like '%"+searchAirlineDto.getReturnFlightNo()+"'");
+        }
+        if(StringUtils.isNotBlank(searchAirlineDto.getCharger())){
+            sqlBuffer.append(" and mbsa.manager like '%"+searchAirlineDto.getCharger()+"%'");
+        }
+        if(searchAirlineDto.getDays()!=null){
+            sqlBuffer.append(" and msdav.days = "+(searchAirlineDto.getDays()-1));
+        }
+        if(searchAirlineDto.getFlightType()!=null){
+            sqlBuffer.append(" and msda.flight_type = "+ searchAirlineDto.getFlightType());
+        }
+        if(StringUtils.isNotBlank(searchAirlineDto.getDepartureDateStart())){
+            sqlBuffer.append(" and mbsaf.flight_date >= '"+searchAirlineDto.getDepartureDateStart()+"'");
+        }
+        if(StringUtils.isNotBlank(searchAirlineDto.getDepartureDateEnd())){
+            sqlBuffer.append(" and mbsaf.flight_date <= '"+searchAirlineDto.getDepartureDateEnd()+"'");
+        }
+        if(StringUtils.isNotBlank(searchAirlineDto.getReturnDateStart())){
+            sqlBuffer.append(" and DATE_ADD(mbsaf.flight_date,INTERVAL msdav.days DAY) >= '"+searchAirlineDto.getReturnDateStart()+"'");
+        }
+        if(StringUtils.isNotBlank(searchAirlineDto.getReturnDateEnd())){
+            sqlBuffer.append(" and DATE_ADD(mbsaf.flight_date,INTERVAL msdav.days DAY) <= '"+searchAirlineDto.getReturnDateEnd()+"'");
+        }
+        if(StringUtils.isNotBlank(searchAirlineDto.getSupplierName())){
+            sqlBuffer.append(" and mbsa.supplier_name like '%"+searchAirlineDto.getSupplierName()+"%'");
+        }
+        if(StringUtils.isNotBlank(searchAirlineDto.getSourceId())){
+            if("1".equals(searchAirlineDto.getSourceId())) {
+                sqlBuffer.append(" and mbsa.res_type = 0 ");
+            } else {
+                sqlBuffer.append(" and mbsa.res_type <>0 ");
+            }
+        }
+        sqlBuffer.append(" order by ");
+        if(searchAirlineDto.getPriceOrderBy()!=null){
+            if(searchAirlineDto.getPriceOrderBy()==0) {
+                sqlBuffer.append(" mbsaf.adult_price ,");
+            } else{
+                sqlBuffer.append(" mbsaf.adult_price desc ,");
+            }
+        }
+        sqlBuffer.append(" mbsa.created_time desc,mbsa.airline_no,mbsaf.flight_date");
+        return sqlBuffer.toString();
     }
 }

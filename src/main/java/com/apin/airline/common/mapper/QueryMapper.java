@@ -421,4 +421,11 @@ public interface QueryMapper extends Mapper {
      */
     @Select("select company_name as compName,iata_code as iataCode,logo_ico as logIco,id as airwayId from msd_airway")
     List<Map<String,String>> findCompName();
+    /**
+     * 查询航线每日库存情况
+     * @param searchDayAirlinesDto 查询条件Dto
+     * @return
+     */
+    @SelectProvider(type=AspectSql.class,method = "searchDayAirlines")
+    public List<AirlineInfoDTO> searchDayAirlines(SearchDayAirlinesDto searchDayAirlinesDto);
 }

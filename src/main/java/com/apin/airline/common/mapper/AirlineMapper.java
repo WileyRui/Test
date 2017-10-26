@@ -18,16 +18,6 @@ import java.util.List;
 public interface AirlineMapper extends Mapper {
 
     /**
-     * 新增操作日志
-     *
-     * @param log 操作日志数据实体
-     * @return 受影响行数
-     */
-    @Insert("INSERT mbs_airline_log(id,airline_id,event_source,event_code,event_name,message,operator_user,operator_id) " +
-            "VALUES (#{id},#{airlineId},#{eventSource},#{eventCode},#{eventName},#{message},#{operatorUser},#{operatorId});")
-    Integer addLog(Log log);
-
-    /**
      * 新增航班信息数据
      *
      * @param lineDetails 航班信息数据集合
@@ -39,11 +29,11 @@ public interface AirlineMapper extends Mapper {
             "<foreach collection = \"list\" item = \"item\" index = \"index\" separator = \",\"> " +
             "(#{item.id},#{item.flightNo},#{item.flightCompany},#{item.fcategory},#{item.flightDep},#{item.flightArr}," +
             "#{item.flightDepAirport},#{item.flightArrAirport},#{item.flightDepcode},#{item.flightArrcode}," +
-            "#{item.flightDeptimePlanDate},#{item.flightArrtimePlanDate},#{item.stopFlag},#{item.weekFlights}) " +
+            "#{item.flightDeptimePlanDate},#{item.flightArrtimePlanDate},#{item.stopFlag},#{item.flights}) " +
             "</foreach></script>")
     Integer addFlightInfo(List<LineDetail> lineDetails);
 
-    /**
+    /**f
      * 删除指定航班号的航班信息数据
      *
      * @param flightNo 航班号
@@ -67,7 +57,7 @@ public interface AirlineMapper extends Mapper {
      * @param flightNo 航班号
      * @return 航班信息集合
      */
-    @Select("SELECT * FROM msd_airline_info WHERE flight_no=#{flightNo};")
+    @Select("SELECT * FROM msd_airline_info WHERE flight_no = #{flightNo};")
     List<LineDetail> getFlightInfos(String flightNo);
 
     /**
@@ -211,7 +201,7 @@ public interface AirlineMapper extends Mapper {
      */
     @Update("UPDATE mbs_airline SET " +
             "res_type=#{resType},seat_type=#{seatType},seat_count=#{seatCount},deposit_amount=#{depositAmount}," +
-            "airline_id=#{airlineId},departure_start=#{departureStart},departure_end=#{departureEnd},supplier_name=#{supplierName},"+
+            "airline_id=#{airlineId},departure_start=#{departureStart},departure_end=#{departureEnd},supplier_name=#{supplierName}," +
             "adult_price=#{adultPrice},child_price=#{childPrice},free_bag=#{freeBag},weight_limit=#{weightLimit}," +
             "alert_advance=#{alertAdvance},alert_rate=#{alertRate},can_return=#{canReturn},can_change=#{canChange}," +
             "can_sign=#{canSign},manager=#{manager},manager_id=#{managerId} WHERE id=#{id};")
@@ -228,12 +218,20 @@ public interface AirlineMapper extends Mapper {
     Integer updateAirLineStatus(@Param("id") String id, @Param("status") Byte status);
 
     /**
+     * 自动更新过期航线
+     *
+     * @return 受影响行数
+     */
+    @Update("UPDATE mbs_airline SET airline_status = 3 WHERE departure_end < CURDATE()")
+    Integer updateAirLineStatusByNow();
+
+    /**
      * 查询指定ID的航线资源数据
      *
      * @param id 航线资源ID
      * @return 航线资源数据
      */
-    @Select("SELECT * FROM mbs_airline WHERE id=#{id};")
+    @Select("SELECT * FROM mbs_airline WHERE id = #{id}")
     Line getLine(String id);
 
     /**
@@ -277,6 +275,8 @@ public interface AirlineMapper extends Mapper {
     Integer updatePrice(@Param("id") String airlineId, @Param("dates") List<String> dates,
                         @Param("adultPrice") BigDecimal adultPrice, @Param("childPrice") BigDecimal childPrice);
 
+    Integer updateAirlineFlight();
+
     /**
      * 查询指定账户ID及航线基础数据ID的全部航班资源的执飞日期
      *
@@ -293,7 +293,7 @@ public interface AirlineMapper extends Mapper {
      *
      * @param accountId 供应商账户ID
      * @param airLineId 航线基础数据ID
-     *  @param id 航线ID
+     * @param id        航线ID
      * @return 执飞日期集合
      */
     @Select("SELECT f.flight_date FROM mbs_airline a JOIN mbs_airline_flight f ON f.airline_id=a.id " +
@@ -474,29 +474,78 @@ public interface AirlineMapper extends Mapper {
      * @return
      */
     @Select("SELECT * FROM mbs_airline_flight WHERE airline_id=#{airlineId}")
-    List<Flight> getFlights(@Param("airlineId") String airlineId);
+    List<Flight> getFlights(String airlineId);
 
     /**
      * 上架判断seat库中是否已存在
      *
-     * @param flightIdList
+     * @param airlineId
      * @return
      */
     @Select("SELECT 1 FROM mbs_airline_flight_seat " +
             "WHERE flight_id in " +
             "(SELECT id FROM mbs_airline_flight WHERE airline_id=#{airlineId}) LIMIT 1")
-    Integer ifOnSale(@Param("airlineId") String airlineId);
+    Integer ifOnSale(String airlineId);
 
     /**
      * 下架删除seat库中记录
      *
-     * @param flightIdList
+     * @param airlineId
      * @return
      */
     @Delete("DELETE FROM mbs_airline_flight_seat " +
             "WHERE flight_id in " +
             "(SELECT id FROM mbs_airline_flight WHERE airline_id=#{airlineId})")
     Integer deleteSeats(@Param("airlineId") String airlineId);
+    /**
+     * 更新每日航线资源
+     *
+     * @param priceTemplateBean
+     */
+    @UpdateProvider(type = AspectSql.class, method = "updatePrice")
+    void updateDayPrice(PriceTemplateBean priceTemplateBean);
 
+    /**
+     * 查询过期航线
+     *
+     * @param start
+     * @return
+     */
+    @Select("select tmp.airline_id from mbs_airline ma left join ( select airline_id, max(flight_date) as edate " +
+            "from mbs_airline_flight group by airline_id) tmp on ma.id = tmp.airline_id where tmp.edate < #{start} " +
+            "and ( ma.airline_status = 1 or ma.airline_status = 2)")
+    List<String> queryExpireFlights(Date start);
 
+    /**
+     * 设置过期航线
+     *
+     * @param ids
+     * @return
+     */
+    @Update("update mbs_airline set airline_status = 3 where id in (${ids})")
+    Integer updateExpireFlights(String ids);
+
+    /**
+     * 根据 flightId 查询航线信息
+     *
+     * @param flightId
+     * @return
+     */
+    @Select("select ma.airline_id, ma.supplier_name, maf.flight_date departureEnd from mbs_airline ma left join mbs_airline_flight " +
+            "maf on ma.id = maf.airline_id where maf.id = #{flightId} ")
+    Line getLineByFlightId(String flightId);
+
+    /**
+     * 查询分销商拥用的航线数
+     *
+     * @param accountId
+     * @param ownerId
+     * @return
+     */
+    @Select("select count(distinct(airline_id)) from mbs_airline_flight a right join (select distinct(flight_id) " +
+            "from mbs_airline_flight_seat where account_id = #{accountId} and owner_id = #{ownerId} union all select " +
+            "distinct(flight_id) from mbc_assign_record where account_id = #{accountId} and dealer_id = #{ownerId} and " +
+            "flight_id not in (select distinct(flight_id) from mbs_airline_flight_seat where account_id = #{accountId} " +
+            "and owner_id= #{ownerId})) b on a.id = b.flight_id ")
+    Integer getEnableFlights(@Param("accountId") String accountId, @Param("ownerId") String ownerId);
 }

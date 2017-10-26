@@ -2,14 +2,16 @@ package com.apin.airline.line;
 
 import com.apin.airline.common.entity.Line;
 import com.apin.airline.common.entity.LineDetail;
+import com.apin.airline.line.dto.NewLine;
 import com.apin.util.pojo.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * @author 宣炳刚
+ * @author 温睿
  * @date 2017/10/10
  * @remark 航线管理服务控制器
  */
@@ -59,8 +61,8 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/list")
-    public Reply lineList(@RequestBody Line line,@RequestHeader("Authorization") String token) {
-        return service.lineList(line,token);
+    public Reply lineList(@RequestBody Line line, @RequestHeader("Authorization") String token) {
+        return service.lineList(line, token);
     }
 
     /**
@@ -70,8 +72,8 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/detail/query")
-    public Reply lineInfo(@RequestHeader("Authorization") String token,@RequestBody Line line) {
-        return service.lineInfo(token,line);
+    public Reply lineInfo(@RequestHeader("Authorization") String token, @RequestBody Line line) {
+        return service.lineInfo(token, line);
     }
 
     /**
@@ -81,8 +83,8 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/lines/status/update")
-    public Reply upOrDown(@RequestHeader("Authorization") String token,@RequestBody Line line) {
-        return service.upOrDown(token,line);
+    public Reply upOrDown(@RequestHeader("Authorization") String token, @RequestBody Line line) {
+        return service.upOrDown(token, line);
     }
 
     /**
@@ -92,7 +94,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/flightInfo/query")
-    public Reply queryFlightInfo(@RequestBody LineDetail info) throws InvocationTargetException, IllegalAccessException {
+    public Reply queryFlightInfo(@RequestBody LineDetail info) throws InvocationTargetException, IllegalAccessException, IOException {
         return service.queryFlightInfo(info);
     }
 
@@ -114,16 +116,73 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/flightInfo/update")
-    public Reply updateFlightInfo(@RequestBody LineDetail info) throws InvocationTargetException, IllegalAccessException {
+    public Reply updateFlightInfo(@RequestBody LineDetail info) throws InvocationTargetException, IllegalAccessException, IOException {
         return service.updateFlightInfo(info);
     }
 
     /**
-     *获取最新的航线信息
+     * 获取最新的航线信息
+     *
      * @return
      */
     @PostMapping("/v1.0/lines/new")
-    public Reply newLineInfo(@RequestBody Line line){
+    public Reply newLineInfo(@RequestBody Line line) {
         return service.newLineInfo(line);
+    }
+
+    /**
+     * 查询航线操作日志
+     *
+     * @param newLine
+     * @return
+     */
+    @PostMapping("/v1.0/logs")
+    public Reply getAirlinesLogs(@RequestBody NewLine newLine) {
+        return service.listLogs(newLine.getLineId());
+    }
+
+    /**
+     * 查询航线航班信息
+     *
+     * @param line
+     * @return
+     */
+    @PostMapping("/v1.0/lines/info/query")
+    public Reply getAirlineInfo(@RequestBody Line line) {
+        return service.getAirlineInfo(line);
+    }
+
+    /**
+     * 更新过期航线
+     *
+     * @param token
+     * @param line
+     * @return
+     */
+    @PostMapping("/v1.0/flight/updateExpireFlights")
+    public Reply updateExpireFlights(@RequestBody Line line) {
+        return service.updateExpireFlights(line);
+    }
+
+    /**
+     * 根据航班查询详细信息
+     *
+     * @param line
+     * @return
+     */
+    @PostMapping("/v1.0/flight/getLine")
+    public Reply getMbsAirlineByFlightId(@RequestBody Line line) {
+        return service.getLineByFlightId(line);
+    }
+
+    /**
+     * 查询分销商拥用的航线数
+     * @param token
+     * @param line
+     * @return
+     */
+    @PostMapping("/v1.0/flight/getEnableFlights")
+    public Reply getEnableFlights(@RequestHeader("Authorization") String token, @RequestBody Line line) {
+        return service.getEnableFlights(token, line);
     }
 }
