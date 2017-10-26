@@ -218,6 +218,14 @@ public interface AirlineMapper extends Mapper {
     Integer updateAirLineStatus(@Param("id") String id, @Param("status") Byte status);
 
     /**
+     * 自动更新过期航线
+     *
+     * @return 受影响行数
+     */
+    @Update("UPDATE mbs_airline SET airline_status = 3 WHERE departure_end < CURDATE()")
+    Integer updateAirLineStatusByNow();
+
+    /**
      * 查询指定ID的航线资源数据
      *
      * @param id 航线资源ID
@@ -496,13 +504,25 @@ public interface AirlineMapper extends Mapper {
      * @param priceTemplateBean
      */
     @UpdateProvider(type = AspectSql.class, method = "updatePrice")
-    public void updateDayPrice(PriceTemplateBean priceTemplateBean);
+    void updateDayPrice(PriceTemplateBean priceTemplateBean);
 
+    /**
+     * 查询过期航线
+     *
+     * @param start
+     * @return
+     */
     @Select("select tmp.airline_id from mbs_airline ma left join ( select airline_id, max(flight_date) as edate " +
             "from mbs_airline_flight group by airline_id) tmp on ma.id = tmp.airline_id where tmp.edate < #{start} " +
             "and ( ma.airline_status = 1 or ma.airline_status = 2)")
     List<String> queryExpireFlights(Date start);
 
+    /**
+     * 设置过期航线
+     *
+     * @param ids
+     * @return
+     */
     @Update("update mbs_airline set airline_status = 3 where id in (${ids})")
     Integer updateExpireFlights(String ids);
 

@@ -1,6 +1,5 @@
 package com.apin.airline.line;
 
-import com.apin.airline.common.entity.Flight;
 import com.apin.airline.common.entity.Line;
 import com.apin.airline.common.entity.LineDetail;
 import com.apin.util.pojo.Reply;
@@ -9,7 +8,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * @author 宣炳刚
+ * @author 温睿
  * @date 2017/10/10
  * @remark 航线管理服务接口
  */
@@ -71,7 +70,6 @@ public interface LineService {
      * @return
      */
     Reply queryFlightInfo(LineDetail info) throws InvocationTargetException, IllegalAccessException, IOException;
-
 
     /**
      * 维护航班

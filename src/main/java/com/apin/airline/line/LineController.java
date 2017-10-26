@@ -1,12 +1,9 @@
 package com.apin.airline.line;
 
-import com.apin.airline.common.entity.Flight;
 import com.apin.airline.common.entity.Line;
 import com.apin.airline.common.entity.LineDetail;
 import com.apin.airline.line.dto.NewLine;
-import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +11,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * @author 宣炳刚
+ * @author 温睿
  * @date 2017/10/10
  * @remark 航线管理服务控制器
  */
@@ -163,7 +160,7 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/flight/updateExpireFlights")
-    public Reply updateExpireFlights( @RequestBody Line line) {
+    public Reply updateExpireFlights(@RequestBody Line line) {
         return service.updateExpireFlights(line);
     }
 
