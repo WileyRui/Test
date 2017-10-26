@@ -1,5 +1,6 @@
 package com.apin.airline.line;
 
+import com.apin.airline.common.entity.Flight;
 import com.apin.airline.common.entity.Line;
 import com.apin.airline.common.entity.LineDetail;
 import com.apin.util.pojo.Reply;
@@ -110,4 +111,21 @@ public interface LineService {
      * @return
      */
     Reply getAirlineInfo(Line line);
+
+    /**
+     * 根据起飞时间，更新航线状态
+     *
+     * @param line
+     * @return
+     * @throws Exception
+     */
+    Reply updateExpireFlights(String token, Line line);
+
+    /**
+     * 根据航班号查询航线信息
+     *
+     * @param line
+     * @return
+     */
+    Reply getLineByFlightId(Line line);
 }

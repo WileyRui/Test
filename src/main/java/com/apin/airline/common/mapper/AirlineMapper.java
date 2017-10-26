@@ -495,4 +495,21 @@ public interface AirlineMapper extends Mapper {
      */
     @UpdateProvider(type = AspectSql.class, method = "updatePrice")
     public void updateDayPrice(PriceTemplateBean priceTemplateBean);
+
+    @Select("select tmp.airline_id from mbs_airline ma left join (select airline_id, max(flight_date) as edate " +
+            "from mbs_airline_flight group by airline_id) tmp on ma.id = tmp.airline_id where tmp.edate < #{start} " +
+            "and (ma.airline_status = 1 or  ma.airline_status = 2) ")
+    List<String> queryExpireFlights(@Param("start") Date start);
+
+    @Update("update mbs_airline set airline_status = 3 where id in (${ids}) ")
+    Integer updateExpireFlights(@Param("ids") String ids);
+
+    /**
+     * 根据 flightId 查询航线信息
+     * @param flightId
+     * @return
+     */
+    @Select("select ma.airline_id, ma.supplier_name, maf.flight_date departureEnd from mbs_airline ma left join mbs_airline_flight " +
+            "maf on ma.id = maf.airline_id where maf.id = #{flightId} ")
+    Line getLineByFlightId(@Param("flightId") String flightId);
 }

@@ -1,5 +1,6 @@
 package com.apin.airline.line;
 
+import com.apin.airline.common.entity.Flight;
 import com.apin.airline.common.entity.Line;
 import com.apin.airline.common.entity.LineDetail;
 import com.apin.util.pojo.Reply;
@@ -149,6 +150,29 @@ public class LineController {
     @PostMapping("/v1.0/lines/info/query")
     public Reply getAirlineInfo(@RequestBody Line line) {
         return service.getAirlineInfo(line);
+    }
+
+    /**
+     * 更新过期航线
+     *
+     * @param token
+     * @param line
+     * @return
+     */
+    @PostMapping(value = "/v1.0/flight/updateExpireFlights")
+    public Reply updateExpireFlights(@RequestHeader("Authorization") String token, @RequestBody Line line) {
+        return service.updateExpireFlights(token, line);
+    }
+
+    /**
+     * 根据航班查询详细信息
+     *
+     * @param line
+     * @return
+     */
+    @PostMapping(value = "/v1.0/flight/getLine")
+    public Reply getMbsAirlineByFlightId(@RequestBody Line line) {
+        return service.getLineByFlightId(line);
     }
 
 }

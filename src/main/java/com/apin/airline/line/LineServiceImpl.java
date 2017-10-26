@@ -1,5 +1,6 @@
 package com.apin.airline.line;
 
+import com.alibaba.fastjson.JSONObject;
 import com.apin.airline.common.AirlineVO;
 import com.apin.airline.common.VariFlightClient;
 import com.apin.airline.common.entity.*;
@@ -263,5 +264,48 @@ public class LineServiceImpl implements LineService {
         line = airlineMapper.getLine(line.getId());
         Airline airline = airlineMapper.getAirlineById(line.getAirlineId());
         return ReplyHelper.success(line, airline);
+    }
+
+    @Override
+    @Transactional
+    public Reply updateExpireFlights(String token, Line line) {
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        List<String> airlineIds = airlineMapper.queryExpireFlights(line.getDepartureEnd());
+        StringBuffer sb = new StringBuffer("");
+        airlineIds.forEach(aid -> {
+            Log log = new Log();
+            log.setAirlineId(aid);
+            log.setEventCode("1007");
+            log.setMessage("航线过期更新状态成功");
+            log.setOperatorUser(accessToken.getUserName());
+            log.setOperatorId(accessToken.getUserId());
+            logMapper.insert(log);
+            sb.append("'");
+            sb.append(aid);
+            sb.append("',");
+        });
+
+        if (null != airlineIds && airlineIds.size() > 0) {
+            String ids = sb.toString().substring(0, sb.toString().length() - 1);
+            airlineMapper.updateExpireFlights(ids);
+        }
+        return ReplyHelper.success();
+    }
+
+    @Override
+    public Reply getLineByFlightId(Line line) {
+        line = airlineMapper.getLineByFlightId(line.getId());
+        if (null == line) {
+            return ReplyHelper.invalidParam("暂无数据");
+        }
+
+        Airline airline = airlineMapper.getAirlineById(line.getAirlineId());
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("supplierName", line.getSupplierName());
+        jsonObject.put("flightDate", line.getDepartureEnd());
+        jsonObject.put("voyage", airline.getVoyage());
+        jsonObject.put("flightNumber", airline.getFlightNumber());
+        return ReplyHelper.success(jsonObject.toJSONString());
     }
 }
