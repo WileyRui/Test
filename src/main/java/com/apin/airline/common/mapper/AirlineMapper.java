@@ -57,7 +57,7 @@ public interface AirlineMapper extends Mapper {
      * @param flightNo 航班号
      * @return 航班信息集合
      */
-    @Select("SELECT * FROM msd_airline_info WHERE flight_no=#{flightNo};")
+    @Select("SELECT * FROM msd_airline_info WHERE flight_no = #{flightNo};")
     List<LineDetail> getFlightInfos(String flightNo);
 
     /**

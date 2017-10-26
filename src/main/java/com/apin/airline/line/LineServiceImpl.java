@@ -47,7 +47,7 @@ public class LineServiceImpl implements LineService {
         }
 
         AccessToken accessToken = JsonUtils.toAccessToken(token);
-        List<Date> dates = airlineVO.getDates(line.getDepartureStart(), line.getDepartureEnd(), line.getDetails().get(0).getWeekFlights());
+        List<Date> dates = airlineVO.getDates(line.getDepartureStart(), line.getDepartureEnd(), line.getDetails().get(0).getFlights());
 
         // 根据城市、航班号和行程天数计算摘要并查询航线基础数据ID
         String key = airlineVO.hashValue(line.getDetails());
@@ -110,7 +110,7 @@ public class LineServiceImpl implements LineService {
         String key = airlineVO.hashValue(line.getDetails());
         String airLineId = airlineMapper.getExistedAirline(key);
         // 校验数据是否重复
-        List<Date> dates = airlineVO.getDates(line.getDepartureStart(), line.getDepartureEnd(), line.getDetails().get(0).getWeekFlights());
+        List<Date> dates = airlineVO.getDates(line.getDepartureStart(), line.getDepartureEnd(), line.getDetails().get(0).getFlights());
         List<Date> existedDates = airlineMapper.getExistedflightDateByUpdate(accessToken.getAccountId(), airLineId, line.getId());
         existedDates.retainAll(dates);
         if (existedDates.size() > 0) {

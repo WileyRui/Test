@@ -122,7 +122,7 @@ public class VariFlightClient {
             info.setFlightDepcode(i.getFlightDepcode());
             info.setFlightDeptimePlanDate(i.getFlightDeptimePlanDate());
             info.setStopFlag(i.getStopFlag().equals(1));
-            info.setWeekFlights(flights);
+            info.setFlights(flights);
             lineDetails.add(info);
         });
         airlineMapper.addFlightInfo(lineDetails);

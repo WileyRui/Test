@@ -52,7 +52,7 @@ public class AirlineVO {
         airline.setVoyage(appendVoyage(line.getFlightType(), details));
         airline.setFlightNumber(appendFlightNumber(details));
         airline.setFlightTime(details.get(0).getFlightDeptimePlanDate());
-        airline.setWeekFlights(details.get(0).getWeekFlights());
+        airline.setWeekFlights(details.get(0).getFlights());
         airline.setCreatorUser(line.getCreatorUser());
         airline.setCreatorUserId(line.getCreatorUserId());
 
