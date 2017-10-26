@@ -2,6 +2,7 @@ package com.apin.airline.common;
 
 import com.apin.airline.common.entity.Log;
 import com.apin.airline.common.mapper.AirlineMapper;
+import com.apin.airline.common.mapper.LogMapper;
 import com.apin.airline.common.mapper.QueryMapper;
 import com.apin.airline.flight.dto.ApinCalendarElement;
 import com.apin.airline.ticket.dto.Stock;
@@ -24,6 +25,8 @@ public class AopService {
     private AirlineMapper airlineMapper;
     @Autowired
     private QueryMapper queryMapper;
+    @Autowired
+    private LogMapper logMapper;
     public Boolean insertLog(Log log){
         log.setId(Generator.uuid());
         switch (log.getEventCode()){
@@ -37,7 +40,7 @@ public class AopService {
             default:break;
         }
         log.setCreatedTime(new Timestamp(System.currentTimeMillis()));
-        return airlineMapper.addLog(log)>0;
+        return logMapper.insert(log)>0;
     }
 
     public ApinCalendarElement findStock(Stock stock) {
