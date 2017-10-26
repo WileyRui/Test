@@ -172,6 +172,7 @@ public class LineServiceImpl implements LineService {
     }
 
     @Override
+    @Transactional
     public Reply lineList(Line line, String token) {
         // 更新航线状态：过期
         airlineMapper.updateAirLineStatusByNow();
