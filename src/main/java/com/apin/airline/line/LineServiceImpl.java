@@ -268,8 +268,7 @@ public class LineServiceImpl implements LineService {
 
     @Override
     @Transactional
-    public Reply updateExpireFlights(String token, Line line) {
-        AccessToken accessToken = JsonUtils.toAccessToken(token);
+    public Reply updateExpireFlights(Line line) {
         List<String> airlineIds = airlineMapper.queryExpireFlights(line.getDepartureEnd());
         StringBuffer sb = new StringBuffer("");
         airlineIds.forEach(aid -> {
@@ -277,8 +276,8 @@ public class LineServiceImpl implements LineService {
             log.setAirlineId(aid);
             log.setEventCode("1007");
             log.setMessage("航线过期更新状态成功");
-            log.setOperatorUser(accessToken.getUserName());
-            log.setOperatorId(accessToken.getUserId());
+            log.setOperatorUser(line.getCreatorUser());
+            log.setOperatorId(line.getCreatorUserId());
             logMapper.insert(log);
             sb.append("'");
             sb.append(aid);

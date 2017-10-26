@@ -117,9 +117,8 @@ public interface LineService {
      *
      * @param line
      * @return
-     * @throws Exception
      */
-    Reply updateExpireFlights(String token, Line line);
+    Reply updateExpireFlights(Line line);
 
     /**
      * 根据航班号查询航线信息

@@ -163,8 +163,8 @@ public class LineController {
      * @return
      */
     @PostMapping("/v1.0/flight/updateExpireFlights")
-    public Reply updateExpireFlights(@RequestHeader("Authorization") String token, @RequestBody Line line) {
-        return service.updateExpireFlights(token, line);
+    public Reply updateExpireFlights( @RequestBody Line line) {
+        return service.updateExpireFlights(line);
     }
 
     /**
