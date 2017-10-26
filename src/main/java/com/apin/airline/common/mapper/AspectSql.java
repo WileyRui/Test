@@ -1,12 +1,8 @@
 package com.apin.airline.common.mapper;
 
-import com.apin.airline.flight.dto.CityList;
-import com.apin.airline.flight.dto.DealerListDto;
-import com.apin.airline.flight.dto.HomeCalendarInfoQueryRequest;
-import com.apin.airline.flight.dto.PriceTemplateBean;
+import com.apin.airline.flight.dto.*;
 import com.apin.airline.ticket.dto.*;
 import com.apin.airline.flight.dto.PriceTemplateBean;
-import com.apin.airline.flight.dto.SearchDayAirlinesDto;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
@@ -409,5 +405,28 @@ public class AspectSql {
         }
         sqlBuffer.append(" mbsa.created_time desc,mbsa.airline_no,mbsaf.flight_date");
         return sqlBuffer.toString();
+    }
+
+    /**
+     * 查询包机商某天的所有在飞的航班信息
+     *
+     * @param request 查询请求
+     * @return
+     */
+    public String queryAllAirlinesByDay(HomeAirlineQueryRequest request) {
+        StringBuffer sql = new StringBuffer();
+        sql.append(" SELECT a.id, b.voyage, b.flight_number, b.flight_type, b.week_flights, SUBSTR(b.week_flights,"
+                + request.getWeekFlightsPos() + ",1) as week, a.departure_start, a.departure_end, (c.days+1) as days "
+                + " FROM mbs_airline a "
+                + " JOIN msd_airline b ON a.airline_id = b.id "
+                + " JOIN msd_airline_voyage c ON b.id = c.airline_id "
+                + " WHERE a.account_id = '"
+                + request.getAccountId()
+                + "' AND a.airline_status = 1 AND a.is_invalid = 0 AND b.is_invalid = 0 AND a.departure_start <= '"
+                + request.getQueryDate() + "' AND a.departure_end >= '" + request.getQueryDate()
+                + "' AND SUBSTR(b.week_flights," + request.getWeekFlightsPos() + ",1) = 1 "
+                + " AND c.trip_index=1");
+        //
+        return sql.toString();
     }
 }

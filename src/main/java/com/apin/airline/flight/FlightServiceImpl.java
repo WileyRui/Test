@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -32,7 +31,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.*;
 
 /**
  * @Author:huanglei
@@ -265,12 +263,7 @@ public class FlightServiceImpl implements FlightService {
         return ReplyHelper.success(flightDetails);
     }
 
-    /**
-     * 根据城市对与出发日期查询航班
-     *
-     * @param cityList
-     * @return
-     */
+
     @Override
     public Reply searchFlights(CityList cityList) {
         List<FlightDetail> flightDetails = queryMapper.selectFlights(cityList);
