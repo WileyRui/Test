@@ -31,6 +31,8 @@ public class Deal {
 
     private String userId;
     private String userName;
+    private String eventSouce;
+
 
     public Deal() {
     }
@@ -89,5 +91,13 @@ public class Deal {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getEventSouce() {
+        return eventSouce;
+    }
+
+    public void setEventSouce(String eventSouce) {
+        this.eventSouce = eventSouce;
     }
 }

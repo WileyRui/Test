@@ -13,6 +13,16 @@ import com.apin.util.pojo.Reply;
  * @remark 航线基础数据类
  */
 public class Airline {
+    public final static Integer OFFSALE=0;
+    public final static Integer ONSALE=1;
+    public final static Integer REMAIN=0;
+    public final static Integer SOLD=1;
+    public final static Integer PASSENGER=2;
+    public final static Integer TICKTED=3;
+    public final static Integer REGISTER=1;
+    public final static Integer LOGIN=2;
+    public final static Integer AUTO=2;
+    public final static Integer HAND=3;
     public static Reply nullValue(Object... obj) {
         Reply reply = ReplyHelper.fail();
         String out = "";

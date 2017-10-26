@@ -54,7 +54,7 @@ public class Seat implements Serializable {
     /**
      * 乘客类型 0:成人;1:儿童;2:婴儿;3:青年;4:留学生;5:劳工;6:移民;7:海员;8:老年;9:探亲
      */
-    private Byte passengerType;
+    private Integer passengerType;
 
     /**
      * 乘客姓名
@@ -64,7 +64,7 @@ public class Seat implements Serializable {
     /**
      * 证件类型 0:身份证;1:护照;2:台胞证;3:港澳通行证;4:回乡证;5:海员证;6:军官证;7:士兵证;8:其他
      */
-    private Byte credType;
+    private Integer credType;
 
     /**
      * 证件号
@@ -74,7 +74,7 @@ public class Seat implements Serializable {
     /**
      * 性别 0:女性;1:男性
      */
-    private Byte gender;
+    private Integer gender;
 
     /**
      * 出生日期
@@ -99,7 +99,7 @@ public class Seat implements Serializable {
     /**
      * 舱位状态 0:未销售;1:已销售;2:已上传乘客信息;3:已出票
      */
-    private Byte seatStatus;
+    private Integer seatStatus;
 
     /**
      * 分配者名称(操作员用户名,初始分配者为系统)
@@ -185,11 +185,11 @@ public class Seat implements Serializable {
         this.ticket = ticket;
     }
 
-    public Byte getPassengerType() {
+    public Integer getPassengerType() {
         return passengerType;
     }
 
-    public void setPassengerType(Byte passengerType) {
+    public void setPassengerType(Integer passengerType) {
         this.passengerType = passengerType;
     }
 
@@ -201,11 +201,11 @@ public class Seat implements Serializable {
         this.passengerName = passengerName;
     }
 
-    public Byte getCredType() {
+    public Integer getCredType() {
         return credType;
     }
 
-    public void setCredType(Byte credType) {
+    public void setCredType(Integer credType) {
         this.credType = credType;
     }
 
@@ -217,11 +217,11 @@ public class Seat implements Serializable {
         this.credNumber = credNumber;
     }
 
-    public Byte getGender() {
+    public Integer getGender() {
         return gender;
     }
 
-    public void setGender(Byte gender) {
+    public void setGender(Integer gender) {
         this.gender = gender;
     }
 
@@ -257,11 +257,11 @@ public class Seat implements Serializable {
         this.issuePlace = issuePlace;
     }
 
-    public Byte getSeatStatus() {
+    public Integer getSeatStatus() {
         return seatStatus;
     }
 
-    public void setSeatStatus(Byte seatStatus) {
+    public void setSeatStatus(Integer seatStatus) {
         this.seatStatus = seatStatus;
     }
 

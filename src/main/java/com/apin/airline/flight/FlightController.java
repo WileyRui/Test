@@ -1,16 +1,13 @@
 package com.apin.airline.flight;
 
-import com.apin.airline.flight.dto.CityList;
-import com.apin.airline.flight.dto.PriceTemplateBean;
-import com.apin.airline.flight.dto.SearchDto;
+import com.apin.airline.flight.dto.*;
 import com.apin.airline.ticket.dto.CalendarInfo;
 import com.apin.airline.ticket.dto.Stock;
+import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,7 +23,7 @@ public class FlightController {
     private FlightService flightService;
 
     /**
-     * arm日历查看
+     * arm指定航线日历查看
      *
      * @param calendarInfo
      * @return Reply
@@ -36,7 +33,27 @@ public class FlightController {
     public Reply airlineInfo(@RequestBody CalendarInfo calendarInfo) throws Exception {
         return flightService.airlineInfo(calendarInfo);
     }
-
+    /**
+     * arm首页日历查看所有航线的库存/价格信息
+     *
+     * @param request
+     * @return Reply
+     * 正常：返回接口调用成功,通过data返回日历相关信息
+     */
+    @PostMapping(value = "/v1.0/homeCalendarInfo/query")
+    public Reply homeCalendarInfo(@RequestBody HomeCalendarInfoQueryRequest request) throws Exception {
+        return flightService.homeCalendarInfo(request);
+    }
+    /**
+     * 首页日历，查询某天的所有的航班信息
+     *
+     * @param request 查询请求参数
+     * @return 返回某天的在飞航班信息
+     */
+    @PostMapping(value = "/v1.0/homeAirlineInfo/query")
+    public Reply homeCalendarInfo(@RequestBody HomeAirlineQueryRequest request) throws Exception {
+        return flightService.homeAirlineInfo(request);
+    }
     /**
      * arm库存日历内修改库存
      *
@@ -63,18 +80,74 @@ public class FlightController {
     }
 
     /**
-     * 价格批量导入更新
+     * arm价格批量导入更新
      *
      * @param priceTemplateBeanList
      * @return
      */
     @PostMapping(value = "/v1.0/flights/batchPrice/update")
-    public Reply importPassenger(@RequestBody List<PriceTemplateBean> priceTemplateBeanList) {
+    public Reply priceImport(@RequestBody List<PriceTemplateBean> priceTemplateBeanList) {
         return flightService.priceImport(priceTemplateBeanList);
+    }
+    /**
+     * arm航班列表查询
+     *
+     * @param listDto
+     * @return
+     */
+    @PostMapping(value = "/v1.0/flightList/query")
+    public Reply flightList(@RequestHeader("Authorization") String token, @RequestBody DealerListDto listDto) {
+        return flightService.flightList(listDto);
     }
 
     /**
-     * 条件查询航班信息
+     * arm指定分销商库存日历查询
+     *
+     * @param listDto
+     * @return
+     */
+    @PostMapping(value = "/v1.0/stockList/query")
+    public Reply stockList(@RequestHeader("Authorization") String token,@RequestBody DealerListDto listDto) {
+        return flightService.stockList(listDto);
+    }
+
+    /**
+     * arm包机商航司合作线路数接口
+     * @param listBo
+     * @return
+     */
+    @PostMapping(value = "/v1.0/count/query")
+    public Reply count(@RequestBody DealerListDto listBo) {
+        if (StringUtils.isBlank(listBo.getAccountId())) {
+            return ReplyHelper.invalidParam("包机商id不能为空");
+        }
+
+        return flightService.count(listBo);
+    }
+
+    /**
+     * arm包机商航司合作线路航空公司名字接口
+     * @return
+     */
+    @PostMapping(value = "/v1.0/compName/query")
+    public Reply compName() {
+        return flightService.compName();
+    }
+
+    /**
+     * 分销商判断有无数据接口
+     * @param token
+     * @param dto
+     * @return
+     */
+    @PostMapping("/v1.0/hasList/query")
+    public Reply queryHasListInfo(@RequestHeader(value="Authorization") String token, @RequestBody HasListDto dto){
+        return flightService.hasList(dto);
+
+    }
+
+    /**
+     * obt条件查询航班信息
      * @param searchDto 城市对 航班类型集合
      * @return Reply
      * 正常：返回接口调用成功,返回数据
@@ -85,7 +158,7 @@ public class FlightController {
     }
 
     /**
-     * 根据单城市或
+     * obt根据单城市或
      *
      * @param cityList
      * @return Reply
@@ -96,7 +169,7 @@ public class FlightController {
         return flightService.searchFlights(cityList);
     }
     /**
-     * 查询月份
+     * obt查询月份
      *
      * @param cityList
      * @return Reply
@@ -107,7 +180,7 @@ public class FlightController {
         return flightService.monthQuery(cityList);
     }
     /**
-     * 查询每日详情
+     * obt查询每日详情
      *
      * @param cityList
      * @return Reply
@@ -120,7 +193,7 @@ public class FlightController {
 
 
     /**
-     * 根据城市对与出发日期结束日期查询航班详情
+     * obt根据城市对与出发日期结束日期查询航班详情
      *
      * @param cityList
      * @return Reply
@@ -131,7 +204,7 @@ public class FlightController {
         return flightService.searchFlightMonth(cityList);
     }
     /**
-     * 根据城市对与出发日期结束日期查询航班详情
+     * obt根据城市对与出发日期结束日期查询航班详情
      *
      * @param cityList
      * @return Reply
@@ -142,7 +215,7 @@ public class FlightController {
         return flightService.searchFlightDetail(cityList);
     }
     /**
-     * 根据单城市或
+     * obt根据单城市或
      *
      * @param cityList
      * @return Reply

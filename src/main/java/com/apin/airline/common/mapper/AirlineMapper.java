@@ -1,6 +1,7 @@
 package com.apin.airline.common.mapper;
 
 import com.apin.airline.common.entity.*;
+import com.apin.airline.flight.dto.PriceTemplateBean;
 import com.apin.airline.line.dto.NewLine;
 import org.apache.ibatis.annotations.*;
 
@@ -273,7 +274,7 @@ public interface AirlineMapper extends Mapper {
             "<foreach collection = \"dates\" item = \"item\" index = \"index\" open=\"(\" separator=\",\" close=\")\"> " +
             "#{item}" +
             "</foreach></script>")
-    Integer updatePrice(@Param("id") String airlineId, @Param("dates") List<Date> dates,
+    Integer updatePrice(@Param("id") String airlineId, @Param("dates") List<String> dates,
                         @Param("adultPrice") BigDecimal adultPrice, @Param("childPrice") BigDecimal childPrice);
 
     /**
@@ -496,4 +497,6 @@ public interface AirlineMapper extends Mapper {
             "WHERE flight_id in " +
             "(SELECT id FROM mbs_airline_flight WHERE airline_id=#{airlineId})")
     Integer deleteSeats(@Param("airlineId") String airlineId);
+
+
 }

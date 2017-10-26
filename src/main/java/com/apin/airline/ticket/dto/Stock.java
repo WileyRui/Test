@@ -37,7 +37,7 @@ public class Stock {
     /**
      * 日期集合
      */
-    private List<Date> dateList;
+    private List<String> dateList;
     /**
      * 日志操作id
      */
@@ -51,6 +51,12 @@ public class Stock {
      * 来源
      */
     private String eventSource;
+
+    /**
+     * 选择日期
+     */
+    private String currentDate;
+
     public Stock() {
     }
 
@@ -102,11 +108,11 @@ public class Stock {
         this.childPrice = childPrice;
     }
 
-    public List<Date> getDateList() {
+    public List<String> getDateList() {
         return dateList;
     }
 
-    public void setDateList(List<Date> dateList) {
+    public void setDateList(List<String> dateList) {
         this.dateList = dateList;
     }
 
@@ -132,5 +138,13 @@ public class Stock {
 
     public void setEventSource(String eventSource) {
         this.eventSource = eventSource;
+    }
+
+    public String getCurrentDate() {
+        return currentDate;
+    }
+
+    public void setCurrentDate(String currentDate) {
+        this.currentDate = currentDate;
     }
 }

@@ -34,7 +34,7 @@ public class AssignRecord implements Serializable {
     /**
      * 类型 0:未定义;1:分配;2:强制回收;3:手动回收
      */
-    private Byte type;
+    private Integer type;
 
     /**
      * 数量 回收为负值,代表分销商的可售舱位减少
@@ -93,11 +93,11 @@ public class AssignRecord implements Serializable {
         this.flightId = flightId;
     }
 
-    public Byte getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(Byte type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 

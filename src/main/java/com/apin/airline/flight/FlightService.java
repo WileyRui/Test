@@ -1,12 +1,11 @@
 package com.apin.airline.flight;
 
-import com.apin.airline.flight.dto.CityList;
-import com.apin.airline.flight.dto.PriceTemplateBean;
-import com.apin.airline.flight.dto.SearchDto;
+import com.apin.airline.flight.dto.*;
 import com.apin.airline.ticket.dto.CalendarInfo;
 import com.apin.airline.ticket.dto.Stock;
 import com.apin.util.pojo.Reply;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -16,14 +15,28 @@ import java.util.List;
  */
 public interface FlightService {
 
+    /**
+     * 首页日历查看
+     * @param request
+     * @return
+     */
+    Reply homeCalendarInfo(HomeCalendarInfoQueryRequest request);
 
     /**
-     * 日历查看
+     * 指定航线日历查看
      *
      * @param calendarInfo
      * @return
      */
-    Reply airlineInfo(CalendarInfo calendarInfo);
+    Reply airlineInfo(CalendarInfo calendarInfo) throws ParseException;
+
+    /**
+     * 首页日历，查询某天的所有的航班信息
+     *
+     * @param request 查询请求参数
+     * @return 返回某天的在飞航班信息
+     */
+    Reply homeAirlineInfo(HomeAirlineQueryRequest request);
 
     /**
      * 日历内修改库存
@@ -47,6 +60,28 @@ public interface FlightService {
      * @param priceTemplateBeanList
      */
     Reply priceImport(List<PriceTemplateBean> priceTemplateBeanList);
+
+    /**
+     * arm航班列表查询
+     *
+     * @param listDto
+     * @return
+     */
+    Reply flightList(DealerListDto listDto);
+
+    /**
+     * arm指定分销商库存日历查询
+     * @param listDto
+     * @return
+     */
+    Reply stockList(DealerListDto listDto);
+
+    /**
+     * arm分销商判断有无数据接口
+     * @param dto
+     * @return
+     */
+    Reply hasList(HasListDto dto);
 
     /**
      * 根据城市对查询航班信息
@@ -99,4 +134,17 @@ public interface FlightService {
      * @return
      */
     Reply searchFlightMonth(CityList cityList);
+
+    /**
+     * 包机商航司合作线路数接口
+     * @param listBo
+     * @return
+     */
+    Reply count(DealerListDto listBo);
+
+    /**
+     * 包机商航司合作线路航空公司名字接口
+     * @return
+     */
+    Reply compName();
 }
