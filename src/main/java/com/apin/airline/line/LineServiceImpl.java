@@ -308,4 +308,11 @@ public class LineServiceImpl implements LineService {
         jsonObject.put("flightNumber", airline.getFlightNumber());
         return ReplyHelper.success(jsonObject.toJSONString());
     }
+
+    @Override
+    public Reply getEnableFlights(String token,Line line){
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        Integer sum = airlineMapper.getEnableFlights(accessToken.getAccountId(), line.getId());
+        return ReplyHelper.success(sum);
+    }
 }

@@ -4,7 +4,9 @@ import com.apin.airline.common.entity.Flight;
 import com.apin.airline.common.entity.Line;
 import com.apin.airline.common.entity.LineDetail;
 import com.apin.airline.line.dto.NewLine;
+import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -160,7 +162,7 @@ public class LineController {
      * @param line
      * @return
      */
-    @PostMapping(value = "/v1.0/flight/updateExpireFlights")
+    @PostMapping("/v1.0/flight/updateExpireFlights")
     public Reply updateExpireFlights(@RequestHeader("Authorization") String token, @RequestBody Line line) {
         return service.updateExpireFlights(token, line);
     }
@@ -171,9 +173,19 @@ public class LineController {
      * @param line
      * @return
      */
-    @PostMapping(value = "/v1.0/flight/getLine")
+    @PostMapping("/v1.0/flight/getLine")
     public Reply getMbsAirlineByFlightId(@RequestBody Line line) {
         return service.getLineByFlightId(line);
     }
 
+    /**
+     * 查询分销商拥用的航线数
+     * @param token
+     * @param line
+     * @return
+     */
+    @PostMapping("/v1.0/flight/getEnableFlights")
+    public Reply getEnableFlights(@RequestHeader("Authorization") String token, @RequestBody Line line) {
+        return service.getEnableFlights(token, line);
+    }
 }

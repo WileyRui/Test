@@ -128,4 +128,12 @@ public interface LineService {
      * @return
      */
     Reply getLineByFlightId(Line line);
+
+    /**
+     * 获取每个分销商的航线数
+     *
+     * @param line
+     * @return
+     */
+    Reply getEnableFlights(String token, Line line);
 }
