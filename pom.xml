@@ -132,6 +132,11 @@
             <artifactId>spring-cloud-starter-sleuth</artifactId>
         </dependency>
         <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>4.7</version>
+        </dependency>
+        <dependency>
             <groupId>com.apin</groupId>
             <artifactId>apin-log</artifactId>
             <version>0.1</version>
