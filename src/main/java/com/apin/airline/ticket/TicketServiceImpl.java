@@ -22,7 +22,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -165,7 +164,7 @@ public class TicketServiceImpl implements TicketService {
         mbcAssignRecord.setCreatorUser(dto.getUserName());
         mbcAssignRecord.setCreatorUserId(dto.getUserId());
         mbcAssignRecord.setCreatedTime(new java.util.Date());
-        recordMapper.insert(mbcAssignRecord);
+        recordMapper.addRecord(mbcAssignRecord);
 
         Flight mbsAirlineFlight = queryMapper.selectByFlightId(flightId);
         Log mbsAirlineLog = new Log(mbsAirlineFlight.getAirlineId(), "1002", "手动收位成功", dto.getUserName(), dto.getUserId(),"ARM");
@@ -211,7 +210,7 @@ public class TicketServiceImpl implements TicketService {
             mbcAssignRecord.setCreatorUser(creatorUser);
             mbcAssignRecord.setCreatorUserId(creatorUserId);
             mbcAssignRecord.setCreatedTime(new java.util.Date());
-            recordMapper.insert(mbcAssignRecord);
+            recordMapper.addRecord(mbcAssignRecord);
         }
 
         flightSeatResponses.forEach(flightSeatResponse -> {
