@@ -3,7 +3,9 @@ package com.apin.airline.line;
 import com.apin.airline.common.entity.Line;
 import com.apin.airline.common.entity.LineDetail;
 import com.apin.airline.line.dto.NewLine;
+import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -185,4 +187,16 @@ public class LineController {
     public Reply getEnableFlights(@RequestHeader("Authorization") String token, @RequestBody Line line) {
         return service.getEnableFlights(token, line);
     }
+
+    /**
+     * 用于首页
+     * 查询该包机商下的所有的航线数量
+     *
+     * @return
+     */
+    @PostMapping("/v1.0/lines/supplierLineCount")
+    public Reply supplierLineCount(@RequestHeader("Authorization") String token) {
+        return service.supplierLineCount(token);
+    }
+
 }

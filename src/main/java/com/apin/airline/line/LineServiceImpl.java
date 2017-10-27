@@ -339,4 +339,11 @@ public class LineServiceImpl implements LineService {
         Integer sum = airlineMapper.getEnableFlights(accessToken.getAccountId(), line.getId());
         return ReplyHelper.success(sum);
     }
+
+    @Override
+    public Reply supplierLineCount(String token) {
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        long recordCount = airlineMapper.airlineCount(accessToken.getAccountId());
+        return ReplyHelper.success(recordCount);
+    }
 }

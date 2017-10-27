@@ -133,4 +133,11 @@ public interface LineService {
      * @return
      */
     Reply getEnableFlights(String token, Line line);
+
+    /**
+     * 查询某个包机商下的所有的航线资源的数量
+     *
+     * @return
+     */
+    Reply supplierLineCount(String token);
 }

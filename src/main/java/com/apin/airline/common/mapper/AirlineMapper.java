@@ -548,4 +548,13 @@ public interface AirlineMapper extends Mapper {
             "flight_id not in (select distinct(flight_id) from mbs_airline_flight_seat where account_id = #{accountId} " +
             "and owner_id= #{ownerId})) b on a.id = b.flight_id ")
     Integer getEnableFlights(@Param("accountId") String accountId, @Param("ownerId") String ownerId);
+
+    /**
+     * 查询包机商所拥有的航线数量
+     *
+     * @param accountId
+     * @return
+     */
+    @Select("select count(*) from mbs_airline where account_id = #{accountId} AND is_invalid = 0")
+    long airlineCount(String accountId);
 }
