@@ -70,14 +70,14 @@ public class Line implements Serializable {
      * 销售开始日期(出发日期)
      */
     @DateTimeFormat(pattern="yyyy-MM-dd")
-    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date departureStart;
 
     /**
      * 销售截止日期(出发日期)
      */
     @DateTimeFormat(pattern="yyyy-MM-dd")
-    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date departureEnd;
 
     /**
