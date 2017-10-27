@@ -22,7 +22,6 @@ public class MDCLogFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
      filter.doFilter(servletRequest,servletResponse,filterChain);
-        filterChain.doFilter(servletRequest,servletResponse);
     }
 
     @Override

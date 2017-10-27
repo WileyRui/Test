@@ -1,5 +1,8 @@
 package com.apin.airline.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -66,11 +69,15 @@ public class Line implements Serializable {
     /**
      * 销售开始日期(出发日期)
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date departureStart;
 
     /**
      * 销售截止日期(出发日期)
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date departureEnd;
 
     /**
