@@ -1,7 +1,7 @@
 package com.apin.airline.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -226,7 +226,7 @@ public class Line implements Serializable {
     /**
      * 航程明细
      */
-    @JsonIgnore
+    @JsonProperty("details")
     private List<LineDetail> details;
 
     public String getId() {
