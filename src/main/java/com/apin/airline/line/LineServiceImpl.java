@@ -249,10 +249,10 @@ public class LineServiceImpl implements LineService {
         String DepCity = airlineMapper.findCityNameByIataCode(info.getFlightDepcode());
         String arrCity = airlineMapper.findCityNameByIataCode(info.getFlightArrcode());
         if(info.getFlightDeptimePlanDate().equals(info.getFlightArrtimePlanDate())){
-            ReplyHelper.fail("起飞时间和到达时间不能相同");
+            return ReplyHelper.fail("起飞时间和到达时间不能相同");
         }
         if(StringUtils.isBlank(DepCity) || StringUtils.isBlank(arrCity)){
-            ReplyHelper.fail("三字码或对应的城市不存在");
+            return ReplyHelper.fail("三字码或对应的城市不存在");
         }
         lineDetails.add(info);
         airlineMapper.addFlightInfo(lineDetails);
