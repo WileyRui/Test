@@ -99,8 +99,12 @@ public class AirlineVO {
             flight.setSeatCount(line.getSeatCount());
             flight.setAdultPrice(line.getAdultPrice());
             flight.setChildPrice(line.getChildPrice());
-            flight.setAlertThreshold((int) (line.getSeatCount() * line.getAlertRate() * 0.01));
-            flight.setAlertDate(new Date(date.getTime() - line.getAlertAdvance() * 24 * 60 * 60 * 1000));
+            if (line.getAlertRate() != null) {
+                flight.setAlertThreshold((int) (line.getSeatCount() * line.getAlertRate() * 0.01));
+            }
+            if (line.getAlertAdvance() != null) {
+                flight.setAlertDate(new Date(date.getTime() - line.getAlertAdvance() * 24 * 60 * 60 * 1000));
+            }
             flight.setRecoveryDate(new Date(date.getTime() - line.getRecoveryAdvance() * 24 * 60 * 60 * 1000));
             flight.setTicketDate(new Date(date.getTime() - line.getTicketAdvance() * 24 * 60 * 60 * 1000));
 
@@ -296,7 +300,7 @@ public class AirlineVO {
      * @return
      */
     @Async
-    public Integer addSeats(String accountId,String flightId,String accountName,Integer seatCount,String userName,String userId) {
-        return airlineMapper.addSeats(accountId,flightId,accountName,seatCount,userName,userId);
+    public Integer addSeats(String accountId, String flightId, String accountName, Integer seatCount, String userName, String userId) {
+        return airlineMapper.addSeats(accountId, flightId, accountName, seatCount, userName, userId);
     }
 }

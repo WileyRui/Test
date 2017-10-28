@@ -199,12 +199,13 @@ public interface AirlineMapper extends Mapper {
      * @param line 航线资源数据
      * @return 受影响行数
      */
-    @Update("UPDATE mbs_airline SET " +
-            "res_type=#{resType},seat_type=#{seatType},seat_count=#{seatCount},deposit_amount=#{depositAmount}," +
-            "airline_id=#{airlineId},departure_start=#{departureStart},departure_end=#{departureEnd},supplier_name=#{supplierName}," +
+    @Update("<script>UPDATE mbs_airline SET " +
+            "res_type=#{resType},seat_type=#{seatType},seat_count=#{seatCount},airline_id=#{airlineId}, " +
+            "departure_start=#{departureStart},departure_end=#{departureEnd},supplier_name=#{supplierName}," +
             "adult_price=#{adultPrice},child_price=#{childPrice},free_bag=#{freeBag},weight_limit=#{weightLimit}," +
-            "alert_advance=#{alertAdvance},alert_rate=#{alertRate},can_return=#{canReturn},can_change=#{canChange}," +
-            "can_sign=#{canSign},manager=#{manager},manager_id=#{managerId} WHERE id=#{id};")
+            "<if test=\"alertAdvance != null and alertAdvance != ''\"> alert_advance=#{alertAdvance},</if> " +
+            "<if test=\"alertRate != null and alertRate != ''\">alert_rate=#{alertRate},</if> manager=#{manager}, " +
+            "manager_id=#{managerId} WHERE id=#{id}</script>")
     Integer updateLine(Line line);
 
     /**
