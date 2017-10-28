@@ -246,6 +246,14 @@ public class LineServiceImpl implements LineService {
     public Reply addFlightInfo(LineDetail info) {   //需求待确认
         info.setId(Generator.uuid());
         List<LineDetail> lineDetails = new ArrayList<>();
+        String DepCity = airlineMapper.findCityNameByIataCode(info.getFlightDepcode());
+        String arrCity = airlineMapper.findCityNameByIataCode(info.getFlightArrcode());
+        if(info.getFlightDeptimePlanDate().equals(info.getFlightArrtimePlanDate())){
+            ReplyHelper.fail("起飞时间和到达时间不能相同");
+        }
+        if(StringUtils.isBlank(DepCity) || StringUtils.isBlank(arrCity)){
+            ReplyHelper.fail("三字码或对应的城市不存在");
+        }
         lineDetails.add(info);
         airlineMapper.addFlightInfo(lineDetails);
         return ReplyHelper.success();
