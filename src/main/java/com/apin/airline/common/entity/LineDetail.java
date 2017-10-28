@@ -1,5 +1,7 @@
 package com.apin.airline.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -8,6 +10,7 @@ import java.util.Date;
  * @date 2017/10/11
  * @remark 供应商航线资源实体类
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LineDetail implements Serializable {
     private static final long serialVersionUID = -1L;
 
