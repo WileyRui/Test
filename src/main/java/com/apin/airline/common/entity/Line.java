@@ -226,7 +226,7 @@ public class Line implements Serializable {
     /**
      * 航程明细
      */
-//    @JsonProperty("details")
+    @JsonProperty("details")
     private List<LineDetail> details;
 
     public String getId() {
