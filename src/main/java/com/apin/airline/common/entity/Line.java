@@ -71,14 +71,14 @@ public class Line implements Serializable {
     /**
      * 销售开始日期(出发日期)
      */
-//    @JsonFormat(pattern="yyyy-MM-dd")
-    private String departureStart;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date departureStart;
 
     /**
      * 销售截止日期(出发日期)
      */
-//    @JsonFormat(pattern="yyyy-MM-dd")
-    private String departureEnd;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date departureEnd;
 
     /**
      * 舱位数量
@@ -311,18 +311,18 @@ public class Line implements Serializable {
     }
 
     public Date getDepartureStart() {
-        return DateHelper.parseDate(departureStart);
+        return departureStart;
     }
 
-    public void setDepartureStart(String departureStart) {
+    public void setDepartureStart(Date departureStart) {
         this.departureStart = departureStart;
     }
 
     public Date getDepartureEnd() {
-        return DateHelper.parseDate(departureEnd);
+        return departureEnd;
     }
 
-    public void setDepartureEnd(String departureEnd) {
+    public void setDepartureEnd(Date departureEnd) {
         this.departureEnd = departureEnd;
     }
 
