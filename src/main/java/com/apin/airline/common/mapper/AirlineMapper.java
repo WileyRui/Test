@@ -173,15 +173,17 @@ public interface AirlineMapper extends Mapper {
      * @param line 航线资源数据
      * @return 受影响行数
      */
-    @Insert("INSERT mbs_airline(id,account_id,airline_no,supplier_name,airway_id,airline_id,res_type,seat_type," +
-            "departure_start,departure_end,seat_count,deposit_amount,adult_price,child_price,pay_advance,ticket_advance," +
-            "recovery_advance,free_bag,weight_limit,alert_advance,alert_rate,can_return,can_change,can_sign,airline_status," +
+    @Insert("<script>INSERT mbs_airline(id,account_id,airline_no,supplier_name,airway_id,airline_id,res_type,seat_type, " +
+            "departure_start,departure_end,seat_count,deposit_amount,adult_price,child_price,pay_advance,ticket_advance, " +
+            "recovery_advance,free_bag,weight_limit,<if test=\"alertAdvance != null and alertAdvance != ''\">alert_advance,</if> " +
+            "<if test=\"alertRate != null and alertRate != ''\">alert_rate,</if>can_return,can_change,can_sign,airline_status," +
             "manager,manager_id,creator_user,creator_user_id) " +
-            "SELECT #{id},#{accountId},(select airline_no + 1 from mbs_airline ORDER BY created_time DESC limit 1)," +
-            "#{supplierName},#{airwayId},#{airlineId},#{resType},#{seatType},#{departureStart},#{departureEnd}," +
+            "SELECT #{id},#{accountId},(select airline_no + 1 from mbs_airline ORDER BY created_time DESC limit 1), " +
+            "#{supplierName},#{airwayId},#{airlineId},#{resType},#{seatType},#{departureStart},#{departureEnd}, " +
             "#{seatCount},#{depositAmount},#{adultPrice},#{childPrice},#{payAdvance},#{ticketAdvance},#{recoveryAdvance}," +
-            "#{freeBag},#{weightLimit},#{alertAdvance},#{alertRate},#{canReturn},#{canChange},#{canSign},#{airlineStatus}," +
-            "#{manager},#{managerId},#{creatorUser},#{creatorUserId}")
+            "#{freeBag},#{weightLimit},<if test=\"alertAdvance != null and alertAdvance != ''\">#{alertAdvance},</if> " +
+            "<if test=\"alertRate != null and alertRate != ''\">#{alertRate},</if>#{canReturn},#{canChange},#{canSign}, " +
+            "#{airlineStatus},#{manager},#{managerId},#{creatorUser},#{creatorUserId}</script>")
     Integer addLine(Line line);
 
     /**

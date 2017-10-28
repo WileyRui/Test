@@ -47,6 +47,9 @@ public class LineServiceImpl implements LineService {
         }
 
         AccessToken accessToken = JsonUtils.toAccessToken(token);
+        line.setAccountId(accessToken.getAccountId());
+        line.setCreatorUser(accessToken.getUserName());
+        line.setCreatorUserId(accessToken.getUserId());
         List<Date> dates = airlineVO.getDates(line.getDepartureStart(), line.getDepartureEnd(), line.getDetails().get(0).getFlights());
 
         // 根据城市、航班号和行程天数计算摘要并查询航线基础数据ID
@@ -76,10 +79,6 @@ public class LineServiceImpl implements LineService {
 
         // 处理航线资源数据
         line.setAirwayId(airlineMapper.getAirwayIdByFlightNo(line.getDetails().get(0).getFlightNo()));
-
-        line.setAccountId(accessToken.getAccountId());
-        line.setCreatorUser(accessToken.getUserName());
-        line.setCreatorUserId(accessToken.getUserId());
 
         // 生成航班资源数据集合
         List<Flight> flights = airlineVO.setFlight(line, dates);
