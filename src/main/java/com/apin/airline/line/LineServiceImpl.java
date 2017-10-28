@@ -108,6 +108,8 @@ public class LineServiceImpl implements LineService {
         }
 
         AccessToken accessToken = JsonUtils.toAccessToken(token);
+        line.setCreatorUser(accessToken.getUserName());
+        line.setCreatorUserId(accessToken.getUserId());
         // 根据城市、航班号和行程天数计算摘要并查询航线基础数据ID
         String key = airlineVO.hashValue(line.getDetails());
         String airLineId = airlineMapper.getExistedAirline(key);
