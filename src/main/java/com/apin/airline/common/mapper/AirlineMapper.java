@@ -173,15 +173,17 @@ public interface AirlineMapper extends Mapper {
      * @param line 航线资源数据
      * @return 受影响行数
      */
-    @Insert("INSERT mbs_airline(id,account_id,airline_no,supplier_name,airway_id,airline_id,res_type,seat_type," +
-            "departure_start,departure_end,seat_count,deposit_amount,adult_price,child_price,pay_advance,ticket_advance," +
-            "recovery_advance,free_bag,weight_limit,alert_advance,alert_rate,can_return,can_change,can_sign,airline_status," +
+    @Insert("<script>INSERT mbs_airline(id,account_id,airline_no,supplier_name,airway_id,airline_id,res_type,seat_type, " +
+            "departure_start,departure_end,seat_count,deposit_amount,adult_price,child_price,pay_advance,ticket_advance, " +
+            "recovery_advance,free_bag,weight_limit,<if test=\"alertAdvance != null and alertAdvance != ''\">alert_advance,</if> " +
+            "<if test=\"alertRate != null and alertRate != ''\">alert_rate,</if>can_return,can_change,can_sign,airline_status," +
             "manager,manager_id,creator_user,creator_user_id) " +
-            "SELECT #{id},#{accountId},(select airline_no + 1 from mbs_airline ORDER BY created_time DESC limit 1)," +
-            "#{supplierName},#{airwayId},#{airlineId},#{resType},#{seatType},#{departureStart},#{departureEnd}," +
+            "SELECT #{id},#{accountId},(select airline_no + 1 from mbs_airline ORDER BY created_time DESC limit 1), " +
+            "#{supplierName},#{airwayId},#{airlineId},#{resType},#{seatType},#{departureStart},#{departureEnd}, " +
             "#{seatCount},#{depositAmount},#{adultPrice},#{childPrice},#{payAdvance},#{ticketAdvance},#{recoveryAdvance}," +
-            "#{freeBag},#{weightLimit},#{alertAdvance},#{alertRate},#{canReturn},#{canChange},#{canSign},#{airlineStatus}," +
-            "#{manager},#{managerId},#{creatorUser},#{creatorUserId}")
+            "#{freeBag},#{weightLimit},<if test=\"alertAdvance != null and alertAdvance != ''\">#{alertAdvance},</if> " +
+            "<if test=\"alertRate != null and alertRate != ''\">#{alertRate},</if>#{canReturn},#{canChange},#{canSign}, " +
+            "#{airlineStatus},#{manager},#{managerId},#{creatorUser},#{creatorUserId}</script>")
     Integer addLine(Line line);
 
     /**
@@ -199,12 +201,13 @@ public interface AirlineMapper extends Mapper {
      * @param line 航线资源数据
      * @return 受影响行数
      */
-    @Update("UPDATE mbs_airline SET " +
-            "res_type=#{resType},seat_type=#{seatType},seat_count=#{seatCount},deposit_amount=#{depositAmount}," +
-            "airline_id=#{airlineId},departure_start=#{departureStart},departure_end=#{departureEnd},supplier_name=#{supplierName}," +
+    @Update("<script>UPDATE mbs_airline SET " +
+            "res_type=#{resType},seat_type=#{seatType},seat_count=#{seatCount},airline_id=#{airlineId}, " +
+            "departure_start=#{departureStart},departure_end=#{departureEnd},supplier_name=#{supplierName}," +
             "adult_price=#{adultPrice},child_price=#{childPrice},free_bag=#{freeBag},weight_limit=#{weightLimit}," +
-            "alert_advance=#{alertAdvance},alert_rate=#{alertRate},can_return=#{canReturn},can_change=#{canChange}," +
-            "can_sign=#{canSign},manager=#{manager},manager_id=#{managerId} WHERE id=#{id};")
+            "<if test=\"alertAdvance != null and alertAdvance != ''\"> alert_advance=#{alertAdvance},</if> " +
+            "<if test=\"alertRate != null and alertRate != ''\">alert_rate=#{alertRate},</if> manager=#{manager}, " +
+            "manager_id=#{managerId} WHERE id=#{id}</script>")
     Integer updateLine(Line line);
 
     /**
@@ -548,4 +551,13 @@ public interface AirlineMapper extends Mapper {
             "flight_id not in (select distinct(flight_id) from mbs_airline_flight_seat where account_id = #{accountId} " +
             "and owner_id= #{ownerId})) b on a.id = b.flight_id ")
     Integer getEnableFlights(@Param("accountId") String accountId, @Param("ownerId") String ownerId);
+
+    /**
+     * 查询包机商所拥有的航线数量
+     *
+     * @param accountId
+     * @return
+     */
+    @Select("select count(*) from mbs_airline where account_id = #{accountId} AND is_invalid = 0")
+    long airlineCount(String accountId);
 }

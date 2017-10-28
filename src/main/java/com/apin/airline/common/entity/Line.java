@@ -1,5 +1,10 @@
 package com.apin.airline.common.entity;
 
+import com.apin.util.DateHelper;
+import com.apin.util.Generator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -66,11 +71,13 @@ public class Line implements Serializable {
     /**
      * 销售开始日期(出发日期)
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date departureStart;
 
     /**
      * 销售截止日期(出发日期)
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date departureEnd;
 
     /**

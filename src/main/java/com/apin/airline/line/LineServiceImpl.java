@@ -47,6 +47,9 @@ public class LineServiceImpl implements LineService {
         }
 
         AccessToken accessToken = JsonUtils.toAccessToken(token);
+        line.setAccountId(accessToken.getAccountId());
+        line.setCreatorUser(accessToken.getUserName());
+        line.setCreatorUserId(accessToken.getUserId());
         List<Date> dates = airlineVO.getDates(line.getDepartureStart(), line.getDepartureEnd(), line.getDetails().get(0).getFlights());
 
         // 根据城市、航班号和行程天数计算摘要并查询航线基础数据ID
@@ -77,10 +80,6 @@ public class LineServiceImpl implements LineService {
         // 处理航线资源数据
         line.setAirwayId(airlineMapper.getAirwayIdByFlightNo(line.getDetails().get(0).getFlightNo()));
 
-        line.setAccountId(accessToken.getAccountId());
-        line.setCreatorUser(accessToken.getUserName());
-        line.setCreatorUserId(accessToken.getUserId());
-
         // 生成航班资源数据集合
         List<Flight> flights = airlineVO.setFlight(line, dates);
 
@@ -108,6 +107,8 @@ public class LineServiceImpl implements LineService {
         }
 
         AccessToken accessToken = JsonUtils.toAccessToken(token);
+        line.setCreatorUser(accessToken.getUserName());
+        line.setCreatorUserId(accessToken.getUserId());
         // 根据城市、航班号和行程天数计算摘要并查询航线基础数据ID
         String key = airlineVO.hashValue(line.getDetails());
         String airLineId = airlineMapper.getExistedAirline(key);
@@ -245,6 +246,14 @@ public class LineServiceImpl implements LineService {
     public Reply addFlightInfo(LineDetail info) {   //需求待确认
         info.setId(Generator.uuid());
         List<LineDetail> lineDetails = new ArrayList<>();
+        String DepCity = airlineMapper.findCityNameByIataCode(info.getFlightDepcode());
+        String arrCity = airlineMapper.findCityNameByIataCode(info.getFlightArrcode());
+        if(info.getFlightDeptimePlanDate().equals(info.getFlightArrtimePlanDate())){
+            ReplyHelper.fail("起飞时间和到达时间不能相同");
+        }
+        if(StringUtils.isBlank(DepCity) || StringUtils.isBlank(arrCity)){
+            ReplyHelper.fail("三字码或对应的城市不存在");
+        }
         lineDetails.add(info);
         airlineMapper.addFlightInfo(lineDetails);
         return ReplyHelper.success();
@@ -338,5 +347,12 @@ public class LineServiceImpl implements LineService {
         AccessToken accessToken = JsonUtils.toAccessToken(token);
         Integer sum = airlineMapper.getEnableFlights(accessToken.getAccountId(), line.getId());
         return ReplyHelper.success(sum);
+    }
+
+    @Override
+    public Reply supplierLineCount(String token) {
+        AccessToken accessToken = JsonUtils.toAccessToken(token);
+        long recordCount = airlineMapper.airlineCount(accessToken.getAccountId());
+        return ReplyHelper.success(recordCount);
     }
 }

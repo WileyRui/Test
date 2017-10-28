@@ -185,4 +185,16 @@ public class LineController {
     public Reply getEnableFlights(@RequestHeader("Authorization") String token, @RequestBody Line line) {
         return service.getEnableFlights(token, line);
     }
+
+    /**
+     * 用于首页
+     * 查询该包机商下的所有的航线数量
+     *
+     * @return
+     */
+    @PostMapping("/v1.0/lines/supplierLineCount")
+    public Reply supplierLineCount(@RequestHeader("Authorization") String token) {
+        return service.supplierLineCount(token);
+    }
+
 }
