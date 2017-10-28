@@ -168,12 +168,12 @@ public interface QueryMapper extends Mapper {
      * @param ownerId
      * @return
      */
-    @Select("select e.flight_type flightType,e.voyage , e.flight_number flightNum,f.airId airlineId,f.recovery_advance recoveryDay,f.departure_start startTime,f.departure_end endTime,v.days days,f.ssolded solded, f.sremain remain from msd_airline e right join \n" +
-            "(select airline_id,id airId,recovery_advance,departure_start,departure_end,d.ssolded,d.sremain from mbs_airline c right join (select airline_id aaid,sum(b.solded) ssolded,sum(b.remain) sremain from mbs_airline_flight a right join \n" +
-            "(select flight_id,1 as fg,count(flight_id),count( CASE WHEN seat_status > 0 THEN 1 ELSE NULL END) AS solded,\n" +
-            " count(CASE WHEN seat_status = 0 THEN 1 ELSE NULL END) AS remain from mbs_airline_flight_seat where account_id = #{accountId} and owner_id=#{ownerId} group by flight_id\n" +
-            "union all select flight_id,0 as fg,count,0,0 from mbc_assign_record where account_id =#{accountId} and dealer_id = #{ownerId} \n" +
-            "and flight_id not in (select flight_id from mbs_airline_flight_seat where account_id = #{accountId} and owner_id=#{ownerId} group by flight_id)\n" +
+    @Select("select e.flight_type flightType,e.voyage , e.flight_number flightNum,f.airId airlineId,f.recovery_advance recoveryDay,f.departure_start startTime,f.departure_end endTime,v.days days,f.ssolded solded, f.sremain remain from msd_airline e right join  " +
+            "(select airline_id,id airId,recovery_advance,departure_start,departure_end,d.ssolded,d.sremain from mbs_airline c right join (select airline_id aaid,sum(b.solded) ssolded,sum(b.remain) sremain from mbs_airline_flight a right join  " +
+            "(select flight_id,1 as fg,count(flight_id),count( CASE WHEN seat_status > 0 THEN 1 ELSE NULL END) AS solded, " +
+            " count(CASE WHEN seat_status = 0 THEN 1 ELSE NULL END) AS remain from mbs_airline_flight_seat where account_id = #{accountId} and owner_id=#{ownerId} group by flight_id " +
+            "union all select flight_id,0 as fg,count,0,0 from mbc_assign_record where account_id =#{accountId} and dealer_id = #{ownerId}  " +
+            "and flight_id not in (select flight_id from mbs_airline_flight_seat where account_id = #{accountId} and owner_id=#{ownerId} group by flight_id) " +
             "group by flight_id) b on a.id = b.flight_id group by aaid) d on c.id = d.aaid) f on e.id = f.airline_id LEFT  JOIN msd_airline_voyage v on e.id=v.airline_id where v.trip_index=1")
     List<FlightBo> selectAirsByAccountId(String accountId, String ownerId);
 
@@ -239,7 +239,7 @@ public interface QueryMapper extends Mapper {
      * @return
      */
     @Select("SELECT sum(CASE WHEN a.type = 2 THEN a.count ELSE 0 END) AS autoCount," +
-            "sum(CASE WHEN a.type = 3 THEN a.count ELSE 0 END) AS handCount,b.adult_price as adultPrice,b.child_price as childPrice,b.flight_date as flightDate,b.recovery_date as recoveryDate,a.flight_id\n" +
+            "sum(CASE WHEN a.type = 3 THEN a.count ELSE 0 END) AS handCount,b.adult_price as adultPrice,b.child_price as childPrice,b.flight_date as flightDate,b.recovery_date as recoveryDate,a.flight_id " +
             "FROM mbc_assign_record a " +
             "JOIN mbs_airline_flight b ON a.flight_id = b.id" +
             " WHERE" +
@@ -398,9 +398,10 @@ public interface QueryMapper extends Mapper {
      * @param time
      * @return
      */
-    @Select("select ms.id, ms.account_id as accountId, ms.flight_id as flightId,mf.airline_id as airlineId from mbs_airline_flight_seat as ms " +
-            "left join mbs_airline_flight as mf on ms.flight_id = mf.id where ms.account_id != ms.owner_id " +
-            "and ms.seat_status < 2 and mf.recovery_date <= #{start} ")
+    @Select("SELECT  ms.id,  ms.account_id AS accountId,  ms.flight_id AS flightId,  mf.airline_id AS airlineId  " +
+            "FROM (select * from mbs_airline_flight_seat where account_id != owner_id and seat_status < 2) AS ms  " +
+            "inner JOIN mbs_airline_flight AS mf ON ms.flight_id = mf.id  " +
+            "WHERE mf.recovery_date <= #{time}")
     List<QueryFlightsToRecoveryDto> queryFlightsToRecovery(Date time);
 
     @SelectProvider(type = AspectSql.class, method = "getPassengerList")
