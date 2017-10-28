@@ -1,5 +1,7 @@
 package com.apin.airline.common.entity;
 
+import com.apin.util.DateHelper;
+import com.apin.util.Generator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -69,14 +71,14 @@ public class Line implements Serializable {
     /**
      * 销售开始日期(出发日期)
      */
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date departureStart;
+//    @JsonFormat(pattern="yyyy-MM-dd")
+    private String departureStart;
 
     /**
      * 销售截止日期(出发日期)
      */
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date departureEnd;
+//    @JsonFormat(pattern="yyyy-MM-dd")
+    private String departureEnd;
 
     /**
      * 舱位数量
@@ -226,7 +228,6 @@ public class Line implements Serializable {
     /**
      * 航程明细
      */
-    @JsonProperty("details")
     private List<LineDetail> details;
 
     public String getId() {
@@ -310,18 +311,18 @@ public class Line implements Serializable {
     }
 
     public Date getDepartureStart() {
-        return departureStart;
+        return DateHelper.parseDate(departureStart);
     }
 
-    public void setDepartureStart(Date departureStart) {
+    public void setDepartureStart(String departureStart) {
         this.departureStart = departureStart;
     }
 
     public Date getDepartureEnd() {
-        return departureEnd;
+        return DateHelper.parseDate(departureEnd);
     }
 
-    public void setDepartureEnd(Date departureEnd) {
+    public void setDepartureEnd(String departureEnd) {
         this.departureEnd = departureEnd;
     }
 
