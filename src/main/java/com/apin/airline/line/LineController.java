@@ -1,11 +1,13 @@
 package com.apin.airline.line;
 
+import com.alibaba.fastjson.JSON;
 import com.apin.airline.common.entity.Line;
 import com.apin.airline.common.entity.LineDetail;
 import com.apin.airline.line.dto.NewLine;
 import com.apin.util.ReplyHelper;
 import com.apin.util.pojo.Reply;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.boot.jaxb.SourceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +44,7 @@ public class LineController {
      */
     @PostMapping("/v1.0/lines/edit")
     public Reply editLine(@RequestHeader("Authorization") String token, @RequestBody Line line) {
+        System.out.println(JSON.toJSON(line));
         return service.editLine(token, line);
     }
 
