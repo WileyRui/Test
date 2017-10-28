@@ -44,7 +44,6 @@ public class LineController {
      */
     @PostMapping("/v1.0/lines/edit")
     public Reply editLine(@RequestHeader("Authorization") String token, @RequestBody Line line) {
-        System.out.println(JSON.toJSON(line));
         return service.editLine(token, line);
     }
 
