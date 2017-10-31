@@ -109,42 +109,13 @@ public class LineServiceImpl implements LineService {
         AccessToken accessToken = JsonUtils.toAccessToken(token);
         line.setCreatorUser(accessToken.getUserName());
         line.setCreatorUserId(accessToken.getUserId());
-        // 根据城市、航班号和行程天数计算摘要并查询航线基础数据ID
-        String key = airlineVO.hashValue(line.getDetails());
-        String airLineId = airlineMapper.getExistedAirline(key);
-        // 校验数据是否重复
-        List<Date> dates = airlineVO.getDates(line.getDepartureStart(), line.getDepartureEnd(), line.getDetails().get(0).getFlights());
-        List<Date> existedDates = airlineMapper.getExistedflightDateByUpdate(accessToken.getAccountId(), airLineId, line.getId());
-        existedDates.retainAll(dates);
 
-        if (existedDates.size() > 0) {
-            return ReplyHelper.invalidParam("航线已存在");
-        }
-
-        Integer count = 0;
-
-        if (StringUtils.isNotBlank(airLineId)) {
-            line.setAirlineId(airLineId);
-        } else {
-            Airline airline = airlineVO.setAirline(line);
-            List<Voyage> voyages = airlineVO.setVoyage(line.getDetails(), airline.getId());
-            line.setAirlineId(airline.getId());
-            count += airlineMapper.addAirline(airline);
-            count += airlineMapper.addVoyages(voyages);
-        }
-
-        // 如航线基础数据不存在,则生成相应的航线基础数据并持久化到数据库
-        airlineMapper.deleteFlight(line.getId());
-        // 持久化数据
-        count += airlineMapper.updateLine(line);
-        List<Flight> flights = airlineVO.setFlight(line, dates);
-        count += airlineMapper.addLineFlights(flights);
+        Integer count = airlineMapper.updateLine(line);
         count += logMapper.insert(airlineVO.setAirlineLog(line, false));
 
         if (count <= 0) {
             return ReplyHelper.error();
         }
-
         return ReplyHelper.success();
     }
 
@@ -164,11 +135,19 @@ public class LineServiceImpl implements LineService {
         }
 
         Integer row = airlineMapper.deleteLine(line.getId());
+        //日志
+        Log log = new Log();
+        log.setOperatorId(accessToken.getUserId());
+        log.setOperatorUser(accessToken.getUserName());
+        log.setAirlineId(line.getId());
+        log.setEventName("删除航线");
+        log.setEventSource("CRM");
+        log.setMessage("删除航线成功");
+        row += logMapper.insert(log);
 
         if (row <= 0) {
             return ReplyHelper.error();
         }
-
         return ReplyHelper.success();
     }
 
@@ -248,10 +227,10 @@ public class LineServiceImpl implements LineService {
         List<LineDetail> lineDetails = new ArrayList<>();
         String DepCity = airlineMapper.findCityNameByIataCode(info.getFlightDepcode());
         String arrCity = airlineMapper.findCityNameByIataCode(info.getFlightArrcode());
-        if(info.getFlightDeptimePlanDate().equals(info.getFlightArrtimePlanDate())){
+        if (info.getFlightDeptimePlanDate().equals(info.getFlightArrtimePlanDate())) {
             return ReplyHelper.fail("起飞时间和到达时间不能相同");
         }
-        if(StringUtils.isBlank(DepCity) || StringUtils.isBlank(arrCity)){
+        if (StringUtils.isBlank(DepCity) || StringUtils.isBlank(arrCity)) {
             return ReplyHelper.fail("三字码或对应的城市不存在");
         }
         lineDetails.add(info);

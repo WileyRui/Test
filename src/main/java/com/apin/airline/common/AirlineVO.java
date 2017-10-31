@@ -46,8 +46,13 @@ public class AirlineVO {
         airline.setId(Generator.uuid());
         airline.setHashKey(hashValue(details));
         airline.setFlightType(line.getFlightType());
-        airline.setDepCity(details.get(0).getFlightDep());
-        airline.setArrCity(details.get(0).getFlightArr());
+        if (line.getFlightType() != 3) {
+            airline.setDepCity(details.get(0).getFlightDep());
+            airline.setArrCity(details.get(0).getFlightArr());
+        } else { // 多程
+            airline.setDepCity(details.get(0).getFlightDep());
+            airline.setArrCity(details.get(details.size() - 1).getFlightArr());
+        }
         airline.setDays(days);
         airline.setVoyage(appendVoyage(line.getFlightType(), details));
         airline.setFlightNumber(appendFlightNumber(details));
