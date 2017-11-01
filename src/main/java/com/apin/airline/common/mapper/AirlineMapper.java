@@ -201,8 +201,8 @@ public interface AirlineMapper extends Mapper {
      * @param line 航线资源数据
      * @return 受影响行数
      */
-    @Update("<script>UPDATE mbs_airline SET res_type=#{resType},seat_type=#{seatType},free_bag=#{freeBag},weight_limit=#{weightLimit}," +
-            "manager=#{manager}, manager_id=#{managerId} WHERE id=#{id}</script>")
+    @Update("UPDATE mbs_airline SET res_type=#{resType},seat_type=#{seatType},free_bag=#{freeBag},weight_limit=#{weightLimit}," +
+            "manager=#{manager}, manager_id=#{managerId} WHERE id=#{id}")
     Integer updateLine(Line line);
 
     /**
