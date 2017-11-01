@@ -49,11 +49,12 @@ public class AirlineVO {
         if (line.getFlightType() != 3) {
             airline.setDepCity(details.get(0).getFlightDep());
             airline.setArrCity(details.get(0).getFlightArr());
+            airline.setDays(days);
         } else { // 多程
             airline.setDepCity(details.get(0).getFlightDep());
             airline.setArrCity(details.get(details.size() - 1).getFlightArr());
+            airline.setDays(days + 1);
         }
-        airline.setDays(days);
         airline.setVoyage(appendVoyage(line.getFlightType(), details));
         airline.setFlightNumber(appendFlightNumber(details));
         airline.setFlightTime(details.get(0).getFlightDeptimePlanDate());
