@@ -2,6 +2,7 @@ package com.apin.airline.common.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 宣炳刚
@@ -105,6 +106,11 @@ public class City implements Serializable {
      * 记录数量
      */
     private Integer count;
+
+    /*
+    * 标签类型，0=热门出发，1=热门到达
+     */
+    private List<Integer> tag;
 
     public String getId() {
         return id;
@@ -256,5 +262,13 @@ public class City implements Serializable {
 
     public void setCount(Integer count) {
         this.count = count;
+    }
+
+    public List<Integer> getTag() {
+        return tag;
+    }
+
+    public void setTag(List<Integer> tag) {
+        this.tag = tag;
     }
 }
