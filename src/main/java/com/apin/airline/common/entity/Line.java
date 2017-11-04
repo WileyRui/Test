@@ -226,6 +226,11 @@ public class Line implements Serializable {
     private String arrCity;
 
     /**
+     * 备注
+     */
+    private String remark;
+
+    /**
      * 航程明细
      */
     private List<LineDetail> details;
@@ -564,5 +569,13 @@ public class Line implements Serializable {
 
     public void setArrCity(String arrCity) {
         this.arrCity = arrCity;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }
