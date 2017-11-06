@@ -58,9 +58,8 @@ public class LineServiceImpl implements LineService {
 
         // 如航线基础数据不存在,则生成相应的航线基础数据并持久化到数据库
         if (airLineId == null) {
-            line.setAirlineId(Generator.uuid());
-
             Airline airline = airlineVO.setAirline(line);
+            line.setAirlineId(airline.getId());
             List<Voyage> voyages = airlineVO.setVoyage(line.getDetails(), airline.getId());
             Integer count = airlineMapper.addAirline(airline);
             count += airlineMapper.addVoyages(voyages);
