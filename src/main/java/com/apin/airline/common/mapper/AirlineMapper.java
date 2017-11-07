@@ -171,7 +171,7 @@ public interface AirlineMapper extends Mapper {
      * @param id 航线基础数据ID
      * @return 航程明细数据集合
      */
-    @Select("SELECT v.id,v.airline_id,v.trip_index,i.flight_company,i.flight_no,i.flight_dep_airport," +
+    @Select("SELECT v.id,v.airline_id,v.trip_index,v.days,i.flight_company,i.flight_no,i.flight_dep_airport," +
             "i.flight_arr_airport,i.flight_deptime_plan_date,i.flight_arrtime_plan_date,i.stop_flag,i.flights " +
             "FROM msd_airline_voyage v JOIN msd_airline_info i ON i.id=v.flight_info_id WHERE v.airline_id=#{id}")
     List<LineDetail> getVoyages(String id);
