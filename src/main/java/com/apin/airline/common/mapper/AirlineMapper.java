@@ -148,6 +148,15 @@ public interface AirlineMapper extends Mapper {
     String findCityNameByIataCode(String iataCode);
 
     /**
+     * 根据机场三字码查询机场名称
+     *
+     * @param iataCode
+     * @return cityName
+     */
+    @Select("SELECT airport_name FROM msd_airport WHERE iata_code=#{iataCode};")
+    String findAirportNameByIataCode(String iataCode);
+
+    /**
      * 查询指定ID的航线基础数据
      *
      * @param id 航线基础数据ID

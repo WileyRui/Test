@@ -88,7 +88,7 @@ public class LineServiceImpl implements LineService {
         Log log = airlineVO.setAirlineLog(line, true);
         count += logMapper.insert(log);
 
-        if (StringUtils.isNotBlank(line.getRemark())){
+        if (StringUtils.isNotBlank(line.getRemark())) {
             log.setMessage(line.getRemark());
             count += logMapper.insert(log);
         }
@@ -228,7 +228,7 @@ public class LineServiceImpl implements LineService {
 
     @Transactional
     @Override
-    public Reply addFlightInfo(LineDetail info) {   //需求待确认
+    public Reply addFlightInfo(LineDetail info) {
         info.setId(Generator.uuid());
         List<LineDetail> lineDetails = new ArrayList<>();
         String DepCity = airlineMapper.findCityNameByIataCode(info.getFlightDepcode());
@@ -237,7 +237,15 @@ public class LineServiceImpl implements LineService {
             return ReplyHelper.fail("起飞时间和到达时间不能相同");
         }
         if (StringUtils.isBlank(DepCity) || StringUtils.isBlank(arrCity)) {
-            return ReplyHelper.fail("三字码或对应的城市不存在");
+            return ReplyHelper.fail("机场三字码或对应的城市不存在");
+        }
+        String depAirportName = airlineMapper.findAirportNameByIataCode(info.getFlightDepcode());
+        String arrAirportName = airlineMapper.findAirportNameByIataCode(info.getFlightArrcode());
+        if (StringUtils.isNotBlank(depAirportName) && StringUtils.isNotBlank(arrAirportName)) {
+            info.setFlightArrAirport(arrAirportName);
+            info.setFlightDepAirport(depAirportName);
+        } else {
+            return ReplyHelper.fail("机场三字码对应的机场名称不存在");
         }
         lineDetails.add(info);
         airlineMapper.addFlightInfo(lineDetails);
@@ -246,7 +254,7 @@ public class LineServiceImpl implements LineService {
 
     @Transactional
     @Override
-    public Reply updateFlightInfo(LineDetail info) throws InvocationTargetException, IllegalAccessException, IOException { //需求待确认
+    public Reply updateFlightInfo(LineDetail info) throws InvocationTargetException, IllegalAccessException, IOException {
         Integer row = airlineMapper.deleteFlightInfo(info.getFlightNo());
         if (row <= 0) {
             return ReplyHelper.error();
